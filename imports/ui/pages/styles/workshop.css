@@ -1,0 +1,39 @@
+.workshop {
+  height: 100vh;
+  display: grid;
+  grid-template:
+    [header-left] "head head" 30px [header-right]
+    [main-left] "nav  main" 1fr [main-right]
+    [footer-left] "nav  foot" 30px [footer-right]
+    / 120px 1fr;
+  color: aliceblue;
+  background-color: #001b74;
+}
+.workshop header {
+  grid-area: head;
+}
+
+
+
+.workshop main {
+  grid-area: main;
+  border-top-left-radius: 10px;
+  /* border-bottom-left-radius: 10px; */
+  background-color: aliceblue;
+  color: black;
+  background-image: url("/logo.png");
+  background-repeat: no-repeat;
+  background-position: left 10% top 10%;
+  background-size: 50vw;
+}
+
+
+.workshop nav {
+  grid-area: nav;
+}
+
+
+.workshop footer {
+  grid-area: foot;
+  background-color: aliceblue;
+}
