@@ -1,10 +1,10 @@
 import React from "react";
 import LoginModal from "../../pages/loginModal";
 import { SecurityContext } from "../../context/securityProvider";
-import { formatDate } from "../../misc/formatDate";
 import { filterTasks } from "../../misc/filterTask";
+import TaskItem from "../taskItem";
 
-export default function TaskList({ method, params={}, filter }) {
+export default function TaskList({ method, params = {}, filter, buttons }) {
   const [taskList, setTaskList] = React.useState();
   const [openLogin, setOpenLogin] = React.useState(false);
   const { setToken } = React.useContext(SecurityContext);
@@ -25,22 +25,24 @@ export default function TaskList({ method, params={}, filter }) {
   }, []);
 
   return (
-    <div>
+    <div className="task-list">
       {taskList &&
         taskList.map((task, index) => {
           return (
-            <div className="task-card" key={index}>
-              <div
-                className={
-                  task.assigned_id ? "task-item-selected" : "task-item"
-                }
-              >
-                <div>{task.displayName}</div>
-                <div>{formatDate(task.last_update_date)}</div>
-              </div>
-            </div>
+            <TaskItem
+              task={task}
+              key={index}
+              delay={index}
+              taskItem={params.menuId + index}
+              setTaskKeys={params.setTaskKeys}
+              updateAvailableTasks={params.updateAvailableTasks}
+              updateMyTasks={params.updateMyTasks}
+              updateDoneTasks={params.updateDoneTasks}
+              buttons={buttons}
+            />
           );
         })}
+
       <LoginModal
         openLogin={openLogin}
         onCloseLogin={onCloseModal}

@@ -1,22 +1,114 @@
 .task-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+  flex-direction: row;
+  width: 97%;
+  justify-content: space-between;
 }
+
+.task-block {
+  width: 100%;
+  max-width: 390px;
+  padding: 0 10px;
+}
+.task-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  width: 100%;
+  height: 68vh;
+}
+.date-selector {
+  box-sizing: border-box;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 140px;
+}
+
 .task-card {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 350px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(3, 129, 214, 0.452);
+
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  transition: 0.5s ease-in-out;
+  animation: slideInRight ease 500ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: backwards;
+}
+
+@keyframes slideInRight {
+  0% {
+    -webkit-transform: translate(50%, 30px);
+    transform: translate(50%, 30px);
+    visibility: visible;
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+.task-card:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.425);
+}
+
+.task-img {
+  width: 50px;
+  height: 50px;
+  margin-left: 5px;
+  border-radius: 10px;
+  background: linear-gradient(#fffefe, #9198e5);
+}
+
+.task-text-box {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 90px);
+  margin-left: 10px;
+  color: dark;
+  font-family: "Poppins" sans-serif;
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  width: 80%;
+  height: 20px;
 }
-.task-item {
-  background-color: aquamarine;
-  padding: 10px;
-  width: 100%;
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.task-item-selected {
-  background-color: cadetblue;
-  padding: 10px;
-  width: 100%;
+
+.task-content span {
+  font-size: 12px;
+}
+
+.task-description {
+  padding: 3px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.task-priority {
+  position: absolute;
+  left: 5px;
+  width: 5px;
+  height: 50%;
+  border-radius: 5px;
 }

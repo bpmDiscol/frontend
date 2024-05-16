@@ -15,7 +15,10 @@
     "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-cookie": "^7.1.4",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
+    "react-lite-month-picker": "^1.2.18",
     "react-responsive-modal": "^6.4.2",
     "tough-cookie": "^4.1.4"
   },

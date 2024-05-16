@@ -6,7 +6,7 @@ import { MainViewContext } from "../context/mainViewProvider";
 import Header from "./header";
 
 export default function Workshop() {
-  const { view, views, userName } = React.useContext(MainViewContext);
+  const { view, userName } = React.useContext(MainViewContext);
 
   return (
     <div className="workshop">
@@ -16,7 +16,7 @@ export default function Workshop() {
       <nav>
         <Navigator />
       </nav>
-      <main>{views[view]}</main>
+      <main>{view}</main>
       <footer></footer>
     </div>
   );

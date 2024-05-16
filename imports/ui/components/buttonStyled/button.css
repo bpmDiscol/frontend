@@ -1,0 +1,57 @@
+.button-styled {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 5px;
+    height: 40px;
+    width: 110px;
+    border: 1px solid #056DFA;
+    background: #056bfa27;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  
+  .button-lable {
+    margin-top: 1px;
+    font-size: small;
+    line-height: 22px;
+    color: #056DFA;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+
+  }
+  
+  .button-styled:hover {
+    background: #056bfa49;
+  }
+  .button-icon{
+    height: 20px;
+    width: 20px;
+    margin-right: 5px;
+  }
+
+  .button-styled:hover .button-icon {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    25% {
+      transform: rotate(-8deg);
+    }
+  
+    50% {
+      transform: rotate(0deg);
+    }
+  
+    75% {
+      transform: rotate(8deg);
+    }
+  
+    100% {
+      transform: rotate(0deg);
+    }
+  }

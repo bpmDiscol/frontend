@@ -1,0 +1,37 @@
+.context-menu {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  z-index: 1;
+  font-size: small;
+  box-shadow: 3px 5px 15px rgb(143, 139, 139);
+  transition: 0.5s ease-in-out;
+  animation: fadeInAnimation ease 300ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: backwards;
+}
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+    
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.inner-menu-item {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: 0px 20px;
+  background-color: beige;
+  border: 1px solid rgba(0, 0, 0, 1);
+  backdrop-filter: blur(20px);
+  transition: 200ms ease-in-out;
+}
+
+.inner-menu-item:hover {
+  cursor: pointer;
+  background-color: lightgrey;
+}

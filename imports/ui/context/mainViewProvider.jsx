@@ -1,39 +1,28 @@
 import React from "react";
-import Dashboard from "../pages/dashboard";
-import Process from "../pages/process";
-import Tasks from "../pages/tasks";
+import { getView } from "../config/getView";
 
 export const MainViewContext = React.createContext();
 
 export default function MainViewProvider({ children, defaultView }) {
-  const [view, setView] = React.useState();
+  const [view, setNewView] = React.useState();
   const [userName, setUserName] = React.useState("");
-  const [bonitaUserId, setBonitaUserId] = React.useState();
 
-  const views = {
-    dashboard: <Dashboard bonitaUserId={bonitaUserId} />,
-    process: <Process bonitaUserId={bonitaUserId} />,
-    tasks: <Tasks bonitaUserId={bonitaUserId} />,
-  };
+  function setView(newView) {
+    window.sessionStorage.setItem("currentView", newView);
+    setNewView(getView(newView));
+  }
 
   React.useEffect(() => {
     const user = Meteor.users.findOne(Meteor.userId({}));
-    setBonitaUserId(user.profile.bonitaUser);
     setUserName(user.username);
-  }, []);
 
-  React.useEffect(() => {
     const currentView = window.sessionStorage.getItem("currentView");
     if (currentView) setView(currentView);
     else setView(defaultView);
   }, []);
 
-  React.useEffect(() => {
-    window.sessionStorage.setItem("currentView", view);
-  }, [view]);
-
   return (
-    <MainViewContext.Provider value={{ view, setView, views, userName }}>
+    <MainViewContext.Provider value={{ view, setView, userName }}>
       {children}
     </MainViewContext.Provider>
   );
