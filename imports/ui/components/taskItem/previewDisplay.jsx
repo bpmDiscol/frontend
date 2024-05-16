@@ -53,7 +53,7 @@ export default function PreviewDisplay({
             </ButtonStyled>
           )}
           {buttons.procced && (
-            <ButtonStyled onClick={() => setView(task.name)} icon="/quill.svg">
+            <ButtonStyled onClick={() => setView(task.name, {taskId: task.id})} icon="/quill.svg">
               tomar tarea
             </ButtonStyled>
           )}

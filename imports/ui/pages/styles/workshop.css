@@ -1,3 +1,18 @@
+:root {
+  --workshop-primary-color: #00679e;
+  --workshop-secondary-color: #f0ebfa;
+  --workshop-ternary-color: #abcdef;
+  --workshop-text-color: white;
+  --workshop-text-dark-color: black;
+  --workshop-dark-color: #012345;
+  --workshop-lite-color: #345678;
+  --workshop-hightlight-color: #a9caeb;
+}
+
+h1, h2, h3{
+  margin: 5px;
+}
+
 .workshop {
   height: 100vh;
   display: grid;
@@ -6,34 +21,62 @@
     [main-left] "nav  main" 1fr [main-right]
     [footer-left] "nav  foot" 30px [footer-right]
     / 120px 1fr;
-  color: aliceblue;
-  background-color: #001b74;
+  color: var(--workshop-secondary-color);
+  background-color: var(--workshop-primary-color);
 }
 .workshop header {
   grid-area: head;
 }
 
-
-
 .workshop main {
   grid-area: main;
   border-top-left-radius: 10px;
   /* border-bottom-left-radius: 10px; */
-  background-color: aliceblue;
-  color: black;
+  background-color: var(--workshop-secondary-color);
+  color: var(--workshop-text-dark-color);
   background-image: url("/logo.png");
   background-repeat: no-repeat;
   background-position: left 10% top 10%;
   background-size: 50vw;
 }
 
-
 .workshop nav {
   grid-area: nav;
 }
 
-
 .workshop footer {
   grid-area: foot;
   background-color: aliceblue;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1% 2%;
+}
+
+.horizontal-block {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  inline-size: none;
+}
+
+.horizontal-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.titles {
+  display: inline-block;
+  text-wrap: nowrap;
+}
+
+.center-container{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

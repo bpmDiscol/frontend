@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles.css";
-import Loader from "../../loader";
 
 export default function EmployeeRequestPreview({ taskId }) {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();

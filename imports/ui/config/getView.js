@@ -9,6 +9,7 @@ import EmployeeRequestAdm from "../pages/bpm/employeeRequest/employeeRequestAdm"
 
 export function getView(view, params = {}) {
   const user = Meteor.users.findOne(Meteor.userId({}));
+  console.log(params)
 
   const views = {
     dashboard: <Dashboard bonitaUserId={user.profile.bonitaUser} />,
@@ -27,7 +28,12 @@ export function getView(view, params = {}) {
         userId={user.profile.bonitaUser}
       />
     ),
-    employee_request_adm: <EmployeeRequestAdm />
+    employee_request_adm: (
+      <EmployeeRequestAdm
+        taskId={params.taskId}
+        userId={user.profile.bonitaUser}
+      />
+    ),
   };
 
   if (view in views) return views[view];
