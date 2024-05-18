@@ -1,6 +1,6 @@
 :root {
   --workshop-primary-color: #00679e;
-  --workshop-secondary-color: #f0ebfa;
+  --workshop-secondary-color: #f3f5ff;
   --workshop-ternary-color: #abcdef;
   --workshop-text-color: white;
   --workshop-text-dark-color: black;
@@ -9,9 +9,24 @@
   --workshop-hightlight-color: #a9caeb;
 }
 
-h1, h2, h3{
+h1,
+h2,
+h3 {
   margin: 5px;
 }
+strong {
+  margin: 0 0 13px 0;
+}
+input {
+  margin: 0 0 10px 5px;
+  padding: 3px 5px;
+}
+/* textarea {
+  height: 15lh;
+  width: 100%;
+  box-sizing: border-box;
+  width: calc(var(--tabs-width) * var(--tabs-width-multiplier) * 0.9);
+} */
 
 .workshop {
   height: 100vh;
@@ -71,12 +86,55 @@ h1, h2, h3{
 .titles {
   display: inline-block;
   text-wrap: nowrap;
+  padding: 20px;
 }
 
-.center-container{
+.center-container {
   display: flex;
   width: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+.inline-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.half-container {
+  width: 50%;
+}
+.rich-text-view-box {
+  padding: 10px 20px 0 20px;
+  height: 17lh;
+}
+.rich-text-box {
+  background-color: #f0ebfa;
+  padding: 5px;
+}
+
+.observations {
+  height: 13lh;
+  overflow-y: auto;
+}
+.tabs-segment {
+  margin-bottom: 10px;
+}
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  width: 80%;
+  height: 18lh;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  border: 1px solid #012345;
+  border-radius: 10px;
 }

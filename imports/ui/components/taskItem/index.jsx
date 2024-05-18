@@ -12,23 +12,18 @@ export default function TaskItem({
   delay,
   buttons,
 }) {
-  // const [menu, setMenu] = React.useState();
   const [openTask, setOpenTask] = React.useState(false);
   const [previewTask, setPreviewTask] = React.useState();
 
-
   function setPreview() {
-    goToPreviewTask(task.name);
+    Meteor.call("set_task_id", { taskId: task.id });
+    setPreviewTask(getView(task.name + "_preview"));
     setOpenTask(true);
-  }
-
-  function goToPreviewTask(taskName) {
-    setPreviewTask(getView(taskName+"_preview", (params = { taskId: task.id })));
   }
 
   return (
     <React.Fragment>
-      <div onClick={() => setPreview(true)}>
+      <div onClick={() => setPreview()}>
         <div className="task-card" style={{ animationDelay: `${delay / 10}s` }}>
           <div className="task-img"></div>
           <div className="task-text-box">

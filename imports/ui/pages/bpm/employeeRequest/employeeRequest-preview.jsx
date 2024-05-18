@@ -1,15 +1,13 @@
 import React from "react";
 import "../styles.css";
 
-export default function EmployeeRequestPreview({ taskId }) {
+export default function EmployeeRequestPreview() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
 
   React.useEffect(() => {
-    if (taskId)
-      Meteor.callAsync("get_employee_request_data", { taskId }).then(
-        (response) => setRequestEmployeeData(response)
-      );
-    else console.log("no task id");
+    Meteor.callAsync("get_employee_request").then((response) =>
+      setRequestEmployeeData(response)
+    );
   }, []);
 
   return (

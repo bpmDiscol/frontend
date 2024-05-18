@@ -9,31 +9,14 @@ import EmployeeRequestAdm from "../pages/bpm/employeeRequest/employeeRequestAdm"
 
 export function getView(view, params = {}) {
   const user = Meteor.users.findOne(Meteor.userId({}));
-  console.log(params)
 
   const views = {
     dashboard: <Dashboard bonitaUserId={user.profile.bonitaUser} />,
     process: <Process bonitaUserId={user.profile.bonitaUser} />,
     tasks: <Tasks bonitaUserId={user.profile.bonitaUser} />,
-    "Solicitud de Personal": (
-      <EmployeeRequestPreview
-        taskId={params.taskId}
-        userId={user.profile.bonitaUser}
-      />
-    ),
     Entrevista: <InterviewPreview />,
-    employee_request_adm_preview: (
-      <EmployeeRequestPreview
-        taskId={params.taskId}
-        userId={user.profile.bonitaUser}
-      />
-    ),
-    employee_request_adm: (
-      <EmployeeRequestAdm
-        taskId={params.taskId}
-        userId={user.profile.bonitaUser}
-      />
-    ),
+    employee_request_adm_preview: <EmployeeRequestPreview />,
+    employee_request_adm: <EmployeeRequestAdm />,
   };
 
   if (view in views) return views[view];

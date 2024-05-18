@@ -14,8 +14,9 @@ export default function PreviewDisplay({
 }) {
   const { setView } = React.useContext(MainViewContext);
 
-  function assignTask(toUser) {
-    Meteor.call("assign_task_to", { taskId: task.id, toUser });
+  function assignTask(user) {
+    Meteor.call("assign_task_to", { userId: user == "me" ? -1 : "" });
+
     //actualizar tareas
     setOpenTask(false);
     updateAvailableTasks(Math.random());
@@ -43,17 +44,20 @@ export default function PreviewDisplay({
             Cerrar
           </ButtonStyled>
           {buttons.abandon && (
-            <ButtonStyled onClick={() => assignTask(false)} icon="/erase.svg">
+            <ButtonStyled onClick={() => assignTask('none')} icon="/erase.svg">
               Abandonar
             </ButtonStyled>
           )}
           {buttons.accept && (
-            <ButtonStyled onClick={() => assignTask(true)} icon="/accept.svg">
+            <ButtonStyled onClick={() => assignTask('me')} icon="/accept.svg">
               tomar tarea
             </ButtonStyled>
           )}
           {buttons.procced && (
-            <ButtonStyled onClick={() => setView(task.name, {taskId: task.id})} icon="/quill.svg">
+            <ButtonStyled
+              onClick={() => setView(task.name, { taskId: task.id })}
+              icon="/quill.svg"
+            >
               tomar tarea
             </ButtonStyled>
           )}

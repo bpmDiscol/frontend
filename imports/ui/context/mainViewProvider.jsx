@@ -9,7 +9,6 @@ export default function MainViewProvider({ children, defaultView }) {
 
   function setView(newView, params = {}) {
     window.sessionStorage.setItem("currentView", newView);
-    console.log(params)
     setNewView(getView(newView, params));
   }
 

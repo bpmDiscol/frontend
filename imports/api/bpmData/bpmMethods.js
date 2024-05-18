@@ -39,27 +39,48 @@ Meteor.methods({
       params: {},
     });
   },
-  async get_employee_request_data({ taskId }) {
-    const context = await Meteor.callAsync("get_data", {
-      url: `/API/bpm/userTask/${taskId}/context`,
-      params: {},
-    });
-
-    return await Meteor.callAsync("get_data", {
-      url: context.requestEmployeeData_ref.link,
-      params: {},
-    });
-  },
-  assign_task_to({ taskId, toUser }) {
-    const user = toUser
-      ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
-      : "";
-    console.log(user)
+  async assign_task_to({ userId }) {
+    const taskId = await Meteor.callAsync("get_task_id");
+    const user =
+      userId == -1
+        ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
+        : userId;
     Meteor.call("put_data", {
       url: `/API/bpm/userTask/${taskId}`,
       params: {
         assigned_id: user,
       },
     });
+  },
+  set_task_id({ taskId }) {
+    Meteor.users.update({ _id: Meteor.userId() }, { $set: { taskId } });
+  },
+  get_task_id() {
+    return Meteor.users.findOne(Meteor.userId({})).taskId;
+  },
+  assign_me_task() {
+    Meteor.call("assing_task_to", { userId: -1 });
+  },
+  unasign_task() {
+    Meteor.call("assing_task_to", { userId: "" });
+  },
+  async request_data_links({ requestLinks }) {
+    const requestData = requestLinks.map((link) => {
+      return Meteor.callAsync("get_data", {
+        url: link.href,
+        params: {},
+      });
+    });
+    const allRequestData = await Promise.all(requestData);
+
+    const response = {};
+    allRequestData.forEach((data, index) => {
+      response[requestLinks[index].rel] = data;
+    });
+    return response;
+
+    // return response.map((data, index) => {
+    //   return { ...data, name: requestLinks[index].rel };
+    // });
   },
 });
