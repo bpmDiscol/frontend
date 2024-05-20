@@ -9,6 +9,7 @@ Meteor.methods({
       { $set: { status: "online" } }
     );
   },
+  
   go_offline() {
     return Meteor.users.update(
       { _id: Meteor.userId() },
