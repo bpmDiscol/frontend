@@ -28,6 +28,7 @@ export default function EmployeeRequestForm() {
   React.useEffect(() => {
     setTabView(<RequestGeneralities />);
   }, []);
+  
 
   const tabTitles = [
     { label: "Datos del cargo", value: 0 },

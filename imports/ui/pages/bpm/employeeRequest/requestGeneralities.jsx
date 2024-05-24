@@ -71,60 +71,65 @@ const workingDayOptions = [
 export default function RequestGeneralities() {
   const [isBonus, setIsBonus] = React.useState(false);
   return (
-    <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
-      <Col span={12}>
-        <Form.Item label="Puesto solicitado" name="companyPosition">
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Sede" name="site">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Area/proyecto" name="area_proyect">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Lugar de trabajo" name="area_proyect">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Motivo del requerimiento" name="area_proyect">
-          <Select defaultValue="Nuevo cargo" options={motiveOptions} />
-        </Form.Item>
-      </Col>
-      <Col span={12}>
-        <Form.Item label="Salario" name="area_proyect">
-          <Input addonBefore="$" />
-        </Form.Item>
-        <Form.Item label="Jornada laboral" name="area_proyect">
-          <Select
-            options={workingDayOptions}
-            defaultValue={"Tiempo completo"}
-          />
-        </Form.Item>
-        <Form.Item label="Tipo de contrato" name="area_proyect">
-          <Select options={contractTypeOptions} defaultValue={"Indefinido"} />
-        </Form.Item>
-        <Space style={{ width: "100%", justifyContent: "space-around" }}>
-          <Form.Item label="Dentro del manual de funciones" name="area_proyect">
-            <Switch />
+    <Form>
+      <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
+        <Col span={12}>
+          <Form.Item label="Puesto solicitado" name="companyPosition">
+            <Input />
           </Form.Item>
-          <Form.Item label="Bono salarial" name="area_proyect">
-            <Switch
-              style={{ margin: "0 5px" }}
-              onChange={() => setIsBonus(!isBonus)}
-              checked={isBonus}
+
+          <Form.Item label="Sede" name="site">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Area/proyecto" name="area_proyect">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Lugar de trabajo" name="area_proyect">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Motivo del requerimiento" name="area_proyect">
+            <Select defaultValue="Nuevo cargo" options={motiveOptions} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Salario" name="area_proyect">
+            <Input addonBefore="$" />
+          </Form.Item>
+          <Form.Item label="Jornada laboral" name="area_proyect">
+            <Select
+              options={workingDayOptions}
+              defaultValue={"Tiempo completo"}
             />
           </Form.Item>
-        </Space>
-        <Form.Item style={{ width: "100&" }}>
-          {isBonus && (
-            <Space.Compact>
-              <Input addonBefore="$" />
-              <Input addonBefore="cada" defaultValue={1} />
-              <Select defaultValue={"mes"} options={timeOptions} />
-            </Space.Compact>
-          )}
-        </Form.Item>
-      </Col>
-    </Row>
+          <Form.Item label="Tipo de contrato" name="area_proyect">
+            <Select options={contractTypeOptions} defaultValue={"Indefinido"} />
+          </Form.Item>
+          <Space style={{ width: "100%", justifyContent: "space-around" }}>
+            <Form.Item
+              label="Dentro del manual de funciones"
+              name="area_proyect"
+            >
+              <Switch />
+            </Form.Item>
+            <Form.Item label="Bono salarial" name="area_proyect">
+              <Switch
+                style={{ margin: "0 5px" }}
+                onChange={() => setIsBonus(!isBonus)}
+                checked={isBonus}
+              />
+            </Form.Item>
+          </Space>
+          <Form.Item style={{ width: "100&" }}>
+            {isBonus && (
+              <Space.Compact>
+                <Input addonBefore="$" />
+                <Input addonBefore="cada" defaultValue={1} />
+                <Select defaultValue={"mes"} options={timeOptions} />
+              </Space.Compact>
+            )}
+          </Form.Item>
+        </Col>
+      </Row>
+    </Form>
   );
 }
