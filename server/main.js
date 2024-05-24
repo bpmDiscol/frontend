@@ -11,4 +11,5 @@ import "../imports/api/userData/userDataCollection";
 import "../imports/api/userData/userDataMethods";
 import "../imports/api/userData/userDataPublication";
 
+
 Meteor.startup(async () => {});

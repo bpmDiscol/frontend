@@ -1,5 +1,4 @@
 import React from "react";
-import { Meteor } from "meteor/meteor";
 import "./styles/navigator.css";
 import { MainViewContext } from "../context/mainViewProvider";
 import { safeLogOut } from "../misc/userStatus";

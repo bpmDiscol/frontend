@@ -16,8 +16,10 @@ export default function Login({ onClose }) {
 
   function meteorLogin(bonitaUser) {
     Meteor.loginWithPassword(username, password, (error) => {
-      if (error && error.reason == "User not found") {
-        // console.log("se procede a crear un nuevo usuario");
+      const user = Meteor.users.findOne(Meteor.userId());
+      const storedBonitaUser = user?.profile?.bonitaUser;
+
+      if ((error && error.reason == "User not found") || !storedBonitaUser) {
         Meteor.call("new_user", { username, password, bonitaUser }, (error) => {
           if (error) console.log(error);
           else meteorLogin();

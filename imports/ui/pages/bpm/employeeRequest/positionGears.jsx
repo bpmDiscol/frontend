@@ -1,5 +1,12 @@
-import { List } from "antd";
+import {
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
+  PlusCircleTwoTone,
+} from "@ant-design/icons";
+import { Space, Typography, List, Flex, Row, Col, Tooltip } from "antd";
 import React from "react";
+
+const { Text } = Typography;
 
 export default function PositionGears({ requestEmployeeData }) {
   const listItems = [
@@ -37,33 +44,63 @@ export default function PositionGears({ requestEmployeeData }) {
     },
   ];
 
-  function ListItems() {
-    const presentItems = listItems
-      .filter((item) => requestEmployeeData.gears[item.value])
-      .map((item) => {
-        return { title: item.label };
-      });
-
-    const otherItems = requestEmployeeData.gears.other.map((item) => {
-      return { title: item };
-    });
-
-    return presentItems.concat(otherItems);
+  function ListItems({ header, dataSource, checkavailability = false }) {
+    return (
+      <List
+        header={header}
+        style={{ width: "50%", padding: "0 10px" }}
+        size="small"
+        itemLayout="horizontal"
+        grid={{
+          gutter: 10,
+          xs: 1,
+          sm: 1,
+          md: 1,
+          lg: 2,
+          xl: 2,
+          xxl: 2,
+        }}
+        dataSource={dataSource}
+        renderItem={(item) => (
+          <Tooltip
+            placement="left"
+            title={
+              checkavailability
+                ? requestEmployeeData.gears[item.value]? "Requerido": "No requerido"
+                : 'Adicional'
+            }
+          >
+            <List.Item>
+              <Text size={18}>
+                {checkavailability ? (
+                  requestEmployeeData.gears[item.value] ? (
+                    <CheckCircleTwoTone twoToneColor={"green"} />
+                  ) : (
+                    <CloseCircleTwoTone twoToneColor={"red"} />
+                  )
+                ) : (
+                  <PlusCircleTwoTone />
+                )}{" "}
+                {checkavailability ? item.label : item}
+              </Text>
+            </List.Item>
+          </Tooltip>
+        )}
+      />
+    );
   }
 
   return (
-    <List
-      itemLayout="horizontal"
-      dataSource={ListItems()}
-      renderItem={(item) => <List.Item style={{background: "red"}}>{item.title}</List.Item>}
-    />
-    // <div className="center-container">
-    //   <div className="half-container">
-    //     <ul style={{listStyle:'square'}}>
-    //       <ListItems />
-    //       <OtherItems />
-    //     </ul>
-    //   </div>
-    // </div>
+    <Flex justify="center">
+      <ListItems
+        header="Equipo regular"
+        dataSource={listItems}
+        checkavailability
+      />
+      <ListItems
+        header={"Equipo adicional"}
+        dataSource={requestEmployeeData.gears.other}
+      />
+    </Flex>
   );
 }

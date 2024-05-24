@@ -1,5 +1,5 @@
 import React from "react";
-import { Collapse } from "antd";
+import { Collapse, Flex, Result } from "antd";
 
 export default function PositionObservations({ requestEmployee }) {
   const [accordeonData, setAcordeonData] = React.useState([]);
@@ -11,9 +11,9 @@ export default function PositionObservations({ requestEmployee }) {
     "Carga de curricullums",
     "Entrevista",
     "Antecedestes",
-    "Lider -REvision de curricullums -",
+    "Lider -Revision de curricullums -",
     "Inicio de contratación",
-    "REvision de resultados médicos",
+    "Revision de resultados médicos",
   ];
 
   function adaptAcordeonData() {
@@ -22,6 +22,11 @@ export default function PositionObservations({ requestEmployee }) {
         key: index,
         label: accordeonTitles[index],
         children: <div dangerouslySetInnerHTML={{ __html: data }} />,
+        style: {
+          background: "lightgray",
+          borderWidth: "1px",
+          borderRadius: "5px",
+        },
       };
     });
     setAcordeonData(accordeonAdapted);
@@ -32,15 +37,18 @@ export default function PositionObservations({ requestEmployee }) {
   }, []);
 
   return (
-    <div className="observations">
-      {accordeonData && (
+    <Flex style={{ width: "100%" }} justify="center">
+      {accordeonData.length > 0 ? (
         <Collapse
+          accordion
+          style={{ width: "100%" }}
           items={accordeonData}
           defaultActiveKey={accordeonData.length}
           size="small"
         />
+      ) : (
+        <Result title="Sin observaciones hasta el momento" status={"info"} />
       )}
-   
-    </div>
+    </Flex>
   );
 }

@@ -1,11 +1,9 @@
 import React from "react";
-import ItemBox from "../../../components/itemBox";
 import { Descriptions, Result } from "antd";
 import { pesos } from "../../../misc/pesos";
 
 export default function PositionVehicle({
   requestEmployee,
-  requestEmployeeData,
 }) {
   const vehicleStats = [
     {
@@ -26,7 +24,7 @@ export default function PositionVehicle({
       span: 2,
     },
   ];
-  return requestEmployee.requestEmployeeisVehicle ? (
+  return requestEmployee.isVehicle ? (
     <Descriptions items={vehicleStats} bordered />
   ) : (
     <Result title="No se requiere vehículo" status={"info"} />

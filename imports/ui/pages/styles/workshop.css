@@ -128,13 +128,14 @@ input {
 }
 .tabs-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
   background-color: white;
   width: 80%;
   height: 18lh;
   overflow-y: auto;
   margin-bottom: 20px;
+  padding: 10px;
   border: 1px solid #012345;
   border-radius: 10px;
+
 }

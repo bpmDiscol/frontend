@@ -1,17 +1,37 @@
 import { Meteor } from "meteor/meteor";
 
-const humanTasks = "/API/bpm/humanTask?p=0&c=100&f=state%3Dready";
+const humanTasks = "/API/bpm/humanTask?p=0&c=100&";
 
+const taskMode = {
+  available:
+    "/API/bpm/humanTask?p=0&c=100&f=state%3Dready&f=assigned_id%3D&f=user_id%3D",
+  assigned: "/API/bpm/humanTask?p=0&c=100&f=state%3Dready&f=assigned_id%3D",
+  doneTasks:
+    "/API/bpm/archivedHumanTask?p=0&c=100&&f=state%3Dcompleted&f=assigned_id%3D",
+};
 Meteor.methods({
+  async get_task_list(filter) {
+    const userId = Meteor.userId({});
+    if (userId) {
+      const bonitaId = Meteor.users.findOne(Meteor.userId({})).profile
+        .bonitaUser;
+      return await Meteor.call("get_data", {
+        url: taskMode[filter] + bonitaId,
+        params: {},
+      });
+    }
+    return [];
+  },
   async get_available_tasks() {
+    const userId = Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser;
     return await Meteor.call("get_data", {
-      url: humanTasks,
+      url: availableTasks + userId,
       params: {},
     });
   },
   async get_done_tasks({ bonitaUserId }) {
     return await Meteor.call("get_data", {
-      url: `/API/bpm/archivedHumanTask?p=0&c=100&f=assigned_id%3D${bonitaUserId}`,
+      url: doneTasks + bonitaUserId,
       params: {},
     });
   },
@@ -39,16 +59,16 @@ Meteor.methods({
       params: {},
     });
   },
-  async assign_task_to({ userId }) {
+  async assign_task_to({ user }) {
     const taskId = await Meteor.callAsync("get_task_id");
-    const user =
-      userId == -1
+    const assigned_id =
+      user == "me"
         ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
-        : userId;
+        : user;
     Meteor.call("put_data", {
       url: `/API/bpm/userTask/${taskId}`,
-      params: {
-        assigned_id: user,
+      data: {
+        assigned_id,
       },
     });
   },
@@ -78,9 +98,30 @@ Meteor.methods({
       response[requestLinks[index].rel] = data;
     });
     return response;
-
-    // return response.map((data, index) => {
-    //   return { ...data, name: requestLinks[index].rel };
-    // });
+  },
+  async is_proccess_auth(role) {
+    const bonitaUserId = Meteor.users.findOne(Meteor.userId({}))?.profile
+      ?.bonitaUser;
+    const memberships = await Meteor.callAsync("get_data", {
+      url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
+      params: {},
+    });
+    if (memberships) {
+      const roles = await memberships.map(async (membership) => {
+        const roleDescription = await Meteor.callAsync("get_data", {
+          url: `/API/identity/role/${membership.role_id}`,
+          params: {},
+        });
+        return roleDescription?.name;
+      });
+      const solvedRoles = await Promise.all(roles)
+      return solvedRoles.includes(role);
+    }
+  },
+  async get_application(token) {
+    return await Meteor.callAsync("get_data", {
+      url: `/API/living/application?p=0&c=100&f=token%3D${token}`,
+      params: {},
+    });
   },
 });

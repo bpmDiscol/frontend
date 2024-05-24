@@ -1,6 +1,5 @@
 import React from "react";
-import { Badge, Descriptions } from "antd";
-import ItemBox from "../../../components/itemBox";
+import { Badge, Descriptions, Divider, Flex } from "antd";
 import { pesos } from "../../../misc/pesos";
 
 export default function PositionGereralities({
@@ -114,14 +113,14 @@ export default function PositionGereralities({
     },
   ];
   return (
-    <div>
+    <Flex justify="center" vertical  >
       <Descriptions
-        title="Generalidades"
         items={generalities}
         bordered
         size="small"
       />
+      <Divider />
       <Descriptions title="Contrato" items={contract} bordered size="small" />
-    </div>
+    </Flex>
   );
 }

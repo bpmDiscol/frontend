@@ -9,57 +9,26 @@ import { enqueueSnackbar } from "notistack";
 
 import { MainViewContext } from "../../../context/mainViewProvider";
 
-import { Button, Flex, Segmented, Typography } from "antd";
+import { Button, Empty, Flex, Segmented, Typography } from "antd";
 import {
   RotateLeftOutlined,
   DislikeFilled,
   LikeFilled,
+  SendOutlined,
 } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
+import RequestGeneralities from "./requestGeneralities";
+import RequestVehicle from "./requestVehicle";
 
-export default function EmployeeRequestAdm() {
-  const [requestEmployeeData, setRequestEmployeeData] = React.useState();
-  const [requestEmployee, setRequestEmployee] = React.useState();
+export default function EmployeeRequestForm() {
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
-  const [loaded, setLoaded] = React.useState(false);
   const [concept, setConcept] = React.useState("");
 
   React.useEffect(() => {
-    Meteor.callAsync("get_employee_request").then((response) => {
-      setRequestEmployee(response);
-      Meteor.call(
-        "request_data_links",
-        {
-          requestLinks: response.links,
-        },
-        (error, response) => {
-          if (!error) {
-            setRequestEmployeeData(response);
-          }
-        }
-      );
-    });
+    setTabView(<RequestGeneralities />);
   }, []);
 
-  React.useEffect(() => {
-    requestEmployee && requestEmployeeData && setLoaded(true);
-  }, [requestEmployee, requestEmployeeData]);
-
-  React.useEffect(() => {
-    loaded && setTabView(<LoadPage Component={tabContents[0]} />);
-  }, [loaded]);
-
-  function LoadPage({ Component }) {
-    return (
-      <Component
-        requestEmployee={requestEmployee}
-        requestEmployeeData={requestEmployeeData}
-        concept={concept}
-        setConcept={setConcept}
-      />
-    );
-  }
   const tabTitles = [
     { label: "Datos del cargo", value: 0 },
     { label: "Vehiculo", value: 1 },
@@ -68,14 +37,7 @@ export default function EmployeeRequestAdm() {
     { label: "Observaciones", value: 4 },
     { label: "Mi concepto", value: 5 },
   ];
-  const tabContents = [
-    PositionGereralities,
-    PositionVehicle,
-    PositionRequirements,
-    PositionGears,
-    PositionObservations,
-    PositionConcept,
-  ];
+  const tabContents = [<RequestGeneralities />, <RequestVehicle />];
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
@@ -110,20 +72,21 @@ export default function EmployeeRequestAdm() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Concepto administrativo)</Text>
+          Solicitud de empleado<Text strong>(Petición de lider)</Text>
         </Title>
       </Flex>
 
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
-          onChange={(value) =>
-            setTabView(<LoadPage Component={tabContents[value]} />)
-          }
+          onChange={(value) => setTabView(tabContents[value])}
           defaultValue={0}
         />
-        <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployee && requestEmployeeData && tabView}
+        <Flex
+          vertical
+          style={{ height: "50lvh", overflowY: "auto", overflowX: "hidden" }}
+        >
+          {tabView}
         </Flex>
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
@@ -137,20 +100,12 @@ export default function EmployeeRequestAdm() {
         </Button>
         <Button
           type="primary"
-          onClick={() => handleButtonResponses("reject")}
-          icon={<DislikeFilled />}
-          id="reject-button"
-        >
-          Rechazar
-        </Button>
-        <Button
-          type="primary"
           onClick={() => handleButtonResponses("approve")}
-          icon={<LikeFilled />}
+          icon={<SendOutlined />}
           iconPosition="end"
           id="approve-button"
         >
-          Continuar
+          Enviar
         </Button>
       </Flex>
     </Flex>

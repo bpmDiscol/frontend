@@ -1,23 +1,24 @@
 import React from "react";
-import { Meteor } from "meteor/meteor";
-import "./styles/workshop.css";
-import Navigator from "./navigator";
+
+import "../styles/workshop.css";
+
+//components
+import Header from "../components/header";
 import { MainViewContext } from "../context/mainViewProvider";
-import Header from "./header";
+import Navigator from "../components/navigator";
 
 export default function Workshop() {
-  const { view, userName } = React.useContext(MainViewContext);
+  const { view } = React.useContext(MainViewContext);
 
   return (
-    <div className="workshop">
+    <div id="workshop" className="workshop">
       <header>
-        <Header username={userName} />
+        <Header />
       </header>
       <nav>
         <Navigator />
       </nav>
       <main>{view}</main>
-      <footer></footer>
     </div>
   );
 }

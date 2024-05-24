@@ -1,6 +1,6 @@
 import React from "react";
 import "./styles/tasks.css";
-import TaskList from "../components/taskList";
+import TaskList from "../";
 import { MonthPicker, MonthInput } from "react-lite-month-picker";
 
 export default function Tasks({ bonitaUserId }) {
@@ -20,8 +20,7 @@ export default function Tasks({ bonitaUserId }) {
       <div className="task-block">
         <h1>Tareas disponibles</h1>
         <TaskList
-          method={"get_available_tasks"}
-          filter={[""]}
+          filter={'available'}
           params={{
             menuId: "available-",
             setTaskKeys,
@@ -41,7 +40,7 @@ export default function Tasks({ bonitaUserId }) {
         <h1>Tareas por hacer</h1>
         <TaskList
           method={"get_available_tasks"}
-          filter={[bonitaUserId]}
+          filter={'assigned'}
           params={{
             menuId: "mytasks-",
             setTaskKeys,
@@ -87,7 +86,7 @@ export default function Tasks({ bonitaUserId }) {
 
         <TaskList
           method={"get_done_tasks"}
-          filter={[bonitaUserId]}
+          filter={'doneTasks'}
           params={{
             bonitaUserId,
             menuId: "done-",

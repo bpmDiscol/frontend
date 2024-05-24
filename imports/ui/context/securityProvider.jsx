@@ -18,20 +18,21 @@ export default function SecurityProvider({ children, publicPage }) {
   React.useEffect(() => {
     function detectVisibility() {
       if (document.visibilityState == "hidden") {
+        // console.log('user off')
         goUserOffline();
       } else {
         if (isDelayedUser()) {
+          // console.log('delayed user >> logout')
           setDelayedUser(true);
           safeLogOut();
         } else {
+          // console.log('return onine')
           setDelayedUser(false);
           goUserOnline();
         }
       }
     }
-console.log(`Logued: ${loggedUser} delayed: ${!delayedUser} status: ${loggedUser & delayedUser}`)
     if (loggedUser) {
-      detectVisibility();
       document.addEventListener("visibilitychange", detectVisibility);
     } else document.removeEventListener("visibilitychange", detectVisibility);
   }, [loggedUser]);

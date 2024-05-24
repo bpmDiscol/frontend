@@ -1,4 +1,4 @@
-import config from "../../../config.json";
+import config from "../../private/config.json";
 import { timeCounter } from "./timeCounter";
 
 const offlineTime = new timeCounter();
@@ -23,6 +23,8 @@ export function safeLogOut(){
 }
 
 export function isDelayedUser() {
+  
   const minutesDelay = config.minutesDelay;
+  // console.log(`${minutesDelay} >> ${offlineTime.getTime()}`)
   return offlineTime.getTime() >= minutesDelay;
 }

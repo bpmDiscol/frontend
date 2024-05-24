@@ -1,3 +1,4 @@
+import { Flex } from "antd";
 import React from "react";
 
 export default function PositionRequirements({ requestEmployee }) {
@@ -6,8 +7,8 @@ export default function PositionRequirements({ requestEmployee }) {
     requirements.innerHTML = requestEmployee.requirements;
   }, []);
   return (
-    <div className="rich-text-view-box">
+    <Flex vertical style={{ padding: "0 10px" }}>
       <p id="requirements"></p>
-    </div>
+    </Flex>
   );
 }

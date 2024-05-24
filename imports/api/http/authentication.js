@@ -4,7 +4,7 @@ import Axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import config from "../../../config.json";
+import config from "../../private/config.json";
 
 wrapper(Axios);
 
@@ -62,7 +62,6 @@ Meteor.methods({
               };
             })
             .catch((error) => {
-              console.log("error adquiriendo usuario");
               return {
                 message: "error adquiriendo usuario",
                 variant: "error",
@@ -71,7 +70,6 @@ Meteor.methods({
         }
       })
       .catch((error) => {
-        console.log("error de validación");
         return {
           message: "Error de validación",
           variant: "error",
@@ -94,18 +92,51 @@ Meteor.methods({
         });
     else return "no token";
   },
-  async put_data({ url, params }) {
+  async post_data({ url, data }) {
     if (token) {
-      return await Axios.put(url, params, {
+      return await Axios.post(url, data, {
         headers: {
           "X-Bonita-API-Token": token,
+          "Content-Type": "application/json",
         },
       })
         .then((response) => {
-          return response.data;
+          return {
+            error: false,
+            response: response.data,
+            message: "Completado exitosamente",
+          };
         })
         .catch((error) => {
-          return "error";
+          return {
+            error: true,
+            status: error.response.status,
+            message: "Error al realizar la transaccion",
+          };
+        });
+    } else return "no token";
+  },
+  async put_data({ url, data }) {
+    if (token) {
+      return await Axios.put(url, data, {
+        headers: {
+          "X-Bonita-API-Token": token,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          return {
+            error: false,
+            response: response.data,
+            message: "Completado exitosamente",
+          };
+        })
+        .catch((error) => {
+          return {
+            error: true,
+            status: error.response.status,
+            message: "Error al realizar la transaccion",
+          };
         });
     } else return "no token";
   },
