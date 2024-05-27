@@ -12,13 +12,12 @@ const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 //TODO: change to .env
-// Axios.defaults.baseURL = "http://34.125.240.150:8080/bonita";
 Axios.defaults.baseURL = config.baseUrl;
-
-var token = "";
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
+
+let token = "";
 
 Meteor.methods({
   async bonita_login({ username, password }) {
@@ -47,18 +46,19 @@ Meteor.methods({
           const tokenCookie = response.config.jar
             .serializeSync()
             .cookies.filter((cookie) => cookie.key == "X-Bonita-API-Token");
-          token = tokenCookie[0].value;
+          token = tokenCookie[0]?.value;
 
           return await Axios.get(session, {
             headers: {
               "X-Bonita-API-Token": token,
             },
           })
-            .then((response) => {
+            .then(async (response) => {
               return {
                 message: "Autorizado",
                 variant: "success",
                 bonitaUser: response.data.user_id,
+                token,
               };
             })
             .catch((error) => {
@@ -78,6 +78,7 @@ Meteor.methods({
     return response;
   },
   async get_data({ url, params }) {
+    const token = await Meteor.callAsync("get_token");
     if (token)
       return await Axios.get(url, params, {
         headers: {
@@ -93,6 +94,7 @@ Meteor.methods({
     else return "no token";
   },
   async post_data({ url, data }) {
+    const token = await Meteor.callAsync("get_token");
     if (token) {
       return await Axios.post(url, data, {
         headers: {
@@ -117,6 +119,7 @@ Meteor.methods({
     } else return "no token";
   },
   async put_data({ url, data }) {
+    const token = await Meteor.callAsync("get_token");
     if (token) {
       return await Axios.put(url, data, {
         headers: {
@@ -139,5 +142,8 @@ Meteor.methods({
           };
         });
     } else return "no token";
+  },
+  get_token() {
+    return Meteor.users.findOne(Meteor.userId({})).profile?.token;
   },
 });

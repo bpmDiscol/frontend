@@ -14,36 +14,49 @@ export default function Login({ onClose }) {
     onClose();
   }
 
-  function meteorLogin(bonitaUser) {
-    Meteor.loginWithPassword(username, password, (error) => {
-      const user = Meteor.users.findOne(Meteor.userId());
-      const storedBonitaUser = user?.profile?.bonitaUser;
-
-      if ((error && error.reason == "User not found") || !storedBonitaUser) {
-        Meteor.call("new_user", { username, password, bonitaUser }, (error) => {
-          if (error) console.log(error);
-          else meteorLogin();
+  function meteorLogin({ bonitaUser, token, username, password }) {
+    Meteor.loginWithPassword(username, password, async (error) => {
+      if (error && error.reason == "User not found") {
+        await Meteor.callAsync("new_user", {
+          username,
+          password,
+          bonitaUser,
+          token,
         });
+        Meteor.loginWithPassword(username, password);
       }
-      location.reload();
     });
+    Meteor.users.update(
+      { _id: Meteor.userId() },
+      { $set: { profile: { bonitaUser, token } } }
+    );
   }
 
   function tryLogin(e) {
     e.preventDefault();
     setIsLoading(true);
-    Meteor.call("bonita_login", { username, password }, (error, result) => {
-      if (error) console.log(error.reason);
-      else {
-        //TODO: check if user is previously connected
-        if (result.variant == "success") meteorLogin(result.bonitaUser);
-        enqueueSnackbar(result.message, {
-          variant: result.variant,
-          autoHideDuration: 1000,
-        });
+    Meteor.call(
+      "bonita_login",
+      { username, password },
+      async (error, result) => {
+        if (error) console.log(error.reason);
+        else {
+          if (result.variant == "success")
+            meteorLogin({
+              bonitaUser: result.bonitaUser,
+              token: result.token,
+              username,
+              password,
+            });
+
+          enqueueSnackbar(result.message, {
+            variant: result.variant,
+            autoHideDuration: 1000,
+          });
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    });
+    );
   }
 
   return (

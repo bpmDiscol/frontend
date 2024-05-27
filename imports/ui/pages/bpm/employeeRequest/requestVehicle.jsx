@@ -1,16 +1,12 @@
-import {
-  Button,
-  Col,
-  Empty,
-  Form,
-  Input,
-  Row,
-  Switch,
-} from "antd";
+import { Button, Col, Empty, Form, Input, Row, Spin, Switch } from "antd";
 import React from "react";
 
-export default function RequestVehicle() {
-  const [isVehicle, setIsVehicle] = React.useState(false);
+export default function RequestVehicle({ requestData, update }) {
+  const [isVehicle, setIsVehicle] = React.useState(requestData?.isVehicle);
+
+  // React.useEffect(() => {
+  //   if (requestData) setIsVehicle(requestData?.isVehicle);
+  // }, [requestData]);
 
   if (isVehicle)
     return (
@@ -18,18 +14,34 @@ export default function RequestVehicle() {
         <Col>
           <Form.Item label="Se requiere vehiculo" name="vehicle-required">
             <Switch
-              onChange={() => setIsVehicle(!isVehicle)}
+              onChange={() => {
+                setIsVehicle(!isVehicle);
+                update("isVehicle", false);
+              }}
               checked={isVehicle}
             />
           </Form.Item>
           <Form.Item label="Tipo de vehiculo">
-            <Input />
+            <Input
+              id="vehicleType"
+              defaultValue={requestData?.vehicleType}
+              onChange={(e) => update("vehicleType", e.target.value)}
+            />
           </Form.Item>
           <Form.Item label="Tipo de licencia">
-            <Input />
+            <Input
+              id="licenceType"
+              defaultValue={requestData?.licenceType}
+              onChange={(e) => update("licenceType", e.target.value)}
+            />
           </Form.Item>
           <Form.Item label="Valor de rodamiento">
-            <Input />
+            <Input
+              id="bearingValue"
+              defaultValue={requestData?.bearingValue}
+              onChange={(e) => update("bearingValue", e.target.value)}
+              addonBefore='$'
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -37,7 +49,14 @@ export default function RequestVehicle() {
   if (!isVehicle)
     return (
       <Empty description={""} style={{ padding: "50px" }}>
-        <Button onClick={() => setIsVehicle(true)} type="primary">
+        <Button
+          id="requestVehicle"
+          onClick={() => {
+            setIsVehicle(true);
+            update("isVehicle", true);
+          }}
+          type="primary"
+        >
           Requerir vehiculo
         </Button>
       </Empty>

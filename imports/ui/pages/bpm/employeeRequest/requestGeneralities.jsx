@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Select, Space, Switch } from "antd";
+import { Col, Form, Input, Row, Select, Space, Spin, Switch } from "antd";
 import React from "react";
 
 const motiveOptions = [
@@ -68,63 +68,124 @@ const workingDayOptions = [
     value: "day-time",
   },
 ];
-export default function RequestGeneralities() {
-  const [isBonus, setIsBonus] = React.useState(false);
+export default function RequestGeneralities({ requestData, update }) {
+  const [isBonus, setIsBonus] = React.useState();
+
+  React.useEffect(() => {
+    if (requestData) setIsBonus(requestData?.isBonus);
+  }, [requestData]);
+
+  if(!requestData) return <Spin />
   return (
     <Form>
       <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
         <Col span={12}>
-          <Form.Item label="Puesto solicitado" name="companyPosition">
-            <Input />
+          <Form.Item label="Puesto solicitado">
+            <Input
+              id="companyPosition"
+              defaultValue={requestData?.companyPosition}
+              onChange={(e) => update("companyPosition", e.target.value)}
+            />
           </Form.Item>
 
-          <Form.Item label="Sede" name="site">
-            <Input />
+          <Form.Item label="Sede">
+            <Input
+              id="site"
+              defaultValue={requestData?.site}
+              onChange={(e) => update("site", e.target.value)}
+            />
           </Form.Item>
-          <Form.Item label="Area/proyecto" name="area_proyect">
-            <Input />
+          <Form.Item label="Area/proyecto">
+            <Input
+              id="area_proyect"
+              defaultValue={requestData?.area_proyect}
+              onChange={(e) => update("area_proyect", e.target.value)}
+            />
           </Form.Item>
-          <Form.Item label="Lugar de trabajo" name="area_proyect">
-            <Input />
+          <Form.Item label="Lugar de trabajo">
+            <Input
+              id="workPlace"
+              defaultValue={requestData?.workPlace}
+              onChange={(e) => update("workPlace", e.target.value)}
+            />
           </Form.Item>
-          <Form.Item label="Motivo del requerimiento" name="area_proyect">
-            <Select defaultValue="Nuevo cargo" options={motiveOptions} />
+          <Form.Item label="Motivo del requerimiento">
+            <Select
+              id="motive"
+              defaultValue={requestData?.motive}
+              options={motiveOptions}
+              onChange={(value) => update("motive", value)}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Salario" name="area_proyect">
-            <Input addonBefore="$" />
-          </Form.Item>
-          <Form.Item label="Jornada laboral" name="area_proyect">
-            <Select
-              options={workingDayOptions}
-              defaultValue={"Tiempo completo"}
+          <Form.Item label="Salario">
+            <Input
+              id="salary"
+              defaultValue={requestData?.salary}
+              addonBefore="$"
+              onChange={(e) => update("salary", e.target.value)}
             />
           </Form.Item>
-          <Form.Item label="Tipo de contrato" name="area_proyect">
-            <Select options={contractTypeOptions} defaultValue={"Indefinido"} />
+          <Form.Item label="Jornada laboral">
+            <Select
+              id="workingDayType"
+              defaultValue={requestData?.workingDayType}
+              options={workingDayOptions}
+              onChange={(value) => update("workingDayType", value)}
+            />
+          </Form.Item>
+          <Form.Item label="Tipo de contrato">
+            <Select
+              id="contractType"
+              defaultValue={requestData?.contractType}
+              onChange={(value) => update("contractType", value)}
+              options={contractTypeOptions}
+            />
           </Form.Item>
           <Space style={{ width: "100%", justifyContent: "space-around" }}>
-            <Form.Item
-              label="Dentro del manual de funciones"
-              name="area_proyect"
-            >
-              <Switch />
-            </Form.Item>
-            <Form.Item label="Bono salarial" name="area_proyect">
+            <Form.Item label="Dentro del manual de funciones">
               <Switch
-                style={{ margin: "0 5px" }}
-                onChange={() => setIsBonus(!isBonus)}
+                id="isHandbookFunction"
+                checkedChildren="Si"
+                unCheckedChildren="No"
+                defaultValue={requestData?.isHandbookFunction}
+                onChange={(value) => update("isHandbookFunction", value)}
+              />
+            </Form.Item>
+            <Form.Item label="Bono salarial">
+              <Switch
+                id="isBonus"
                 checked={isBonus}
+                checkedChildren="Si"
+                unCheckedChildren="No"
+                style={{ margin: "0 5px" }}
+                onChange={() => {
+                  setIsBonus(!isBonus);
+                  update("isBonus", !isBonus);
+                }}
               />
             </Form.Item>
           </Space>
-          <Form.Item style={{ width: "100&" }}>
+          <Form.Item style={{ width: "100&" }} id={"bonusesFrecuency"}>
             {isBonus && (
               <Space.Compact>
-                <Input addonBefore="$" />
-                <Input addonBefore="cada" defaultValue={1} />
-                <Select defaultValue={"mes"} options={timeOptions} />
+                <Input
+                  addonBefore="Bono cada"
+                  id="bonusesFrecuencyCuantity"
+                  defaultValue={requestData?.bonusesFrecuencyCuantity}
+                  onChange={(e) =>
+                    update("bonusesFrecuencyCuantity", e.target.value)
+                  }
+                />
+                <Select
+                  options={timeOptions}
+                  id="bonusesFrecuencyTimePart"
+                  defaultValue={requestData?.bonusesFrecuencyTimepart}
+                  onChange={(value) =>
+                    update("bonusesFrecuencyTimepart", value)
+                  }
+                />
               </Space.Compact>
             )}
           </Form.Item>

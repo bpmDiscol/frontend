@@ -9,15 +9,15 @@ Meteor.methods({
       { $set: { status: "online" } }
     );
   },
-  
+
   go_offline() {
     return Meteor.users.update(
       { _id: Meteor.userId() },
       { $set: { status: "offline" } }
     );
   },
-  new_user({ username, password, bonitaUser }) {
-    Accounts.createUser({ username, password, profile: { bonitaUser } });
+  new_user({ username, password, bonitaUser, token }) {
+    Accounts.createUser({ username, password, profile: { bonitaUser, token } });
   },
   update_image(image) {
     return Meteor.users.update({ _id: Meteor.userId() }, { $set: { image } });
@@ -27,5 +27,38 @@ Meteor.methods({
   },
   get_user_image(_id) {
     return Meteor.users.findOne({ _id }, { image: 1 })?.image;
+  },
+
+  //task functions
+  start_task_repository() {
+    Meteor.users.update({ _id: Meteor.userId() }, { $addToSet: { tasks: [] } });
+  },
+  add_task(taskData) {
+    Meteor.users.update(
+      { _id: Meteor.userId() },
+      { $addToSet: { tasks: taskData } }
+    );
+  },
+  get_task_data(taskId) {
+    const userData = Meteor.users.findOne({ _id: Meteor.userId() });
+    if (Object.keys(userData).includes( "tasks"))
+      return userData.tasks.filter((task) => task.taskId == taskId)[0];
+    else {
+      Meteor.call("add_task", { taskId });
+      return {}
+    }
+  },
+  update_task({ taskId, field, value }) {
+    const datafield = `tasks.$.${field}`;
+    Meteor.users.update(
+      { _id: Meteor.userId(), "tasks.taskId": taskId },
+      { $set: { [`${datafield}`]: value } }
+    );
+  },
+  delete_task(taskId) {
+    Meteor.users.update(
+      { _id: Meteor.userId() },
+      { $pull: { tasks: { taskId } } }
+    );
   },
 });

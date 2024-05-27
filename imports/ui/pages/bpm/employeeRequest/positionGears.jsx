@@ -3,46 +3,13 @@ import {
   CloseCircleTwoTone,
   PlusCircleTwoTone,
 } from "@ant-design/icons";
-import { Space, Typography, List, Flex, Row, Col, Tooltip } from "antd";
+import { Typography, List, Flex, Tooltip } from "antd";
 import React from "react";
+import { gearOptions } from "../../../misc/gearsOptions";
 
 const { Text } = Typography;
 
 export default function PositionGears({ requestEmployeeData }) {
-  const listItems = [
-    {
-      label: "Computador de escritorio",
-      value: "isDesktopPC",
-    },
-    {
-      label: "Computador portatil",
-      value: "isLaptop",
-    },
-    {
-      label: "Monitor de computador",
-      value: "isScreen",
-    },
-    {
-      label: "Teclado",
-      value: "isKeyboard",
-    },
-    {
-      label: "Ratón",
-      value: "isMouse",
-    },
-    {
-      label: "Correo electrónico corporativo",
-      value: "isEmail",
-    },
-    {
-      label: "Escritorio",
-      value: "isDesk",
-    },
-    {
-      label: "Silla",
-      value: "isChair",
-    },
-  ];
 
   function ListItems({ header, dataSource, checkavailability = false }) {
     return (
@@ -66,8 +33,10 @@ export default function PositionGears({ requestEmployeeData }) {
             placement="left"
             title={
               checkavailability
-                ? requestEmployeeData.gears[item.value]? "Requerido": "No requerido"
-                : 'Adicional'
+                ? requestEmployeeData.gears[item.value]
+                  ? "Requerido"
+                  : "No requerido"
+                : "Adicional"
             }
           >
             <List.Item>
@@ -94,7 +63,7 @@ export default function PositionGears({ requestEmployeeData }) {
     <Flex justify="center">
       <ListItems
         header="Equipo regular"
-        dataSource={listItems}
+        dataSource={gearOptions}
         checkavailability
       />
       <ListItems
