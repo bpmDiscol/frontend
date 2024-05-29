@@ -1,5 +1,5 @@
-import config from "../../private/config.json";
 import { timeCounter } from "./timeCounter";
+import Meteor from "meteor/meteor";
 
 const offlineTime = new timeCounter();
 
@@ -16,15 +16,14 @@ export function goUserOffline() {
     if (error) console.log(error.reason);
   });
 }
-export function safeLogOut(){
-  offlineTime.reset()
+export function safeLogOut() {
+  offlineTime.reset();
   Meteor.call("go_offline");
-  Meteor.logout()
+  Meteor.logout();
 }
 
 export function isDelayedUser() {
-  
-  const minutesDelay = config.minutesDelay;
+  const minutesDelay = Meteor.settings.MINUTES_DELAY;
   // console.log(`${minutesDelay} >> ${offlineTime.getTime()}`)
   return offlineTime.getTime() >= minutesDelay;
 }

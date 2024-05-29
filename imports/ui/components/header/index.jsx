@@ -18,6 +18,7 @@ export default function Header() {
       <Space wrap style={{ color: "HighlightText" }}>
         {userName}
         <SettingFilled
+          id="logout"
           style={{ cursor: "pointer" }}
           onClick={() => safeLogOut()}
         />

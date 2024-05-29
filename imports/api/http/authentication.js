@@ -4,15 +4,13 @@ import Axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import config from "../../private/config.json";
-
 wrapper(Axios);
 
 const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 //TODO: change to .env
-Axios.defaults.baseURL = config.baseUrl;
+Axios.defaults.baseURL = Meteor.settings.BONITA_URL;
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
@@ -95,7 +93,7 @@ Meteor.methods({
           return response.data;
         })
         .catch((error) => {
-          console.log(error)
+          // console.log(error)
           return "error";
         });
     else return "no token";
