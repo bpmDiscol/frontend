@@ -16,7 +16,6 @@ export default function Tasks() {
   };
 
   function updateList(filters) {
-    console.log(filters);
     filters?.forEach((filter) => {
       keyGenerators[filter].run(Math.random());
     });

@@ -114,7 +114,7 @@ Meteor.methods({
         });
         return roleDescription?.name;
       });
-      const solvedRoles = await Promise.all(roles)
+      const solvedRoles = await Promise.all(roles);
       return solvedRoles.includes(role);
     }
   },
@@ -124,4 +124,11 @@ Meteor.methods({
       params: {},
     });
   },
+  async get_processes() {
+    return await Meteor.callAsync("get_data", {
+      url: `/API/bpm/process?p=0&c=100`,
+      params: {},
+    });
+  },
+ 
 });

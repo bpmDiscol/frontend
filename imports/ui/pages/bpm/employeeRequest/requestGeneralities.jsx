@@ -75,7 +75,6 @@ export default function RequestGeneralities({ requestData, update }) {
     if (requestData) setIsBonus(requestData?.isBonus);
   }, [requestData]);
 
-  if(!requestData) return <Spin />
   return (
     <Form>
       <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
@@ -117,13 +116,34 @@ export default function RequestGeneralities({ requestData, update }) {
               onChange={(value) => update("motive", value)}
             />
           </Form.Item>
+          <Form.Item label='Duración' id='duration'>
+          <Space.Compact>
+                <Input
+                  id="durationCuantity"
+                  defaultValue={requestData?.duration?.cuantity||0}
+                  type="number"
+                  onChange={(e) =>
+                    update("duration.cuantity", e.target.value)
+                  }
+                />
+                <Select
+                  options={timeOptions}
+                  id="durationTimePart"
+                  defaultValue={requestData?.duration?.timePart}
+                  onChange={(value) =>
+                    update("duration.timePart", value)
+                  }
+                />
+              </Space.Compact>
+          </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item label="Salario">
             <Input
               id="salary"
-              defaultValue={requestData?.salary}
+              defaultValue={requestData?.salary||0}
               addonBefore="$"
+              type="number"
               onChange={(e) => update("salary", e.target.value)}
             />
           </Form.Item>
@@ -173,17 +193,18 @@ export default function RequestGeneralities({ requestData, update }) {
                 <Input
                   addonBefore="Bono cada"
                   id="bonusesFrecuencyCuantity"
-                  defaultValue={requestData?.bonusesFrecuencyCuantity}
+                  defaultValue={requestData?.bonusesFrecuency?.cuantity||0}
+                  type="number"
                   onChange={(e) =>
-                    update("bonusesFrecuencyCuantity", e.target.value)
+                    update("bonusesFrecuency.cuantity", e.target.value)
                   }
                 />
                 <Select
                   options={timeOptions}
                   id="bonusesFrecuencyTimePart"
-                  defaultValue={requestData?.bonusesFrecuencyTimepart}
+                  defaultValue={requestData?.bonusesFrecuency?.timePart}
                   onChange={(value) =>
-                    update("bonusesFrecuencyTimepart", value)
+                    update("bonusesFrecuency.timePart", value)
                   }
                 />
               </Space.Compact>

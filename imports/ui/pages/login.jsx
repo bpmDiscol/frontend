@@ -14,7 +14,7 @@ export default function Login({ onClose }) {
     onClose();
   }
 
-  function meteorLogin({ bonitaUser, token, username, password }) {
+  function meteorLogin({ bonitaUser, token, username, password, JSESSIONID }) {
     Meteor.loginWithPassword(username, password, async (error) => {
       if (error && error.reason == "User not found") {
         await Meteor.callAsync("new_user", {
@@ -26,10 +26,7 @@ export default function Login({ onClose }) {
         Meteor.loginWithPassword(username, password);
       }
     });
-    Meteor.users.update(
-      { _id: Meteor.userId() },
-      { $set: { profile: { bonitaUser, token } } }
-    );
+    Meteor.callAsync("update_credentials", { bonitaUser, token, JSESSIONID });
   }
 
   function tryLogin(e) {
@@ -45,6 +42,7 @@ export default function Login({ onClose }) {
             meteorLogin({
               bonitaUser: result.bonitaUser,
               token: result.token,
+              JSESSIONID: result.JSESSIONID,
               username,
               password,
             });

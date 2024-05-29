@@ -16,8 +16,9 @@ import {
   LikeFilled,
 } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
+import PositionCurricullums from "./positionCurricullums";
 
-export default function EmployeeRequestHR() {
+export default function EmployeeRequestCurricullums() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
   const [requestEmployee, setRequestEmployee] = React.useState();
   const { setView } = React.useContext(MainViewContext);
@@ -66,7 +67,7 @@ export default function EmployeeRequestHR() {
     { label: "Requerimientos", value: 2 },
     { label: "Equipo necesario", value: 3 },
     { label: "Observaciones", value: 4 },
-    { label: "Mi concepto", value: 5 },
+    { label: "Curricullums", value: 5 },
   ];
   const tabContents = [
     PositionGereralities,
@@ -74,7 +75,7 @@ export default function EmployeeRequestHR() {
     PositionRequirements,
     PositionGears,
     PositionObservations,
-    PositionConcept,
+    PositionCurricullums,
   ];
 
   function handleButtonResponses(buttonResponse) {
@@ -110,7 +111,7 @@ export default function EmployeeRequestHR() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Concepto Recusros Humanos)</Text>
+          Solicitud de empleado<Text strong>(Cargar curricullums)</Text>
         </Title>
       </Flex>
 

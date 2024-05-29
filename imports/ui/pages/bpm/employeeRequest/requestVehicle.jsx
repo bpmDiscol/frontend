@@ -4,9 +4,6 @@ import React from "react";
 export default function RequestVehicle({ requestData, update }) {
   const [isVehicle, setIsVehicle] = React.useState(requestData?.isVehicle);
 
-  // React.useEffect(() => {
-  //   if (requestData) setIsVehicle(requestData?.isVehicle);
-  // }, [requestData]);
 
   if (isVehicle)
     return (
@@ -14,6 +11,7 @@ export default function RequestVehicle({ requestData, update }) {
         <Col>
           <Form.Item label="Se requiere vehiculo" name="vehicle-required">
             <Switch
+            id="require-vehicle-switch"
               onChange={() => {
                 setIsVehicle(!isVehicle);
                 update("isVehicle", false);
@@ -38,7 +36,8 @@ export default function RequestVehicle({ requestData, update }) {
           <Form.Item label="Valor de rodamiento">
             <Input
               id="bearingValue"
-              defaultValue={requestData?.bearingValue}
+              defaultValue={requestData?.bearingValue||0}
+              type="number"
               onChange={(e) => update("bearingValue", e.target.value)}
               addonBefore='$'
             />
@@ -50,7 +49,7 @@ export default function RequestVehicle({ requestData, update }) {
     return (
       <Empty description={""} style={{ padding: "50px" }}>
         <Button
-          id="requestVehicle"
+          id="request-vehicle-button"
           onClick={() => {
             setIsVehicle(true);
             update("isVehicle", true);

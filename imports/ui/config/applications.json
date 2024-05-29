@@ -1,6 +1,7 @@
 [
   {
     "processName": "employeeRequest",
+    "displayName": "employee_request",
     "restrictions": ["Lider"],
     "page": "employee_request_form"
   }

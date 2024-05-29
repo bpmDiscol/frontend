@@ -11,5 +11,10 @@ import "../imports/api/userData/userDataCollection";
 import "../imports/api/userData/userDataMethods";
 import "../imports/api/userData/userDataPublication";
 
+//collections
+import "../imports/api/curricullums/curricullumCollection"
+import "../imports/api/curricullums/curricullumMethods"
+import "../imports/api/curricullums/curricullumsPublication"
+
 
 Meteor.startup(async () => {});

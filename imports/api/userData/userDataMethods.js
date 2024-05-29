@@ -32,6 +32,7 @@ Meteor.methods({
   //task functions
   start_task_repository() {
     Meteor.users.update({ _id: Meteor.userId() }, { $addToSet: { tasks: [] } });
+    return []
   },
   add_task(taskData) {
     Meteor.users.update(
@@ -41,12 +42,14 @@ Meteor.methods({
   },
   get_task_data(taskId) {
     const userData = Meteor.users.findOne({ _id: Meteor.userId() });
-    if (Object.keys(userData).includes( "tasks"))
-      return userData.tasks.filter((task) => task.taskId == taskId)[0];
-    else {
-      Meteor.call("add_task", { taskId });
-      return {}
-    }
+    if (Object.keys(userData).includes("tasks")) {
+      const myTasks = userData.tasks.filter((task) => task.taskId == taskId)[0];
+      if (myTasks) return myTasks;
+      else {
+        Meteor.call("add_task", { taskId });
+        return {};
+      }
+    }else return Meteor.call('start_task_repository')
   },
   update_task({ taskId, field, value }) {
     const datafield = `tasks.$.${field}`;

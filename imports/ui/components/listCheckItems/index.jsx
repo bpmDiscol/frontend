@@ -1,12 +1,14 @@
 import React from "react";
 import { Flex, List, Switch, Typography } from "antd";
-const {Title} = Typography
+const { Title } = Typography;
 
 export default function ListCheckItems({ options, update, requestData }) {
   function getDefaultValue(itemValue) {
-    if (Object.keys(requestData).includes("gears"))
-      if (Object.keys(requestData.gears).includes(itemValue))
-        return requestData?.gears[itemValue];
+    if (requestData)
+      if (Object.keys(requestData).includes("gears"))
+        if (Object.keys(requestData.gears).includes(itemValue))
+          return requestData?.gears[itemValue];
+    update(`gears.${itemValue}`, false);
     return false;
   }
   return (

@@ -8,12 +8,15 @@ export default function AddOtherGears({ update, requestData }) {
 
   React.useEffect(() => {
     setOtherGears(requestData?.gears?.other);
+    update("gears.other", []);
+    update("gears.isOther", false);
   }, []);
 
   function addItem() {
     if (newItem) {
       setOtherGears([...otherGears, newItem]);
       update("gears.other", [...otherGears, newItem]);
+      update("gears.isOther", true);
     }
   }
 
@@ -22,6 +25,7 @@ export default function AddOtherGears({ update, requestData }) {
     copyGears.splice(index, 1);
     setOtherGears(copyGears);
     update("gears.other", copyGears);
+    if (copyGears.length == 0) update("gears.isOther", false);
   }
   return (
     <Flex

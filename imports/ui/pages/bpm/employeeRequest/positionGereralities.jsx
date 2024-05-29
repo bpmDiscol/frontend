@@ -6,8 +6,6 @@ export default function PositionGereralities({
   requestEmployee,
   requestEmployeeData,
 }) {
-
-
   function getMotiveString(motives) {
     if (motives.isEmployeeExpanding) return "Aumento de personal";
     if (motives.isEmployeeInhability) return "Incapacidad de empleado";
@@ -94,11 +92,17 @@ export default function PositionGereralities({
       key: "4",
       label: "Salario asignable",
       children: pesos.format(requestEmployee.salary),
-      span: 2,
+     
+    },
+    {
+      key: "5",
+      label: "Duración",
+      children: `${requestEmployeeData?.duration.cuantity} ${requestEmployeeData?.duration.timePart}`,
+      
     },
 
     {
-      key: "5",
+      key: "6",
       label: "Bono",
       children: (
         <Badge
@@ -113,12 +117,8 @@ export default function PositionGereralities({
     },
   ];
   return (
-    <Flex justify="center" vertical  >
-      <Descriptions
-        items={generalities}
-        bordered
-        size="small"
-      />
+    <Flex justify="center" vertical>
+      <Descriptions items={generalities} bordered size="small" />
       <Divider />
       <Descriptions title="Contrato" items={contract} bordered size="small" />
     </Flex>

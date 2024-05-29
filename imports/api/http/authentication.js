@@ -18,6 +18,7 @@ const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
 
 let token = "";
+let JSESSIONID = "";
 
 Meteor.methods({
   async bonita_login({ username, password }) {
@@ -46,7 +47,11 @@ Meteor.methods({
           const tokenCookie = response.config.jar
             .serializeSync()
             .cookies.filter((cookie) => cookie.key == "X-Bonita-API-Token");
+          const JSESSIONIDCookie = response.config.jar
+            .serializeSync()
+            .cookies.filter((cookie) => cookie.key == "JSESSIONID");
           token = tokenCookie[0]?.value;
+          JSESSIONID = JSESSIONIDCookie[0]?.value;
 
           return await Axios.get(session, {
             headers: {
@@ -59,6 +64,7 @@ Meteor.methods({
                 variant: "success",
                 bonitaUser: response.data.user_id,
                 token,
+                JSESSIONID,
               };
             })
             .catch((error) => {
@@ -89,6 +95,7 @@ Meteor.methods({
           return response.data;
         })
         .catch((error) => {
+          console.log(error)
           return "error";
         });
     else return "no token";
@@ -96,13 +103,14 @@ Meteor.methods({
   async post_data({ url, data }) {
     const token = await Meteor.callAsync("get_token");
     if (token) {
+      // console.log(data)
       return await Axios.post(url, data, {
         headers: {
           "X-Bonita-API-Token": token,
-          "Content-Type": "application/json",
         },
       })
         .then((response) => {
+          
           return {
             error: false,
             response: response.data,
@@ -113,7 +121,7 @@ Meteor.methods({
           return {
             error: true,
             status: error.response.status,
-            message: "Error al realizar la transaccion",
+            message: error.reason,
           };
         });
     } else return "no token";
@@ -138,12 +146,21 @@ Meteor.methods({
           return {
             error: true,
             status: error.response.status,
-            message: "Error al realizar la transaccion",
+            message: error,
           };
         });
     } else return "no token";
   },
   get_token() {
     return Meteor.users.findOne(Meteor.userId({})).profile?.token;
+  },
+  get_jsession_id() {
+    return Meteor.users.findOne(Meteor.userId({})).profile?.JSESSIONID;
+  },
+  update_credentials({ bonitaUser, token, JSESSIONID }) {
+    Meteor.users.update(
+      { _id: Meteor.userId() },
+      { $set: { profile: { bonitaUser, token, JSESSIONID } } }
+    );
   },
 });

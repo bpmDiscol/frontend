@@ -17,7 +17,7 @@ export default function PositionObservations({ requestEmployee }) {
   ];
 
   function adaptAcordeonData() {
-    const accordeonAdapted = requestEmployee.observations.map((data, index) => {
+    const accordeonAdapted = requestEmployee?.observations?.map((data, index) => {
       return {
         key: index,
         label: accordeonTitles[index],

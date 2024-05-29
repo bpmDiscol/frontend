@@ -10,15 +10,25 @@ import RequestRequirements from "./requestRequirements";
 import RequestGears from "./requestGears";
 import RequestObservations from "./requestObservations";
 
+import { enqueueSnackbar } from "notistack";
+
+const { Text, Title } = Typography;
+
 export default function EmployeeRequestForm() {
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [requestData, setRequestData] = React.useState();
+  const [processId, setProcessId] = React.useState();
 
   React.useEffect(() => {
-    Meteor.call("get_task_data", "employeeRequestForm", (error, response) => {
+    request(setRequestData);
+    Meteor.call("get_processes", (error, response) => {
       if (!error) {
-        setRequestData(response);
+        const myProcess = response.filter(
+          (process) => process.displayName == "employee_request"
+        );
+        setProcessId(myProcess[0].id);
+        // console.log(myProcess[0].id);
       }
     });
   }, []);
@@ -52,16 +62,43 @@ export default function EmployeeRequestForm() {
     RequestVehicle,
     RequestRequirements,
     RequestGears,
-    RequestObservations
+    RequestObservations,
   ];
 
   function handleButtonResponses(buttonResponse) {
-    if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "reject") return request("reject");
-    if (buttonResponse == "approve") return request("approved");
+    if (buttonResponse == "return") setView("process");
+    if (buttonResponse == "send") request(startRequest);
   }
 
-  const { Text, Title } = Typography;
+  function request(callback) {
+    Meteor.call("get_task_data", "employeeRequestForm", (error, response) => {
+      if (!error) {
+        callback(response);
+      }
+    });
+  }
+
+  function startRequest(request) {
+    Meteor.call(
+      "start_employee_request",
+      { request, processId },
+      (error, response) => {
+        if (error)
+          enqueueSnackbar(`Error al enviar petición. \nRevisa que los campos esten llenados correctamente`, {
+            variant: "error",
+            autoHideDuration: 2000,
+          });
+        else {
+          Meteor.call("delete_task", "employeeRequestForm");
+          setView("process");
+          enqueueSnackbar("Petición creada correctamente", {
+            variant: "success",
+            autoHideDuration: 2000,
+          });
+        }
+      }
+    );
+  }
 
   return (
     <Flex id="employee-request-container" vertical gap={"10px"}>
@@ -95,7 +132,7 @@ export default function EmployeeRequestForm() {
         </Button>
         <Button
           type="primary"
-          onClick={() => handleButtonResponses("approve")}
+          onClick={() => handleButtonResponses("send")}
           icon={<SendOutlined />}
           iconPosition="end"
           id="approve-button"
