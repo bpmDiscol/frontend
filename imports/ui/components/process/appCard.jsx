@@ -2,7 +2,7 @@ import { Card } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 
-import config from "../../../../config.json"
+import config from "../../../private/config.json"
 const { Meta } = Card;
 
 export default function AppCard({ application }) {
