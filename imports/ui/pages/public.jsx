@@ -20,7 +20,7 @@ export default function Public() {
         <div className="header-buttons">
           <div className="button">Hoja de vida</div>
           <div className="button">Quejas o reclamos</div>
-          <div className="button" onClick={onOpenModal}>
+          <div id="login-button" className="button" onClick={onOpenModal}>
             🔏
           </div>
         </div>
