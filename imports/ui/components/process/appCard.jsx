@@ -38,7 +38,7 @@ export default function AppCard({ application }) {
             <img
               src={
                 appData?.icon
-                  ? `${Meteor.settings.BONITA_URL}${appData?.icon.slice(2)}`
+                  ? `${process.env.BONITA_URL}${appData?.icon.slice(2)}`
                   : "/logo-image.png"
               }
               style={{

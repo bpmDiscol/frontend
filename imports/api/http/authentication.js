@@ -10,7 +10,7 @@ const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 //TODO: change to .env
-Axios.defaults.baseURL = Meteor.settings.BONITA_URL;
+Axios.defaults.baseURL = process.env.BONITA_URL;
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";

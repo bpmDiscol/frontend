@@ -23,7 +23,7 @@ export function safeLogOut() {
 }
 
 export function isDelayedUser() {
-  const minutesDelay = Meteor.settings.MINUTES_DELAY;
+  const minutesDelay = process.env.MINUTES_DELAY;
   // console.log(`${minutesDelay} >> ${offlineTime.getTime()}`)
   return offlineTime.getTime() >= minutesDelay;
 }
