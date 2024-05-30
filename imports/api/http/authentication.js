@@ -4,7 +4,7 @@ import Axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import config from "../../private/config.json";
+// import config from "../../private/config.json";
 
 wrapper(Axios);
 
@@ -12,7 +12,7 @@ const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 //TODO: change to .env
-Axios.defaults.baseURL = config.BASE_URL;
+Axios.defaults.baseURL = "http://34.42.228.208/bonita";
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";

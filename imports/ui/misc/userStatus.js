@@ -1,7 +1,7 @@
 import { timeCounter } from "./timeCounter";
 import { Meteor } from "meteor/meteor";
 
-import config from "../../private/config.json";
+// import config from "../../private/config.json";
 
 const offlineTime = new timeCounter();
 
@@ -25,7 +25,7 @@ export function safeLogOut() {
 }
 
 export function isDelayedUser() {
-  const minutesDelay = config.MINUTES_DELAY;
+  const minutesDelay = 20;
   // console.log(`${minutesDelay} >> ${offlineTime.getTime()}`)
   return offlineTime.getTime() >= minutesDelay;
 }

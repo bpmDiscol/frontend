@@ -2,8 +2,10 @@ import { Card } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 
-import config from "../../../private/config.json"
+// import config from "../../../private/config.json"
 const { Meta } = Card;
+
+const BASE_URL="http://34.42.228.208/bonita"
 
 export default function AppCard({ application }) {
   const [appData, setAppData] = React.useState();
@@ -39,7 +41,7 @@ export default function AppCard({ application }) {
             <img
               src={
                 appData?.icon
-                  ? `${config.BASE_URL}${appData?.icon.slice(2)}`
+                  ? `${BASE_URL}${appData?.icon.slice(2)}`
                   : "/logo-image.png"
               }
               style={{
