@@ -11,7 +11,8 @@ Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 //TODO: change to .env
 Axios.defaults.baseURL = process.env.BONITA_URL;
-console.log(process.env.BONITA_URL)
+console.log(process.env.REACT_APP_BONITA_URL)
+console.log(Meteor.settings.BONITA_URL)
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
