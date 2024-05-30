@@ -2,6 +2,7 @@ import { Card } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 
+import config from "../../../private/config.json"
 const { Meta } = Card;
 
 export default function AppCard({ application }) {
@@ -38,7 +39,7 @@ export default function AppCard({ application }) {
             <img
               src={
                 appData?.icon
-                  ? `${process.env.BONITA_URL}${appData?.icon.slice(2)}`
+                  ? `${config.BASE_URL}${appData?.icon.slice(2)}`
                   : "/logo-image.png"
               }
               style={{
