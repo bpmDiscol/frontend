@@ -1,7 +1,7 @@
 import { timeCounter } from "./timeCounter";
 import Meteor from "meteor/meteor";
 
-import config from "../../private/config.json"
+import config from "../../../config.json"
 
 const offlineTime = new timeCounter();
 
