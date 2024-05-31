@@ -96,8 +96,9 @@ Meteor.methods({
         observations: [request?.observations||""],
       },
     };
+    console.log(data)
     return await Meteor.callAsync("post_data", {
-      url: `/API/bpm/process/${processId.toString()}/instantiation`,
+      url: `/API/bpm/process/${processId}/instantiation`,
       data,
     });
   },
