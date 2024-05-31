@@ -24,13 +24,11 @@ export default function EmployeeRequestForm() {
     request(setRequestData);
     Meteor.call("get_processes", (error, response) => {
       if (!error) {
-        console.log(response)
         const myProcess = response.filter(
           (process) => process.displayName == "employee_request"
         );
-        
+
         setProcessId(myProcess[0]?.id);
-        console.log(myProcess[0]?.id);
       }
     });
   }, []);
@@ -42,6 +40,7 @@ export default function EmployeeRequestForm() {
 
   function updateData(field, value) {
     const taskId = "employeeRequestForm";
+    console.log({ taskId, field, value });
     Meteor.call("update_task", { taskId, field, value });
   }
 
@@ -86,10 +85,13 @@ export default function EmployeeRequestForm() {
       { request, processId },
       (error, response) => {
         if (error)
-          enqueueSnackbar(`Error al enviar petición. \nRevisa que los campos esten llenados correctamente`, {
-            variant: "error",
-            autoHideDuration: 2000,
-          });
+          enqueueSnackbar(
+            `Error al enviar petición. \nRevisa que los campos esten llenados correctamente`,
+            {
+              variant: "error",
+              autoHideDuration: 2000,
+            }
+          );
         else {
           Meteor.call("delete_task", "employeeRequestForm");
           setView("process");
