@@ -24,11 +24,13 @@ export default function EmployeeRequestForm() {
     request(setRequestData);
     Meteor.call("get_processes", (error, response) => {
       if (!error) {
+        console.log(response)
         const myProcess = response.filter(
           (process) => process.displayName == "employee_request"
         );
-        setProcessId(myProcess[0].id);
-        // console.log(myProcess[0].id);
+        
+        setProcessId(myProcess[0]?.id);
+        console.log(myProcess[0]?.id);
       }
     });
   }, []);
