@@ -32,7 +32,7 @@ export default function Public() {
         onClose={onCloseModal}
         center
         classNames={{
-          overlay: "customOverlay",
+          overlay: "loginModal",
           modal: "loginModal",
         }}
         showCloseIcon={false}

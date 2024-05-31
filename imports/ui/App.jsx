@@ -13,7 +13,7 @@ export function App() {
   return (
     <CookiesProvider>
       <SnackbarProvider>
-        <SecurityProvider publicPage={<Public />}>
+        <SecurityProvider publicPage={<PublicPage />}>
           <ConfigProvider theme={antStyles}>
             <MainViewProvider  defaultView="dashboard">
               <Workshop />
