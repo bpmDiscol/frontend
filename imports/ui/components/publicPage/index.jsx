@@ -2,7 +2,7 @@ import React from "react";
 import { Flex, Layout, Typography } from "antd";
 import PublicHeader from "./publicHeader";
 import ButtonLink from "./buttonLink";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { AlertOutlined, FileProtectOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import "./bgmain.css"
 const { Title, Text } = Typography;
 
@@ -22,7 +22,7 @@ export default function PublicPage() {
       <Flex
         vertical
         style={{
-          height: "70vh",
+          height: "65vh",
           width: "100%",
           backgroundColor: "white",
         }}
@@ -104,8 +104,8 @@ export default function PublicPage() {
       </Flex>
       <Flex justify="center" gap={32}>
         <ButtonLink icon={QuestionCircleOutlined} title={"FAQ"} />
-        <ButtonLink icon={QuestionCircleOutlined} title={"Semillero"} />
-        <ButtonLink icon={QuestionCircleOutlined} title={"quejas y reclamos"} />
+        <ButtonLink icon={FileProtectOutlined} title={"Semillero"} />
+        <ButtonLink icon={AlertOutlined} title={"Quejas, reclamos y sugerencias"} />
       </Flex>
     </Flex>
   );

@@ -7,61 +7,12 @@
   width: 100%;
   background-color: #d9d9f7;
   opacity: 0.8;
-  background-image: linear-gradient(
-      30deg,
-      #0f3c52 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #014e72 87.5%,
-      #014e72
-    ),
-    linear-gradient(
-      150deg,
-      #014e72 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #014e72 87.5%,
-      #014e72
-    ),
-    linear-gradient(
-      30deg,
-      #014e72 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #014e72 87.5%,
-      #014e72
-    ),
-    linear-gradient(
-      150deg,
-      #014e72 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #014e72 87.5%,
-      #014e72
-    ),
-    linear-gradient(
-      60deg,
-      #014e7277 25%,
-      transparent 25.5%,
-      transparent 75%,
-      #014e7277 75%,
-      #014e7277
-    ),
-    linear-gradient(
-      60deg,
-      #014e7277 25%,
-      transparent 25.5%,
-      transparent 75%,
-      #014e7277 75%,
-      #014e7277
-    );
-  background-size: 80px 140px;
-  background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+  background-image: url('/Squares-Background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: center ;
 }
-.loginModal {
-  background: transparent;
-  box-shadow: none;
-}
+
 
 /* .bg-main::before {
   content: "";
