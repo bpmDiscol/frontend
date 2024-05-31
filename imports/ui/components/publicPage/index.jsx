@@ -6,7 +6,7 @@ const { Header, Footer, Sider, Content } = Layout;
 export default function PublicPage() {
   return (
     <Layout>
-      <Header style={{ background: "#001b74", width: "100%" }}>
+      <Header style={{ background: "#fff", width: "100%", padding: 0}}>
         <PublicHeader />
       </Header>
       <Content></Content>

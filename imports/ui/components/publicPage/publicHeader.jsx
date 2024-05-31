@@ -9,8 +9,10 @@ export default function PublicHeader() {
   const onOpenModal = () => setOpenLogin(true);
   const onCloseModal = () => setOpenLogin(false);
   return (
-    <Flex justify="space-between" align="center" style={{ height: "4rem" }}>
-      <Image src="/logo.png" style={{ width: "10rem" }} />
+    <Flex align="center" style={{ height: "4rem" }}>
+      <Flex style={{background:'#001b74'}}>
+        <Image src="/logo.png" style={{ width: "10rem" }} />
+      </Flex>
       <div id="login-button" className="button" onClick={onOpenModal}>
         🔏
       </div>
