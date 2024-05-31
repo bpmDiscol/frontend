@@ -38,10 +38,9 @@ export default function EmployeeRequestForm() {
   }, [requestData]);
   //re render dependiendo de request data
 
-  function updateData(field, value) {
+  async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    console.log({ taskId, field, value });
-    Meteor.call("update_task", { taskId, field, value });
+    await Meteor.callAsync("update_task", { taskId, field, value });
   }
 
   const LoadPage = React.useCallback(
@@ -74,6 +73,7 @@ export default function EmployeeRequestForm() {
   function request(callback) {
     Meteor.call("get_task_data", "employeeRequestForm", (error, response) => {
       if (!error) {
+        console.log(response);
         callback(response);
       }
     });
