@@ -12,7 +12,7 @@ const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 //TODO: change to .env
-Axios.defaults.baseURL = "http://34.42.228.208/bonita";
+Axios.defaults.baseURL = "http://35.202.4.246/bonita";
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
