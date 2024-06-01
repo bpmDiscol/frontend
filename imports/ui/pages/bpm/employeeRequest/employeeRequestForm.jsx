@@ -19,6 +19,8 @@ export default function EmployeeRequestForm() {
   const [tabView, setTabView] = React.useState();
   const [requestData, setRequestData] = React.useState();
   const [processId, setProcessId] = React.useState();
+  const [currentTab, setCurrentTab] = React.useState(0);
+  const [nextButtonLabel, setNextButtonLabel] = React.useState("Siguiente");
 
   React.useEffect(() => {
     request(setRequestData);
@@ -104,6 +106,15 @@ export default function EmployeeRequestForm() {
     );
   }
 
+  console.log(currentTab);
+  function handleButtonNext() {
+    console.log("next");
+    const maxTab = tabContents.length;
+    const nextTab = currentTab + 1;
+    if (nextTab == maxTab) handleButtonResponses("send");
+    if (nextTab < maxTab) setCurrentTab(nextTab);
+  }
+
   return (
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
@@ -115,8 +126,12 @@ export default function EmployeeRequestForm() {
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
-          onChange={(value) => setTabView(LoadPage(tabContents[value]))}
+          onChange={(value) => {
+            setTabView(LoadPage(tabContents[value]));
+            setCurrentTab(value);
+          }}
           defaultValue={0}
+          value={currentTab}
         />
         <Flex
           vertical
@@ -136,12 +151,13 @@ export default function EmployeeRequestForm() {
         </Button>
         <Button
           type="primary"
-          onClick={() => handleButtonResponses("send")}
+          onClick={handleButtonNext}
           icon={<SendOutlined />}
           iconPosition="end"
           id="approve-button"
+          danger={currentTab == tabContents.length - 1}
         >
-          Enviar
+          {currentTab == tabContents.length - 1 ? "Enviar" : "Siguiente"}
         </Button>
       </Flex>
     </Flex>
