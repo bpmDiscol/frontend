@@ -24,7 +24,8 @@
     "react-lite-month-picker": "^1.2.18",
     "react-quill": "^2.0.0",
     "react-responsive-modal": "^6.4.2",
-    "tough-cookie": "^4.1.4"
+    "tough-cookie": "^4.1.4",
+    "zod": "^3.23.8"
   },
   "meteor": {
     "mainModule": {

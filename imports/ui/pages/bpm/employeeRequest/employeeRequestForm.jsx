@@ -42,7 +42,7 @@ export default function EmployeeRequestForm() {
 
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    await Meteor.callAsync("update_task", { taskId, field, value });
+    // await Meteor.callAsync("update_task", { taskId, field, value });
   }
 
   const LoadPage = React.useCallback(
@@ -106,9 +106,7 @@ export default function EmployeeRequestForm() {
     );
   }
 
-  console.log(currentTab);
   function handleButtonNext() {
-    console.log("next");
     const maxTab = tabContents.length;
     const nextTab = currentTab + 1;
     if (nextTab == maxTab) handleButtonResponses("send");
