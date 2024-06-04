@@ -19,9 +19,14 @@ export default function ListCheckItems({ options, update, requestData }) {
       size="small"
       itemLayout="horizontal"
       dataSource={options}
-      renderItem={(item) => (
+      renderItem={(item, index) => (
         <List.Item>
-          <Flex gap={16} align="center" justify="space">
+          <Flex
+            gap={16}
+            align="center"
+            justify="space"
+            id={`item-gear-${index}`}
+          >
             <Switch
               defaultValue={getDefaultValue(item.value)}
               onChange={(value) => update(`gears.${item.value}`, value)}

@@ -1,6 +1,6 @@
 import { curricullumCollection } from "../../api/curricullums/curricullumCollection";
 
-export function uploadFile(fileData, index = 0, callback) {
+export function uploadFile(fileData, index, callback) {
   const upload = curricullumCollection.insert(
     {
       file: fileData,
@@ -14,7 +14,9 @@ export function uploadFile(fileData, index = 0, callback) {
   });
 
   upload.on("end", (error, fileObj) => {
-    if (!error) {
+    if (error) console.log(error);
+    else {
+      console.log("archivo cargado...");
       callback("fileId", fileObj._id, index);
       //   responseFn("Archivo cargado con exito", "success");
     }

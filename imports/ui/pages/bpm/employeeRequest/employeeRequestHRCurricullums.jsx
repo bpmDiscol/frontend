@@ -25,6 +25,7 @@ export default function EmployeeRequestCurricullums() {
   const [tabView, setTabView] = React.useState();
   const [loaded, setLoaded] = React.useState(false);
   const [concept, setConcept] = React.useState("");
+  const [curricullums, setCurricullums] = React.useState([]);
 
   React.useEffect(() => {
     Meteor.callAsync("get_employee_request").then((response) => {

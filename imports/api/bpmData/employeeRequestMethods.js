@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import { validateEmployeeRequest } from "../misc/validation";
 
 function justTrueInObject(attribute, keys) {
   const result = {};
@@ -46,31 +47,30 @@ Meteor.methods({
     });
   },
   async start_employee_request({ request, processId }) {
-    //TODO: probar todos que todos los valores existan
     const data = {
-      contractType: request.contractType,
-      workingDayType: request.workingDayType,
-      motive: request.motive,
+      contractType: request?.contractType,
+      workingDayType: request?.workingDayType,
+      motive: request?.motive,
       requestEmployeeDataInput: {
-        site: request.site,
-        companyPosition: request.companyPosition,
-        area_proyect: request.area_proyect,
-        isHandbookFunction: request?.isHandbookFunction||false,
-        workPlace: request.workPlace,
+        site: request?.site,
+        companyPosition: request?.companyPosition,
+        area_proyect: request?.area_proyect,
+        isHandbookFunction: request?.isHandbookFunction || false,
+        workPlace: request?.workPlace,
         vacancies: parseInt(request?.vacancies || 0),
         duration: {
           cuantity: parseInt(request?.duration?.cuantity || 0),
-          timePart: request?.duration?.timePart||"mes",
+          timePart: request?.duration?.timePart || "mes",
         },
-        salary: parseFloat(request.salary || 0),
-        isBonus: request?.isBonus||false,
+        salary: parseFloat(request?.salary || 0),
+        isBonus: request?.isBonus || false,
         bonusesFrecuency: {
-          cuantity: parseInt(request?.bonusesFrecuency?.cuantity || 0),
-          timePart: request?.bonusesFrecuency?.timePart||"mes",
+          cuantity: parseInt(request?.bonusesFrecuency?.cuantity || -1),
+          timePart: request?.bonusesFrecuency?.timePart || "indefinido",
         },
-        isVehicle: request?.isVehicle||false,
-        vehicleType: request?.vehicleType||"" ,
-        licenceType: request?.licenceType||"",
+        isVehicle: request?.isVehicle || false,
+        vehicleType: request?.vehicleType || "",
+        licenceType: request?.licenceType || "",
         bearingValue: parseFloat(request?.bearingValue || 0),
         workingDay: {
           isFullTime: false,
@@ -91,11 +91,15 @@ Meteor.methods({
           isFixedTerm: false,
           isLearning: false,
         },
-        gears: request.gears,
-        requirements: request?.requirements||"",
-        observations: [request?.observations||""],
+        gears: request?.gears,
+        requirements: request?.requirements || "",
+        observations: [request?.observations || ""],
       },
     };
+    const errorValidation = validateEmployeeRequest(data);
+    if (errorValidation) {
+      return { error: true, issues: errorValidation.issues };
+    }
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/process/${processId}/instantiation`,
       data,

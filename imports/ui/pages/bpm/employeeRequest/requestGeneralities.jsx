@@ -68,7 +68,7 @@ const workingDayOptions = [
     value: "day-time",
   },
 ];
-export default function RequestGeneralities({ requestData, update }) {
+export default function RequestGeneralities({ requestData, update, fiterErrors }) {
   const [isBonus, setIsBonus] = React.useState();
 
   React.useEffect(() => {
@@ -79,9 +79,10 @@ export default function RequestGeneralities({ requestData, update }) {
     <Form>
       <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
         <Col span={12}>
-          <Form.Item label="Puesto solicitado">
+          <Form.Item label="Puesto solicitado" >
             <Input
               id="companyPosition"
+              status={fiterErrors('companyPosition')}
               defaultValue={requestData?.companyPosition}
               onChange={(e) => update("companyPosition", e.target.value)}
             />
@@ -90,6 +91,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Sede">
             <Input
               id="site"
+              status={fiterErrors('site')}
               defaultValue={requestData?.site}
               onChange={(e) => update("site", e.target.value)}
             />
@@ -97,6 +99,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Area/proyecto">
             <Input
               id="area_proyect"
+              status={fiterErrors('area_proyect')}
               defaultValue={requestData?.area_proyect}
               onChange={(e) => update("area_proyect", e.target.value)}
             />
@@ -104,6 +107,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Lugar de trabajo">
             <Input
               id="workPlace"
+              status={fiterErrors('workPlace')}
               defaultValue={requestData?.workPlace}
               onChange={(e) => update("workPlace", e.target.value)}
             />
@@ -111,6 +115,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Motivo del requerimiento">
             <Select
               id="motive"
+              status={fiterErrors('motive')}
               defaultValue={requestData?.motive}
               options={motiveOptions}
               onChange={(value) => update("motive", value)}
@@ -120,6 +125,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Space.Compact>
                 <Input
                   id="durationCuantity"
+                  status={fiterErrors('duration')}
                   defaultValue={requestData?.duration?.cuantity||0}
                   type="number"
                   onChange={(e) =>
@@ -129,6 +135,7 @@ export default function RequestGeneralities({ requestData, update }) {
                 <Select
                   options={timeOptions}
                   id="durationTimePart"
+                  status={fiterErrors('duration')}
                   defaultValue={requestData?.duration?.timePart}
                   onChange={(value) =>
                     update("duration.timePart", value)
@@ -141,6 +148,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Salario">
             <Input
               id="salary"
+              status={fiterErrors('salary')}
               defaultValue={requestData?.salary||0}
               addonBefore="$"
               type="number"
@@ -150,6 +158,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Jornada laboral">
             <Select
               id="workingDayType"
+              status={fiterErrors('workingDayType')}
               defaultValue={requestData?.workingDayType}
               options={workingDayOptions}
               onChange={(value) => update("workingDayType", value)}
@@ -158,6 +167,7 @@ export default function RequestGeneralities({ requestData, update }) {
           <Form.Item label="Tipo de contrato">
             <Select
               id="contractType"
+              status={fiterErrors('contractType')}
               defaultValue={requestData?.contractType}
               onChange={(value) => update("contractType", value)}
               options={contractTypeOptions}
@@ -193,6 +203,7 @@ export default function RequestGeneralities({ requestData, update }) {
                 <Input
                   addonBefore="Bono cada"
                   id="bonusesFrecuencyCuantity"
+                  status={fiterErrors('bonusesFrecuency')}
                   defaultValue={requestData?.bonusesFrecuency?.cuantity||0}
                   type="number"
                   onChange={(e) =>
@@ -202,6 +213,7 @@ export default function RequestGeneralities({ requestData, update }) {
                 <Select
                   options={timeOptions}
                   id="bonusesFrecuencyTimePart"
+                  status={fiterErrors('bonusesFrecuency')}
                   defaultValue={requestData?.bonusesFrecuency?.timePart}
                   onChange={(value) =>
                     update("bonusesFrecuency.timePart", value)

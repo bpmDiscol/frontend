@@ -25,7 +25,7 @@ export default function EmployeeRequestForm() {
   const [requestData, setRequestData] = React.useState();
   const [processId, setProcessId] = React.useState();
   const [currentTab, setCurrentTab] = React.useState(0);
-  const [nextButtonLabel, setNextButtonLabel] = React.useState("Siguiente");
+  const [errorFields, setErrorFields] = React.useState([]);
 
   React.useEffect(() => {
     request(setRequestData);
@@ -41,18 +41,24 @@ export default function EmployeeRequestForm() {
   }, []);
 
   React.useEffect(() => {
-    if (requestData) setTabView(LoadPage(tabContents[0]));
+    if (requestData) setTabView(LoadPage(tabContents[currentTab]));
   }, [requestData]);
   //re render dependiendo de request data
 
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    // await Meteor.callAsync("update_task", { taskId, field, value });
+    await Meteor.callAsync("update_task", { taskId, field, value });
   }
 
   const LoadPage = React.useCallback(
     (Component) => {
-      return <Component requestData={requestData} update={updateData} />;
+      return (
+        <Component
+          requestData={requestData}
+          update={updateData}
+          fiterErrors={fiterErrors}
+        />
+      );
     },
     [requestData]
   );
@@ -91,15 +97,23 @@ export default function EmployeeRequestForm() {
       "start_employee_request",
       { request, processId },
       (error, response) => {
-        if (error)
+        if (response?.error) {
+          if (response?.status == 401) {
+            enqueueSnackbar(`Error: Usuario no autorizado`, {
+              variant: "error",
+              autoHideDuration: 2000,
+            });
+            return;
+          }
+          setErrorFields(response.issues);
           enqueueSnackbar(
-            `Error al enviar petición. \nRevisa que los campos esten llenados correctamente`,
+            `Error al enviar petición. \nRevisa los campos que deben llenarse`,
             {
               variant: "error",
               autoHideDuration: 2000,
             }
           );
-        else {
+        } else {
           Meteor.call("delete_task", "employeeRequestForm");
           setView("process");
           enqueueSnackbar("Petición creada correctamente", {
@@ -119,8 +133,16 @@ export default function EmployeeRequestForm() {
   }
 
   function changeTab(tabNumber) {
+    request(setRequestData);
     setTabView(LoadPage(tabContents[tabNumber]));
     setCurrentTab(tabNumber);
+  }
+
+  function fiterErrors(fieldId) {
+    const fields = errorFields?.filter((field) =>
+      field.path?.includes(fieldId)
+    );
+    return fields.length == 0 ? "" : "error";
   }
 
   return (
