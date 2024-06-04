@@ -1,6 +1,11 @@
 import React from "react";
 import { Button, Flex, Segmented, Typography } from "antd";
-import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
+import {
+  BackwardOutlined,
+  ForwardOutlined,
+  RotateLeftOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
 
 import { MainViewContext } from "../../../context/mainViewProvider";
 
@@ -110,7 +115,12 @@ export default function EmployeeRequestForm() {
     const maxTab = tabContents.length;
     const nextTab = currentTab + 1;
     if (nextTab == maxTab) handleButtonResponses("send");
-    if (nextTab < maxTab) setCurrentTab(nextTab);
+    if (nextTab < maxTab) changeTab(nextTab);
+  }
+
+  function changeTab(tabNumber) {
+    setTabView(LoadPage(tabContents[tabNumber]));
+    setCurrentTab(tabNumber);
   }
 
   return (
@@ -124,10 +134,7 @@ export default function EmployeeRequestForm() {
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
-          onChange={(value) => {
-            setTabView(LoadPage(tabContents[value]));
-            setCurrentTab(value);
-          }}
+          onChange={changeTab}
           defaultValue={0}
           value={currentTab}
         />
@@ -149,8 +156,24 @@ export default function EmployeeRequestForm() {
         </Button>
         <Button
           type="primary"
+          onClick={() => changeTab(currentTab - 1)}
+          icon={<BackwardOutlined />}
+          iconPosition="start"
+          id="approve-button"
+          disabled={currentTab == 0}
+        >
+          Anterior
+        </Button>
+        <Button
+          type="primary"
           onClick={handleButtonNext}
-          icon={<SendOutlined />}
+          icon={
+            currentTab == tabContents.length - 1 ? (
+              <SendOutlined />
+            ) : (
+              <ForwardOutlined />
+            )
+          }
           iconPosition="end"
           id="approve-button"
           danger={currentTab == tabContents.length - 1}

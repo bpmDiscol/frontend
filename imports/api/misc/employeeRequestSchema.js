@@ -1,4 +1,4 @@
-import { z, z as zod } from "zod";
+import {z as zod } from "zod";
 
 const requestEmployeeData = zod.object({
   site: zod.string(),
@@ -26,33 +26,31 @@ const timeExtension = zod.object({
 });
 
 const workingDay = zod.object({
-  isFullTime: Zod.boolean(),
-  isPartTime: Zod.boolean(),
-  isDayTime: Zod.boolean(),
+  isFullTime: zod.boolean(),
+  isPartTime: zod.boolean(),
+  isDayTime: zod.boolean(),
 });
 const motive = {
-  isNewCharge: Zod.boolean(),
-  isEmployeeExpanding: Zod.boolean(),
-  isLicence: Zod.boolean(),
-  isNewProject: Zod.boolean(),
-  isReplacement: Zod.boolean(),
-  isEmployeeInhability: Zod.boolean(),
+  isNewCharge: zod.boolean(),
+  isEmployeeExpanding: zod.boolean(),
+  isLicence: zod.boolean(),
+  isNewProject: zod.boolean(),
+  isReplacement: zod.boolean(),
+  isEmployeeInhability: zod.boolean(),
 };
 const contractType = {
-  isContractedLabor: Zod.boolean(),
-  isUndefined: Zod.boolean(),
-  isFixedTerm: Zod.boolean(),
-  isLearning: Zod.boolean(),
+  isContractedLabor: zod.boolean(),
+  isUndefined: zod.boolean(),
+  isFixedTerm: zod.boolean(),
+  isLearning: zod.boolean(),
 };
 
-const gears = zod.object({});
-
-export const schema = zod.object({
+export const employeeRequestSchema = zod.object({
   constractType: zod.string(),
   workingDayType: zod.string(),
   motive: zod.string(),
   requestEmployeeDataInput: requestEmployeeData,
-  gears: gears,
+  gears: zod.optional(),
   requirements: zod.string(),
-  observations: zod.string,
+  observations: zod.string(),
 });
