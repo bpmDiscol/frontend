@@ -8,6 +8,7 @@ import Process from "../components/process";
 import EmployeeRequestForm from "../pages/bpm/employeeRequest/employeeRequestForm";
 import EmployeeRequestCurricullums from "../pages/bpm/employeeRequest/employeeRequestHRCurricullums";
 import PublicPage from "../components/publicPage";
+import EmployeeRequestInterview from "../pages/bpm/employeeRequest/employeeRequestInterview";
 
 export function getView(view, params = {}) {
   const user = Meteor.users.findOne(Meteor.userId({}));
@@ -21,6 +22,7 @@ export function getView(view, params = {}) {
     employee_request_adm: <EmployeeRequestAdm />,
     employee_request_hr: <EmployeeRequestHR />,
     load_curricullum: <EmployeeRequestCurricullums />,
+    interview: <EmployeeRequestInterview />
 
   };
 

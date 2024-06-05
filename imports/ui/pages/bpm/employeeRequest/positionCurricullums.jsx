@@ -45,11 +45,6 @@ export default function PositionCurricullums() {
     uploadFile(fileData, index, setAttribute);
   }
 
-  //   TODO: status message
-  //   function showMessage(msg, type){
-  //     if(type== "error") message.error(msg)
-  //     if(type == "success") message.success(msg)
-  //   }
 
   function addSpace() {
     const currentCurricullums = [...curricullums, emptySpace];

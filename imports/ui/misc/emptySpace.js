@@ -2,6 +2,6 @@ export const emptySpace = {
   applicantName: "",
   applicantMidname: "",
   applicantLastname: "",
-  foundBy: "",
+  foundBy: "Ninguna de las anteriores",
   fileId: "",
 };

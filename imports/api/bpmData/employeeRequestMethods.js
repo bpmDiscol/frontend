@@ -115,4 +115,14 @@ Meteor.methods({
       },
     });
   },
+  async get_curricullums(){
+    const { taskId } = Meteor.users.findOne(Meteor.userId());
+    const context = await Meteor.callAsync("get_context", { taskId });
+
+    if (context)
+      return await Meteor.callAsync("get_data", {
+        url: context?.curricullums_ref?.link,
+        params: {},
+      });
+  }
 });

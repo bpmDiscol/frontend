@@ -7,26 +7,20 @@ import PositionObservations from "./positionObservations";
 
 import { MainViewContext } from "../../../context/mainViewProvider";
 
-import { Button, Flex, Popconfirm, Segmented, Typography, message } from "antd";
-import {
-  RotateLeftOutlined,
-  DislikeFilled,
-  LikeFilled,
-  SendOutlined,
-} from "@ant-design/icons";
+import { Button, Flex, Popconfirm, Segmented, Typography } from "antd";
+import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
-import PositionCurricullums from "./positionCurricullums";
 import { NotificationsContext } from "../../../context/notificationsProvider";
+import PositionInterviews from "./positionInterviews";
 
 const { Text, Title } = Typography;
-export default function EmployeeRequestCurricullums() {
+export default function EmployeeRequestInterview() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
   const [requestEmployee, setRequestEmployee] = React.useState();
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [loaded, setLoaded] = React.useState(false);
   const [concept, setConcept] = React.useState("");
-  const [curricullumList, setCurricullumList] = React.useState([]);
 
   const { openNotification } = React.useContext(NotificationsContext);
 
@@ -63,7 +57,6 @@ export default function EmployeeRequestCurricullums() {
         requestEmployeeData={requestEmployeeData}
         concept={concept}
         setConcept={setConcept}
-        setCurricullumList={setCurricullumList}
       />
     );
   }
@@ -73,7 +66,7 @@ export default function EmployeeRequestCurricullums() {
     { label: "Requerimientos", value: 2 },
     { label: "Equipo necesario", value: 3 },
     { label: "Observaciones", value: 4 },
-    { label: "Curricullums", value: 5 },
+    { label: "Entrevistas", value: 5 },
   ];
   const tabContents = [
     PositionGereralities,
@@ -81,12 +74,12 @@ export default function EmployeeRequestCurricullums() {
     PositionRequirements,
     PositionGears,
     PositionObservations,
-    PositionCurricullums,
+    PositionInterviews
   ];
 
   function handleButtonResponses(buttonResponse) {
-    if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return request();
+    // if (buttonResponse == "return") setView("tasks");
+    // if (buttonResponse == "send") return request();
   }
 
   function request() {
@@ -155,7 +148,7 @@ export default function EmployeeRequestCurricullums() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Cargar curricullums)</Text>
+          Solicitud de empleado<Text strong>(Entrevistas)</Text>
         </Title>
       </Flex>
 
@@ -182,7 +175,7 @@ export default function EmployeeRequestCurricullums() {
         </Button>
 
         <Popconfirm
-          title="¿Enviar los Curricullums?"
+          title="¿Enviar entrevistas?"
           onConfirm={() => handleButtonResponses("send")}
           okText="Por supuesto"
           cancelText="Déjame pensarlo"
