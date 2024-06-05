@@ -95,9 +95,9 @@ export default function EmployeeRequestCurricullums() {
             if (resp?.curricullums?.length == 0)
               message.warning("¡No se han cargado archivos 🤨!");
             let emptyFiles = false;
-            const documentDocumentInput = resp?.curricullums.filter((it) => {
-              !it.fileId;
-            });
+            // const documentDocumentInput = resp?.curricullums?.filter((it) => {
+            //   !it.fileId;
+            // });
 
             if (emptyFiles)
               message.warning(
