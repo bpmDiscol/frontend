@@ -14,8 +14,7 @@ import RequestVehicle from "./requestVehicle";
 import RequestRequirements from "./requestRequirements";
 import RequestGears from "./requestGears";
 import RequestObservations from "./requestObservations";
-
-import { enqueueSnackbar } from "notistack";
+import { NotificationsContext } from "../../../context/notificationsProvider";
 
 const { Text, Title } = Typography;
 
@@ -26,6 +25,7 @@ export default function EmployeeRequestForm() {
   const [processId, setProcessId] = React.useState();
   const [currentTab, setCurrentTab] = React.useState(0);
   const [errorFields, setErrorFields] = React.useState([]);
+  const { openNotification } = React.useContext(NotificationsContext);
 
   React.useEffect(() => {
     request(setRequestData);
@@ -54,7 +54,7 @@ export default function EmployeeRequestForm() {
     (Component) => {
       return (
         <Component
-          requestData={[]}
+          requestData={requestData}
           update={updateData}
           fiterErrors={fiterErrors}
         />
@@ -99,27 +99,27 @@ export default function EmployeeRequestForm() {
       (error, response) => {
         if (response?.error) {
           if (response?.status == 401) {
-            enqueueSnackbar(`Error: Usuario no autorizado`, {
-              variant: "error",
-              autoHideDuration: 2000,
-            });
+            openNotification(
+              "error",
+              "Ha ocurrido un error 😓",
+              "Comprueba tus credenciales e intentalo nuevamente"
+            );
             return;
           }
           setErrorFields(response.issues);
-          enqueueSnackbar(
-            `Error al enviar petición. \nRevisa los campos que deben llenarse`,
-            {
-              variant: "error",
-              autoHideDuration: 2000,
-            }
+          openNotification(
+            "warning",
+            "Date un momento para revisar",
+            "Algunos campos necesitan llenarse. Revisa los formularios e intenta nuevamente"
           );
         } else {
           Meteor.call("delete_task", "employeeRequestForm");
           setView("process");
-          enqueueSnackbar("Petición creada correctamente", {
-            variant: "success",
-            autoHideDuration: 2000,
-          });
+          openNotification(
+            "success",
+            "¡Buen trabajo!",
+            "La peticion de empleado se ha creado correctamente"
+          );
         }
       }
     );

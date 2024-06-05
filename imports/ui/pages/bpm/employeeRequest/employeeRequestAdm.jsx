@@ -5,17 +5,16 @@ import PositionRequirements from "./positionRequirements";
 import PositionGears from "./positionGears";
 import PositionObservations from "./positionObservations";
 import PositionConcept from "./positionConcept";
-import { enqueueSnackbar } from "notistack";
-
 import { MainViewContext } from "../../../context/mainViewProvider";
 
-import { Button, Flex, Segmented, Typography } from "antd";
+import { Button, Flex, Popconfirm, Segmented, Typography } from "antd";
 import {
   RotateLeftOutlined,
   DislikeFilled,
   LikeFilled,
 } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
+import { NotificationsContext } from "../../../context/notificationsProvider";
 
 export default function EmployeeRequestAdm() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
@@ -24,6 +23,7 @@ export default function EmployeeRequestAdm() {
   const [tabView, setTabView] = React.useState();
   const [loaded, setLoaded] = React.useState(false);
   const [concept, setConcept] = React.useState("");
+  const { openNotification } = React.useContext(NotificationsContext);
 
   React.useEffect(() => {
     Meteor.callAsync("get_employee_request").then((response) => {
@@ -47,7 +47,8 @@ export default function EmployeeRequestAdm() {
   }, [requestEmployee, requestEmployeeData]);
 
   React.useEffect(() => {
-    loaded && setTabView(<LoadPage Component={tabContents[0]} />);
+    loaded &&
+      setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
   }, [loaded]);
 
   function LoadPage({ Component }) {
@@ -93,12 +94,14 @@ export default function EmployeeRequestAdm() {
       (error, response) => {
         if (response == "no token") safeLogOut();
         else {
-          enqueueSnackbar(response.message, {
-            variant: response.error ? "error" : "success",
-            autoHideDuration: 1000,
-          });
-
-          if (!response.error) setView("tasks");
+          if (!response.error) {
+            openNotification(
+              response.error ? "error" : "success",
+              response.error ? "Ha ocurrido un error" : "¡Buenas noticias!",
+              response?.message
+            );
+            setView("tasks");
+          }
         }
       }
     );
@@ -120,7 +123,7 @@ export default function EmployeeRequestAdm() {
           onChange={(value) =>
             setTabView(<LoadPage Component={tabContents[value]} />)
           }
-          defaultValue={0}
+          defaultValue={tabContents.length - 1}
         />
         <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
           {requestEmployee && requestEmployeeData && tabView}
@@ -135,23 +138,39 @@ export default function EmployeeRequestAdm() {
         >
           Regresar
         </Button>
-        <Button
-          type="primary"
-          onClick={() => handleButtonResponses("reject")}
-          icon={<DislikeFilled />}
-          id="reject-button"
+        <Popconfirm
+          title="Rechazas la solicitud?"
+          description="Confirmas que no estas de acuerdo con esta solicitud. Recuerda dejar tu concepto "
+          onConfirm={() => handleButtonResponses("reject")}
+          okText="Descártala"
+          cancelText="Déjame pensarlo"
         >
-          Rechazar
-        </Button>
-        <Button
-          type="primary"
-          onClick={() => handleButtonResponses("approve")}
-          icon={<LikeFilled />}
-          iconPosition="end"
-          id="approve-button"
+          <Button
+            type="primary"
+            danger
+            icon={<DislikeFilled />}
+            id="reject-button"
+          >
+            Rechazar
+          </Button>
+        </Popconfirm>
+        <Popconfirm
+          title="¿Apruebas la solicitud?"
+          description="Confirmas que estas de acuerdo con esta solicitud de empleado. Recuerda dejar tu concepto"
+          onConfirm={() => handleButtonResponses("approve")}
+          okText="Por supuesto"
+          cancelText="Déjame pensarlo"
         >
-          Continuar
-        </Button>
+          <Button
+            type="primary"
+            style={{ background: "green" }}
+            icon={<LikeFilled />}
+            iconPosition="end"
+            id="approve-button"
+          >
+            Aceptar
+          </Button>
+        </Popconfirm>
       </Flex>
     </Flex>
   );

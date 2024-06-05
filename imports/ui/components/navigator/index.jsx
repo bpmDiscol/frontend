@@ -5,6 +5,7 @@ import { MainViewContext } from "../../context/mainViewProvider";
 
 export default function Navigator() {
   const { setView } = React.useContext(MainViewContext);
+  //TODO: reemplazar menu
   return (
     <Menu
       onClick={(e) => setView(e.key)}
