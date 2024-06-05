@@ -105,13 +105,12 @@ Meteor.methods({
       data,
     });
   },
-  async send_curricullums({ curricullumsInput, documentDocumentInput }) {
+  async send_curricullums({ curricullumsInput }) {
     const { username, taskId } = Meteor.users.findOne(Meteor.userId());
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
         curricullumsInput,
-        documentDocumentInput,
         responsible: username,
       },
     });

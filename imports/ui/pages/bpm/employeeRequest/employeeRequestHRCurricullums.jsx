@@ -4,7 +4,6 @@ import PositionVehicle from "./positionVehicle";
 import PositionRequirements from "./positionRequirements";
 import PositionGears from "./positionGears";
 import PositionObservations from "./positionObservations";
-import { enqueueSnackbar } from "notistack";
 
 import { MainViewContext } from "../../../context/mainViewProvider";
 
@@ -27,7 +26,6 @@ export default function EmployeeRequestCurricullums() {
   const [concept, setConcept] = React.useState("");
   const [curricullumList, setCurricullumList] = React.useState([]);
 
-  const { userName } = React.useContext(MainViewContext);
 
   React.useEffect(() => {
     Meteor.callAsync("get_employee_request").then((response) => {
@@ -97,46 +95,34 @@ export default function EmployeeRequestCurricullums() {
             if (resp?.curricullums?.length == 0)
               message.warning("¡No se han cargado archivos 🤨!");
             let emptyFiles = false;
-            const documentDocumentInput = resp?.curricullums.map((it) => {
-              if (!it.fileId) emptyFiles = true;
-              return it.fileId;
+            const documentDocumentInput = resp?.curricullums.filter((it) => {
+              !it.fileId;
             });
-           
+
             if (emptyFiles)
               message.warning(
                 "Se detectaron archivos sin cargar. Revisa por favor 😉"
               );
-            const curricullumsInput = resp?.curricullums.map((it) => ({
-              applicantName: it.applicantName,
-              applicantMidname: it.applicantMidname,
-              applicantLastname: it.applicantLastname,
-              foundBy: it.foundBy,
-            }));
 
-            const responsible = userName;
-
-            // console.log({
-            //   curricullumsInput,
-            //   documentDocumentInput,
-            //   responsible,
-            // });
+            console.log({
+              curricullumsInput: resp.curricullums,
+            });
 
             Meteor.call(
-              "send_employee_request",
+              "send_curricullums",
               {
-                curricullumsInput,
-                documentDocumentInput,
-                responsible,
+                curricullumsInput: resp.curricullums,
               },
               (error, response) => {
                 if (response == "no token") {
                   message.error("Algo ha salido mal 😓");
                   safeLogOut();
                 } else {
-                  message.success("Tarea terminada con éxito");
-                  console.log(response)
+                  console.log(response);
 
-                  if (!response.error) setView("tasks");
+                  if (!response.error) {
+                    setView("tasks");
+                  }
                 }
               }
             );

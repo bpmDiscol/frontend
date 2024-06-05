@@ -107,7 +107,7 @@ export default function PositionCurricullums() {
                   value={curricullum?.applicantMiddleName}
                   onChange={(e) =>
                     setAttribute(
-                      "applicantMiddleName",
+                      "applicantMidname",
                       e.currentTarget.value,
                       index
                     )
@@ -120,7 +120,7 @@ export default function PositionCurricullums() {
                   value={curricullum?.applicantLastName}
                   onChange={(e) =>
                     setAttribute(
-                      "applicantLastName",
+                      "applicantLastname",
                       e.currentTarget.value,
                       index
                     )
