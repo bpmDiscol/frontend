@@ -3,11 +3,22 @@ import { Meteor } from "meteor/meteor";
 import { enqueueSnackbar } from "notistack";
 
 import "./styles/login.css";
+import { notification } from "antd";
 
 export default function Login({ onClose }) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const [api] = notification.useNotification();
+  const openNotification = (type, message) => {
+    api[type]({
+      message: `Hola ${username}`,
+      description: message,
+      placement: "topRight",
+      duration: 1000,
+    });
+  };
 
   function closeMe(e) {
     e.preventDefault();
@@ -46,6 +57,8 @@ export default function Login({ onClose }) {
               username,
               password,
             });
+
+          openNotification(result.variant, result?.message);
 
           enqueueSnackbar(result.message, {
             variant: result.variant,
