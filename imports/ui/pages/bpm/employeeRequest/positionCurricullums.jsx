@@ -69,8 +69,9 @@ export default function PositionCurricullums() {
     const currentCurricullums = [...curricullums];
     const fileId = currentCurricullums[index].fileId;
     currentCurricullums.splice(index, 1);
-    setCurricullums(currentCurricullums);
+
     if (fileId) Meteor.call("delete_file", { fileId });
+    setCurricullums(currentCurricullums);
     updateData("curricullums", currentCurricullums);
   }
 

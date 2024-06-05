@@ -54,7 +54,7 @@ export default function EmployeeRequestForm() {
     (Component) => {
       return (
         <Component
-          requestData={requestData}
+          requestData={[]} // TEST ONLY. Replace by requestData on production
           update={updateData}
           fiterErrors={fiterErrors}
         />

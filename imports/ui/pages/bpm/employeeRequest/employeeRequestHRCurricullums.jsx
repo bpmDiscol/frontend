@@ -4,12 +4,11 @@ import PositionVehicle from "./positionVehicle";
 import PositionRequirements from "./positionRequirements";
 import PositionGears from "./positionGears";
 import PositionObservations from "./positionObservations";
-import PositionConcept from "./positionConcept";
 import { enqueueSnackbar } from "notistack";
 
 import { MainViewContext } from "../../../context/mainViewProvider";
 
-import { Button, Flex, Segmented, Typography } from "antd";
+import { Button, Flex, Segmented, Typography, message } from "antd";
 import {
   RotateLeftOutlined,
   DislikeFilled,
@@ -18,6 +17,7 @@ import {
 import { safeLogOut } from "../../../misc/userStatus";
 import PositionCurricullums from "./positionCurricullums";
 
+const { Text, Title } = Typography;
 export default function EmployeeRequestCurricullums() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
   const [requestEmployee, setRequestEmployee] = React.useState();
@@ -25,7 +25,9 @@ export default function EmployeeRequestCurricullums() {
   const [tabView, setTabView] = React.useState();
   const [loaded, setLoaded] = React.useState(false);
   const [concept, setConcept] = React.useState("");
-  const [curricullums, setCurricullums] = React.useState([]);
+  const [curricullumList, setCurricullumList] = React.useState([]);
+
+  const { userName } = React.useContext(MainViewContext);
 
   React.useEffect(() => {
     Meteor.callAsync("get_employee_request").then((response) => {
@@ -49,7 +51,8 @@ export default function EmployeeRequestCurricullums() {
   }, [requestEmployee, requestEmployeeData]);
 
   React.useEffect(() => {
-    loaded && setTabView(<LoadPage Component={tabContents[0]} />);
+    loaded &&
+      setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
   }, [loaded]);
 
   function LoadPage({ Component }) {
@@ -59,6 +62,7 @@ export default function EmployeeRequestCurricullums() {
         requestEmployeeData={requestEmployeeData}
         concept={concept}
         setConcept={setConcept}
+        setCurricullumList={setCurricullumList}
       />
     );
   }
@@ -81,32 +85,66 @@ export default function EmployeeRequestCurricullums() {
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "reject") return request("reject");
-    if (buttonResponse == "approve") return request("approved");
+    if (buttonResponse == "send") return request();
   }
 
-  function request(response) {
-    Meteor.call(
-      "send_employee_request",
-      {
-        response,
-        concept,
-      },
-      (error, response) => {
-        if (response == "no token") safeLogOut();
-        else {
-          enqueueSnackbar(response.message, {
-            variant: response.error ? "error" : "success",
-            autoHideDuration: 1000,
-          });
+  function request() {
+    Meteor.call("get_task_id", (err, currentTask) => {
+      if (!err) {
+        const taskId = "employeeCurriculllums-" + currentTask;
+        Meteor.call("get_task_data", taskId, (err, resp) => {
+          if (!err) {
+            if (resp?.curricullums?.length == 0)
+              message.warning("¡No se han cargado archivos 🤨!");
+            let emptyFiles = false;
+            const documentDocumentInput = resp?.curricullums.map((it) => {
+              if (!it.fileId) emptyFiles = true;
+              return it.fileId;
+            });
+           
+            if (emptyFiles)
+              message.warning(
+                "Se detectaron archivos sin cargar. Revisa por favor 😉"
+              );
+            const curricullumsInput = resp?.curricullums.map((it) => ({
+              applicantName: it.applicantName,
+              applicantMidname: it.applicantMidname,
+              applicantLastname: it.applicantLastname,
+              foundBy: it.foundBy,
+            }));
 
-          if (!response.error) setView("tasks");
-        }
+            const responsible = userName;
+
+            // console.log({
+            //   curricullumsInput,
+            //   documentDocumentInput,
+            //   responsible,
+            // });
+
+            Meteor.call(
+              "send_employee_request",
+              {
+                curricullumsInput,
+                documentDocumentInput,
+                responsible,
+              },
+              (error, response) => {
+                if (response == "no token") {
+                  message.error("Algo ha salido mal 😓");
+                  safeLogOut();
+                } else {
+                  message.success("Tarea terminada con éxito");
+                  console.log(response)
+
+                  if (!response.error) setView("tasks");
+                }
+              }
+            );
+          }
+        });
       }
-    );
+    });
   }
-
-  const { Text, Title } = Typography;
 
   return (
     <Flex id="employee-request-container" vertical gap={"10px"}>
@@ -119,10 +157,10 @@ export default function EmployeeRequestCurricullums() {
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
+          defaultValue={tabContents.length - 1}
           onChange={(value) =>
             setTabView(<LoadPage Component={tabContents[value]} />)
           }
-          defaultValue={0}
         />
         <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
           {requestEmployee && requestEmployeeData && tabView}
@@ -137,22 +175,15 @@ export default function EmployeeRequestCurricullums() {
         >
           Regresar
         </Button>
+
         <Button
           type="primary"
-          onClick={() => handleButtonResponses("reject")}
-          icon={<DislikeFilled />}
-          id="reject-button"
-        >
-          Rechazar
-        </Button>
-        <Button
-          type="primary"
-          onClick={() => handleButtonResponses("approve")}
+          onClick={() => handleButtonResponses("send")}
           icon={<LikeFilled />}
           iconPosition="end"
           id="approve-button"
         >
-          Continuar
+          Enviar curricullums
         </Button>
       </Flex>
     </Flex>
