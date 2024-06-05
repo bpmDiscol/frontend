@@ -7,7 +7,7 @@ export default function AddOtherGears({ update, requestData }) {
   const [newItem, setNewItem] = React.useState("");
 
   React.useEffect(() => {
-    setOtherGears(requestData?.gears?.other);
+    setOtherGears(requestData?.gears?.other||[]);
     update("gears.other", []);
     update("gears.isOther", false);
   }, []);
