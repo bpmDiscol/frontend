@@ -30,31 +30,33 @@ export default function PublicLogin() {
 
   function tryLogin(e) {
     e.preventDefault();
-    setIsLoading(true);
-    Meteor.call(
-      "bonita_login",
-      { username, password },
-      async (error, result) => {
-        if (error) console.log(error.reason);
-        else {
-          if (result.variant == "success")
-            meteorLogin({
-              bonitaUser: result.bonitaUser,
-              token: result.token,
-              JSESSIONID: result.JSESSIONID,
-              username,
-              password,
-            });
+    if (username && password) {
+      setIsLoading(true);
+      Meteor.call(
+        "bonita_login",
+        { username, password },
+        async (error, result) => {
+          if (error) console.log(error.reason);
+          else {
+            if (result.variant == "success")
+              meteorLogin({
+                bonitaUser: result.bonitaUser,
+                token: result.token,
+                JSESSIONID: result.JSESSIONID,
+                username,
+                password,
+              });
 
-          openNotification(
-            result.variant,
-            "Mensaje para: " + username,
-            result?.message
-          );
+            openNotification(
+              result.variant,
+              result?.message,
+              ""
+            );
+          }
+          setIsLoading(false);
         }
-        setIsLoading(false);
-      }
-    );
+      );
+    }
   }
 
   return (
@@ -65,6 +67,7 @@ export default function PublicLogin() {
             <img className="login-logo" src="/logo-image.png" />
             <h1>DISCOL</h1>
           </div>
+          <h3>Acceso BPM</h3>
           <form className="form">
             <input
               required={true}

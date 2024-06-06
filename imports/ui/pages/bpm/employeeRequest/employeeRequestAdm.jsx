@@ -113,7 +113,7 @@ export default function EmployeeRequestAdm() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Concepto administrativo)</Text>
+          Requisición de personal<Text strong>(Concepto administrativo)</Text>
         </Title>
       </Flex>
 
@@ -156,7 +156,7 @@ export default function EmployeeRequestAdm() {
         </Popconfirm>
         <Popconfirm
           title="¿Apruebas la solicitud?"
-          description="Confirmas que estas de acuerdo con esta solicitud de empleado. Recuerda dejar tu concepto"
+          description="Confirmas que estas de acuerdo con esta requisición de personal. Recuerda dejar tu concepto"
           onConfirm={() => handleButtonResponses("approve")}
           okText="Por supuesto"
           cancelText="Déjame pensarlo"

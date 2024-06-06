@@ -150,7 +150,7 @@ export default function EmployeeRequestCurricullums() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Cargar curricullums)</Text>
+          Requisición de personal<Text strong>(Cargar curricullums)</Text>
         </Title>
       </Flex>
 

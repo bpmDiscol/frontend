@@ -38,7 +38,7 @@ export default function AddOtherGears({ update, requestData }) {
       }}
       justify="center"
     >
-      <Title level={5}>¿Equipo adicional?</Title>
+      <Title level={5}>Herramientas adicionales?</Title>
       <Space.Compact style={{ margin: "10px 0", width: "90%" }}>
         <Input
           value={newItem}

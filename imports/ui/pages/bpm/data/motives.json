@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Nuevo cargo",
+    "value": "new-charge"
+  },
+  {
+    "label": "Aumento del personal",
+    "value": "upgrade"
+  },
+  {
+    "label": "Licencia",
+    "value": "licence"
+  },
+  {
+    "label": "Nuevo proyecto",
+    "value": "new-proyect"
+  },
+  {
+    "label": "Reemplazo",
+    "value": "replacement"
+  },
+  {
+    "label": "Incapacidad",
+    "value": "inhability"
+  }
+]

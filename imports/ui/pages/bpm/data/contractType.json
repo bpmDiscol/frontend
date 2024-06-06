@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Obra o labor contratada",
+    "value": "labour"
+  },
+  {
+    "label": "Indefinido",
+    "value": "undefined"
+  },
+  {
+    "label": "Termino fijo",
+    "value": "fixed"
+  },
+  {
+    "label": "Aprendizaje",
+    "value": "learning"
+  }
+]

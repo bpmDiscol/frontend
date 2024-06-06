@@ -148,7 +148,7 @@ export default function EmployeeRequestInterview() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Entrevistas)</Text>
+          Requisición de personal<Text strong>(Entrevistas)</Text>
         </Title>
       </Flex>
 

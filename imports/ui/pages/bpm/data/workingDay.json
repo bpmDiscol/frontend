@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Tiempo completo",
+    "value": "full-time"
+  },
+  {
+    "label": "Medio completo",
+    "value": "mid-time"
+  },
+  {
+    "label": "Trabajo por dias",
+    "value": "day-time"
+  },
+  {
+    "label": "Trabajo remoto",
+    "value": "remote"
+  }
+]

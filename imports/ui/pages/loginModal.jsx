@@ -1,5 +1,5 @@
 import React from "react";
-import Login from "./login";
+import Login from "../components/publicPage/login";
 import Modal from "react-responsive-modal";
 
 

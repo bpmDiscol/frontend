@@ -19,7 +19,7 @@ export default function EmployeeRequestLayout() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Petición de lider)</Text>
+          Requisición de personal<Text strong>(Petición de lider)</Text>
         </Title>
       </Flex>
 

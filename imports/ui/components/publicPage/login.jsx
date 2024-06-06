@@ -1,8 +1,8 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
 
-import "./styles/login.css";
-import { NotificationsContext } from "../context/notificationsProvider";
+import "./login.css";
+import { NotificationsContext } from "../../context/notificationsProvider";
 
 export default function Login({ onClose }) {
   const [username, setUsername] = React.useState("");

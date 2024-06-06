@@ -4,11 +4,11 @@
   justify-content: center;
   align-items: center;
   max-width: 350px;
-  background: #2271b1;
-  background: linear-gradient(180deg, rgb(248, 246, 255) 0%, #2271b1 60%);
+  background: white;
+  /* background: linear-gradient(180deg, rgb(248, 246, 255) 0%, #2271b1 60%); */
   border-radius: 20px;
   padding: 25px 35px;
-  border: 5px solid rgb(255, 255, 255);
+  border: 5px solid #2271b1;
   box-shadow: #2271b1 0px 30px 30px -20px;
 }
 
@@ -27,13 +27,17 @@
   font-size: 3rem;
   background: linear-gradient(
     128deg,
-    rgba(255, 255, 255, 1) 40%,
-    rgba(34, 113, 177, 1) 50%,
-    rgba(255, 255, 255, 1) 60%
+    #2271b1 40%,
+    rgb(213, 202, 255) 50%,
+    #2271b1 60%
   );
   background-size: 200%;
   background-clip: text;
   animation: shine 10s linear infinite;
+}
+h3{
+  color: #3c434a;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .heading .login-logo {
@@ -51,7 +55,7 @@
 .form .input {
   background: white;
   width: 90%;
-  border: none;
+  border: 1px solid rgba(0, 0, 255, 0.397);
   padding: 15px 10px;
   border-radius: 10px;
   margin-top: 20px;
@@ -89,7 +93,6 @@
 }
 
 .form .login-button {
-  display: block;
   width: 100%;
   font-weight: bold;
   background: linear-gradient(
@@ -98,7 +101,6 @@
     rgb(18, 177, 209) 100%
   );
   color: white;
-  padding-block: 15px;
   margin: 30px auto;
   border-radius: 10px;
   box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 20px 10px -15px;

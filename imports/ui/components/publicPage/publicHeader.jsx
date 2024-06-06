@@ -1,7 +1,7 @@
 import { Button, Flex, Image } from "antd";
 import React from "react";
 import Modal from "react-responsive-modal";
-import Login from "../../pages/login";
+import Login from "./login";
 import "react-responsive-modal/styles.css";
 import { GlobalOutlined, UserOutlined } from "@ant-design/icons";
 

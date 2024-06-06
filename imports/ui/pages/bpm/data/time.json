@@ -1,0 +1,6 @@
+[
+  { "label": "dia", "value": "dia" },
+  { "label": "semana", "value": "semana" },
+  { "label": "mes", "value": "mes" },
+  { "label": "año", "value": "año" }
+]

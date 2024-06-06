@@ -1,9 +1,10 @@
-import { Button, Col, Empty, Form, Input, Row, Spin, Switch } from "antd";
 import React from "react";
+import { Button, Col, Empty, Form, Input, Row, Select, Switch } from "antd";
+import vehicleTypeOptions from "../data/vehicles.json";
+import licenceTypeOptions from "../data/licences.json";
 
 export default function RequestVehicle({ requestData, update }) {
   const [isVehicle, setIsVehicle] = React.useState(requestData?.isVehicle);
-
 
   if (isVehicle)
     return (
@@ -11,7 +12,7 @@ export default function RequestVehicle({ requestData, update }) {
         <Col>
           <Form.Item label="Se requiere vehiculo" name="vehicle-required">
             <Switch
-            id="require-vehicle-switch"
+              id="require-vehicle-switch"
               onChange={() => {
                 setIsVehicle(!isVehicle);
                 update("isVehicle", false);
@@ -20,26 +21,28 @@ export default function RequestVehicle({ requestData, update }) {
             />
           </Form.Item>
           <Form.Item label="Tipo de vehiculo">
-            <Input
+            <Select
               id="vehicleType"
               defaultValue={requestData?.vehicleType}
-              onChange={(e) => update("vehicleType", e.target.value)}
+              options={vehicleTypeOptions}
+              onChange={(value) => update("vehicleType", value)}
             />
           </Form.Item>
           <Form.Item label="Tipo de licencia">
-            <Input
+            <Select
               id="licenceType"
               defaultValue={requestData?.licenceType}
-              onChange={(e) => update("licenceType", e.target.value)}
+              options={licenceTypeOptions}
+              onChange={(value) => update("licenceType", value)}
             />
           </Form.Item>
           <Form.Item label="Valor de rodamiento">
             <Input
               id="bearingValue"
-              defaultValue={requestData?.bearingValue||0}
+              defaultValue={requestData?.bearingValue || 0}
               type="number"
               onChange={(e) => update("bearingValue", e.target.value)}
-              addonBefore='$'
+              addonBefore="$"
             />
           </Form.Item>
         </Col>

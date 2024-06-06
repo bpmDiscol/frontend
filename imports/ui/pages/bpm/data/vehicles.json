@@ -1,0 +1,11 @@
+[
+    {"label": "BICICLETA", "value": "bicicleta"},
+    {"label": "MOTOCICLETA", "value": "motocicleta"},
+    {"label": "AUTOMÓVIL", "value": "automóvil"},
+    {"label": "FURGÓN", "value": "furgón"},
+    {"label": "CAMIONETA", "value": "camioneta"},
+    {"label": "VAN", "value": "van"},
+    {"label": "MINIVAN", "value": "minivan"},
+    {"label": "MOTOCARRO", "value": "motocarro"}
+]
+

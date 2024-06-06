@@ -30,8 +30,8 @@ export default function EmployeeRequestForm() {
   React.useEffect(() => {
     request(setRequestData);
     Meteor.call("get_processes", (error, response) => {
-      if (!error) {
-        const myProcess = response.filter(
+      if (!error && response != "error") {
+        const myProcess = response?.filter(
           (process) => process.displayName == "employee_request"
         );
 
@@ -67,7 +67,7 @@ export default function EmployeeRequestForm() {
     { label: "Datos del cargo", value: 0 },
     { label: "Vehiculo", value: 1 },
     { label: "Requerimientos", value: 2 },
-    { label: "Equipo necesario", value: 3 },
+    { label: "Herramientas", value: 3 },
     { label: "Observaciones", value: 4 },
   ];
   const tabContents = [
@@ -118,7 +118,7 @@ export default function EmployeeRequestForm() {
           openNotification(
             "success",
             "¡Buen trabajo!",
-            "La peticion de empleado se ha creado correctamente"
+            "La requisición de personal se ha creado correctamente"
           );
         }
       }
@@ -149,7 +149,7 @@ export default function EmployeeRequestForm() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Solicitud de empleado<Text strong>(Petición de lider)</Text>
+          Requisición de personal<Text strong>(Petición de lider)</Text>
         </Title>
       </Flex>
 

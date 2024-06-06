@@ -1,74 +1,19 @@
-import { Col, Form, Input, Row, Select, Space, Spin, Switch } from "antd";
 import React from "react";
+import { Col, Form, Input, Row, Select, Space, Switch } from "antd";
 
-const motiveOptions = [
-  {
-    label: "Nuevo cargo",
-    value: "new-charge",
-  },
-  {
-    label: "Aumento del personal",
-    value: "upgrade",
-  },
-  {
-    label: "Licencia",
-    value: "licence",
-  },
-  {
-    label: "Nuevo proyecto",
-    value: "new-proyect",
-  },
-  {
-    label: "Reemplazo",
-    value: "replacement",
-  },
-  {
-    label: "Incapacidad",
-    value: "inhability",
-  },
-];
+import siteOptions from "../data/sites.json";
+import areaProyectOptions from "../data/area.json";
+import workPlaceOptions from "../data/municipios.json";
+import motiveOptions from "../data/motives.json";
+import timeOptions from "../data/time.json";
+import contractTypeOptions from "../data/contractType.json";
+import workingDayOptions from "../data/workingDay.json";
 
-const timeOptions = [
-  { label: "dia", value: "dia" },
-  { label: "semana", value: "semana" },
-  { label: "mes", value: "mes" },
-  { label: "año", value: "año" },
-];
-
-const contractTypeOptions = [
-  {
-    label: "Obra o labor contratada",
-    value: "labour",
-  },
-  {
-    label: "Indefinido",
-    value: "undefined",
-  },
-  {
-    label: "Termino fijo",
-    value: "fixed",
-  },
-  {
-    label: "Aprendizaje",
-    value: "learning",
-  },
-];
-
-const workingDayOptions = [
-  {
-    label: "Tiempo completo",
-    value: "full-time",
-  },
-  {
-    label: "Medio completo",
-    value: "mid-time",
-  },
-  {
-    label: "Trabajo por dias",
-    value: "day-time",
-  },
-];
-export default function RequestGeneralities({ requestData, update, fiterErrors }) {
+export default function RequestGeneralities({
+  requestData,
+  update,
+  fiterErrors,
+}) {
   const [isBonus, setIsBonus] = React.useState();
 
   React.useEffect(() => {
@@ -79,77 +24,76 @@ export default function RequestGeneralities({ requestData, update, fiterErrors }
     <Form>
       <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
         <Col span={12}>
-          <Form.Item label="Puesto solicitado" >
+          <Form.Item label="Puesto solicitado">
             <Input
               id="companyPosition"
-              status={fiterErrors('companyPosition')}
+              status={fiterErrors("companyPosition")}
               defaultValue={requestData?.companyPosition}
               onChange={(e) => update("companyPosition", e.target.value)}
             />
           </Form.Item>
 
           <Form.Item label="Sede">
-            <Input
+            <Select
               id="site"
-              status={fiterErrors('site')}
+              status={fiterErrors("site")}
               defaultValue={requestData?.site}
-              onChange={(e) => update("site", e.target.value)}
+              options={siteOptions}
+              onChange={(value) => update("site", value)}
             />
           </Form.Item>
           <Form.Item label="Area/proyecto">
-            <Input
+            <Select
               id="area_proyect"
-              status={fiterErrors('area_proyect')}
+              status={fiterErrors("area_proyect")}
               defaultValue={requestData?.area_proyect}
-              onChange={(e) => update("area_proyect", e.target.value)}
+              options={areaProyectOptions}
+              onChange={(value) => update("area_proyect", value)}
             />
           </Form.Item>
           <Form.Item label="Lugar de trabajo">
-            <Input
+            <Select
               id="workPlace"
-              status={fiterErrors('workPlace')}
+              status={fiterErrors("workPlace")}
               defaultValue={requestData?.workPlace}
-              onChange={(e) => update("workPlace", e.target.value)}
+              options={workPlaceOptions}
+              onChange={(value) => update("site", value)}
             />
           </Form.Item>
-          <Form.Item label="Motivo del requerimiento">
+          <Form.Item label="Motivo de la solicitud">
             <Select
               id="motive"
-              status={fiterErrors('motive')}
+              status={fiterErrors("motive")}
               defaultValue={requestData?.motive}
               options={motiveOptions}
               onChange={(value) => update("motive", value)}
             />
           </Form.Item>
-          <Form.Item label='Duración' id='duration'>
-          <Space.Compact>
-                <Input
-                  id="durationCuantity"
-                  status={fiterErrors('duration')}
-                  defaultValue={requestData?.duration?.cuantity||0}
-                  type="number"
-                  onChange={(e) =>
-                    update("duration.cuantity", e.target.value)
-                  }
-                />
-                <Select
-                  options={timeOptions}
-                  id="durationTimePart"
-                  status={fiterErrors('duration')}
-                  defaultValue={requestData?.duration?.timePart}
-                  onChange={(value) =>
-                    update("duration.timePart", value)
-                  }
-                />
-              </Space.Compact>
+          <Form.Item label="Duración" id="duration">
+            <Space.Compact>
+              <Input
+                id="durationCuantity"
+                status={fiterErrors("duration")}
+                defaultValue={requestData?.duration?.cuantity || 0}
+                type="number"
+                onChange={(e) => update("duration.cuantity", e.target.value)}
+              />
+              <Select
+                options={timeOptions}
+                id="durationTimePart"
+                status={fiterErrors("duration")}
+                defaultValue={requestData?.duration?.timePart}
+                onChange={(value) => update("duration.timePart", value)}
+              />
+            </Space.Compact>
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item label="Salario">
             <Input
               id="salary"
-              status={fiterErrors('salary')}
-              defaultValue={requestData?.salary||0}
+              status={fiterErrors("salary")}
+              defaultValue={requestData?.salary || 0}
               addonBefore="$"
               type="number"
               onChange={(e) => update("salary", e.target.value)}
@@ -158,7 +102,7 @@ export default function RequestGeneralities({ requestData, update, fiterErrors }
           <Form.Item label="Jornada laboral">
             <Select
               id="workingDayType"
-              status={fiterErrors('workingDayType')}
+              status={fiterErrors("workingDayType")}
               defaultValue={requestData?.workingDayType}
               options={workingDayOptions}
               onChange={(value) => update("workingDayType", value)}
@@ -167,7 +111,7 @@ export default function RequestGeneralities({ requestData, update, fiterErrors }
           <Form.Item label="Tipo de contrato">
             <Select
               id="contractType"
-              status={fiterErrors('contractType')}
+              status={fiterErrors("contractType")}
               defaultValue={requestData?.contractType}
               onChange={(value) => update("contractType", value)}
               options={contractTypeOptions}
@@ -203,8 +147,8 @@ export default function RequestGeneralities({ requestData, update, fiterErrors }
                 <Input
                   addonBefore="Bono cada"
                   id="bonusesFrecuencyCuantity"
-                  status={fiterErrors('bonusesFrecuency')}
-                  defaultValue={requestData?.bonusesFrecuency?.cuantity||0}
+                  status={fiterErrors("bonusesFrecuency")}
+                  defaultValue={requestData?.bonusesFrecuency?.cuantity || 0}
                   type="number"
                   onChange={(e) =>
                     update("bonusesFrecuency.cuantity", e.target.value)
@@ -213,7 +157,7 @@ export default function RequestGeneralities({ requestData, update, fiterErrors }
                 <Select
                   options={timeOptions}
                   id="bonusesFrecuencyTimePart"
-                  status={fiterErrors('bonusesFrecuency')}
+                  status={fiterErrors("bonusesFrecuency")}
                   defaultValue={requestData?.bonusesFrecuency?.timePart}
                   onChange={(value) =>
                     update("bonusesFrecuency.timePart", value)
