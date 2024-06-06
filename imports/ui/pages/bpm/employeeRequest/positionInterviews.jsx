@@ -15,11 +15,6 @@ export default function PositionInterviews() {
   // });
   // console.log(curricullums)
 
-  async function getCurricullumLink(id) {
-    const resp = await Meteor.callAsync("get_file_link", { id });
-    return resp[0].link;
-  }
-
   React.useEffect(() => {
     Meteor.callAsync("get_curricullums").then((response) => {
       if (response == "error") {
@@ -38,7 +33,7 @@ export default function PositionInterviews() {
             if (!err) {
               setInterviews([
                 ...interviews,
-                { ...curricullum, link: resp[0].link },
+                { ...curricullum, link: resp[0]?.link },
               ]);
             }
           }
