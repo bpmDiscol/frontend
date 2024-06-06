@@ -8,13 +8,14 @@ import { antStyles } from "./pages/styles/antStiles";
 import { App as AntdApp } from "antd";
 import NotificationsProvider from "./context/notificationsProvider";
 import PublicPage from "./components/publicPage";
+import PublicLogin from "./components/publicLogin";
 
 export function App() {
   return (
     <CookiesProvider>
       <AntdApp>
         <NotificationsProvider>
-          <SecurityProvider publicPage={<PublicPage />}>
+          <SecurityProvider publicPage={<PublicLogin />}>
             <ConfigProvider theme={antStyles}>
               <MainViewProvider defaultView="dashboard">
                 <Workshop />

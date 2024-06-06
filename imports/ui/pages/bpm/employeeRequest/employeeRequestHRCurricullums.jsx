@@ -115,11 +115,6 @@ export default function EmployeeRequestCurricullums() {
               );
               return;
             }
-
-            console.log({
-              curricullumsInput: resp.curricullums,
-            });
-
             Meteor.call(
               "send_curricullums",
               {
