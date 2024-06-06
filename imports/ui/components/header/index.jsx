@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <Flex
-      style={{ background: "#345678", padding: "5px 10px" }}
+      style={{ background: "#2271b1", padding: "5px 10px" }}
       justify="space-between"
       align="center"
     >

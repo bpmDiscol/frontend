@@ -1,7 +1,16 @@
-import { Button, Flex } from "antd";
+import { Button, Flex, Tooltip } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
-
+import Icon, {
+  ClockCircleOutlined,
+  DeleteFilled,
+  EditFilled,
+  ExclamationCircleOutlined,
+  FieldNumberOutlined,
+  FileAddFilled,
+  FormOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 export default function TaskButtons({ buttons = [], updateList, task }) {
   const { setView } = React.useContext(MainViewContext);
 
@@ -20,31 +29,34 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       filters: ["available", "assigned"],
       user: "me",
       execute: assignTask,
+      icon: FileAddFilled,
     },
     dismiss: {
       label: "Abandonar tarea",
       filters: ["available", "assigned"],
       user: "",
       execute: assignTask,
+      icon: DeleteFilled,
     },
     do: {
       label: "Realizar tarea",
       execute: doTask,
+      icon: EditFilled,
     },
   };
 
   return (
-    <Flex gap={'10px'}>
+    <Flex gap={"10px"}>
       {buttons.map((button, index) => {
         return (
-          <Button
-            key={index}
-            onClick={() => buttonData[button].execute(button)}
-            type="primary"
-            block
-          >
-            {buttonData[button].label}
-          </Button>
+          <Tooltip key={index} title={buttonData[button].label}>
+            <Button
+              onClick={() => buttonData[button].execute(button)}
+              type="primary"
+              shape="circle"
+              icon={<Icon component={buttonData[button].icon} />}
+            />
+          </Tooltip>
         );
       })}
     </Flex>

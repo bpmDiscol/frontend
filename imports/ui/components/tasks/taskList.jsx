@@ -1,8 +1,8 @@
 import React from "react";
 import LoginModal from "../../pages/loginModal";
 import { SecurityContext } from "../../context/securityProvider";
-import TaskItem from "./taskItem";
-import { Divider, Empty, Flex, Spin, Typography } from "antd";
+import { Empty, Flex, Spin, Typography } from "antd";
+import TaskCard from "./taskCard";
 
 export default function TaskList({
   filter,
@@ -56,7 +56,7 @@ export default function TaskList({
           taskList !== "error" &&
           taskList.map((task, index) => {
             return (
-              <TaskItem
+              <TaskCard
                 key={index}
                 task={task}
                 buttons={buttons}
