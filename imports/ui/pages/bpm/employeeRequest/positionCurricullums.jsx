@@ -1,5 +1,6 @@
 import { Button, Flex, Input, Select, Space } from "antd";
 import React from "react";
+import { Meteor } from "meteor/meteor";
 import { uploadFile } from "../../../misc/uploadFile";
 import { emptySpace } from "../../../misc/emptySpace";
 import { fontList } from "../../../misc/fontList";
@@ -11,17 +12,6 @@ import {
 
 export default function PositionCurricullums() {
   const [curricullums, setCurricullums] = React.useState([]);
-
-  //   const curr = useTracker(() => {
-  //     Meteor.subscribe("curricullums");
-  //     return curricullumCollection.find().fetch();
-  //   });
-  //   React.useEffect(() => {
-  //     Meteor.call("get_file_link", { id: "Ch6pB8FmiTXBMN7iJ" }, (err, res) => {
-  //       if (err) console.log(err);
-  //       else setCurricullumLink(res[0].link);
-  //     });
-  //   }, []);
 
   React.useEffect(() => {
     Meteor.call("get_task_id", (err, currentTask) => {
@@ -44,7 +34,6 @@ export default function PositionCurricullums() {
   function saveFile(fileData, index) {
     uploadFile(fileData, index, setAttribute);
   }
-
 
   function addSpace() {
     const currentCurricullums = [...curricullums, emptySpace];
