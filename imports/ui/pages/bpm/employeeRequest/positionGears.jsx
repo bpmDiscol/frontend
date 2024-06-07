@@ -10,7 +10,6 @@ import { gearOptions } from "../../../misc/gearsOptions";
 const { Text } = Typography;
 
 export default function PositionGears({ requestEmployeeData }) {
-
   function ListItems({ header, dataSource, checkavailability = false }) {
     return (
       <List
@@ -33,7 +32,8 @@ export default function PositionGears({ requestEmployeeData }) {
             placement="left"
             title={
               checkavailability
-                ? requestEmployeeData.gears[item.value]
+                ? requestEmployeeData.gears[item.value] == true ||
+                  requestEmployeeData.gears[item.value] == "true"
                   ? "Requerido"
                   : "No requerido"
                 : "Adicional"
@@ -42,7 +42,8 @@ export default function PositionGears({ requestEmployeeData }) {
             <List.Item>
               <Text size={18}>
                 {checkavailability ? (
-                  requestEmployeeData.gears[item.value] ? (
+                  requestEmployeeData.gears[item.value] == true ||
+                  requestEmployeeData.gears[item.value] == "true" ? (
                     <CheckCircleTwoTone twoToneColor={"green"} />
                   ) : (
                     <CloseCircleTwoTone twoToneColor={"red"} />

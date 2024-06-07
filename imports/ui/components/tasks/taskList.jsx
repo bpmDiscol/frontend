@@ -27,7 +27,7 @@ export default function TaskList({
   }, []);
 
   React.useEffect(() => {
-    if (taskList?.length > 0)
+    if (taskList?.length > 0 && taskList != 'error')
       taskList.forEach((task) => {
         Meteor.call("get_employee_request_data", task.id, (err, data) => {
           if (!err)
@@ -76,8 +76,8 @@ export default function TaskList({
       }}
       className="task-list"
     >
-      <Flex style={{ width: "100%" }} justify="space-between" align="center">
-        <Title level={4} style={{ margin: "0 0 15px 0" }}>
+      <Flex style={{ width: "100%", margin:'0 0 10px 0' }} justify="space-between" align="center">
+        <Title level={4} style={{margin:0}}>
           {title} | {taskList ? taskList.length : <Spin size="small" />}
         </Title>
         <Space.Compact style={{ maxWidth: "50%" }}>
@@ -94,7 +94,7 @@ export default function TaskList({
         style={{ overflowY: "auto", height: "100%", padding: "0 5px 0 0" }}
         gap={"15px"}
       >
-        {visibleTasks?.map((task, index) => {
+        {visibleTasks && visibleTasks != 'error' && visibleTasks?.map((task, index) => {
           return (
             <TaskCard
               key={index}

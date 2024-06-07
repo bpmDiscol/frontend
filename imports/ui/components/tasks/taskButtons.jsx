@@ -3,6 +3,7 @@ import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 import Icon, {
   ClockCircleOutlined,
+  CloseCircleFilled,
   DeleteFilled,
   EditFilled,
   ExclamationCircleOutlined,
@@ -37,7 +38,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       filters: ["available", "assigned"],
       user: "",
       execute: assignTask,
-      icon: DeleteFilled,
+      icon: CloseCircleFilled,
     },
     do: {
       label: "Realizar tarea",
