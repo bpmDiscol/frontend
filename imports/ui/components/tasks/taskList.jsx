@@ -1,8 +1,8 @@
 import React from "react";
-import LoginModal from "../../pages/loginModal";
-import { SecurityContext } from "../../context/securityProvider";
-import { Empty, Flex, Spin, Typography } from "antd";
+import { Button, Empty, Flex, Input, Space, Spin, Typography } from "antd";
 import TaskCard from "./taskCard";
+import { SearchOutlined } from "@ant-design/icons";
+import { checkPartialWordsInObjects } from "../../misc/checkWordsInObject";
 
 export default function TaskList({
   filter,
@@ -13,23 +13,57 @@ export default function TaskList({
 }) {
   const { Title } = Typography;
   const [taskList, setTaskList] = React.useState();
-  const [openLogin, setOpenLogin] = React.useState(false);
-  const { setToken } = React.useContext(SecurityContext);
   const [activeResume, setActiveResume] = React.useState(null);
-  const onCloseModal = () => setOpenLogin(false);
+  const [taskData, setTaskData] = React.useState([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [visibleTasks, setVisibleTasks] = React.useState([]);
 
   React.useEffect(() => {
     Meteor.call("get_task_list", filter, (error, result) => {
       if (error) console.log(error);
-      else {
-        if (result == "no token") setOpenLogin(true);
-        else {
-          setOpenLogin(false);
-          setTaskList(result);
-        }
-      }
+      setTaskList(result);
+      setVisibleTasks(result);
     });
   }, []);
+
+  React.useEffect(() => {
+    if (taskList?.length > 0)
+      taskList.forEach((task) => {
+        Meteor.call("get_employee_request_data", task.id, (err, data) => {
+          if (!err)
+            setTaskData([
+              ...taskData,
+              {
+                area_proyect: data.area_proyect,
+                observations: data.observations,
+                requirements: data.requirements,
+                salary_string: data.salary_string,
+                site: data.site,
+                vehicleType: data.vehicleType,
+                workPlace: data.workPlace,
+                taskId: task.id,
+                displayName: task.displayName,
+                description: task.displayDescription,
+              },
+            ]);
+        });
+      });
+  }, [taskList]);
+
+  React.useEffect(() => {
+    if (!searchTerm) setVisibleTasks(taskList);
+    if (searchTerm) {
+      const filteredIds = checkPartialWordsInObjects(
+        taskData,
+        searchTerm,
+        "taskId"
+      );
+      const filteredTasks = taskList.filter((task) =>
+        filteredIds.includes(task.id)
+      );
+      setVisibleTasks(filteredTasks);
+    }
+  }, [searchTerm]);
 
   return (
     <Flex
@@ -38,46 +72,46 @@ export default function TaskList({
         border: "1px solid black",
         borderRadius: "10px",
         padding: "10px",
-        height: "70lvh",
-        boxShadow: "5px 5px 10px black",
-        background: "white",
+        height: "85lvh",
       }}
       className="task-list"
     >
-      <Title level={4} style={{ margin: "0 0 15px 0" }}>
-        {title} | {taskList ? taskList.length : <Spin size="small" />}
-      </Title>
+      <Flex style={{ width: "100%" }} justify="space-between" align="center">
+        <Title level={4} style={{ margin: "0 0 15px 0" }}>
+          {title} | {taskList ? taskList.length : <Spin size="small" />}
+        </Title>
+        <Space.Compact style={{ maxWidth: "50%" }}>
+          <Input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.currentTarget.value)}
+          />
+          <Button icon={<SearchOutlined />}></Button>
+        </Space.Compact>
+      </Flex>
+
       <Flex
         vertical
         style={{ overflowY: "auto", height: "100%", padding: "0 5px 0 0" }}
         gap={"15px"}
       >
-        {taskList &&
-          taskList !== "error" &&
-          taskList.map((task, index) => {
-            return (
-              <TaskCard
-                key={index}
-                task={task}
-                buttons={buttons}
-                index={index}
-                activeResume={index == activeResume}
-                setActiveResume={setActiveResume}
-                resume={resume}
-                updateList={updateList}
-                filter={filter}
-              />
-            );
-          })}
+        {visibleTasks?.map((task, index) => {
+          return (
+            <TaskCard
+              key={index}
+              task={task}
+              buttons={buttons}
+              index={index}
+              activeResume={index == activeResume}
+              setActiveResume={setActiveResume}
+              resume={resume}
+              updateList={updateList}
+              filter={filter}
+            />
+          );
+        })}
         {taskList?.length == 0 && <Empty description="Sin tareas" />}
         {!taskList && <Spin fullscreen />}
       </Flex>
-
-      <LoginModal
-        openLogin={openLogin}
-        onCloseLogin={onCloseModal}
-        setToken={setToken}
-      />
     </Flex>
   );
 }

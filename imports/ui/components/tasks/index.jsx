@@ -23,12 +23,6 @@ export default function Tasks() {
 
   return (
     <Flex vertical>
-      <Row>
-        <Col span={24}>
-          <Title level={1}>Espacio de tareas <Text>(Gestiona tu labor en un solo lugar)</Text></Title>
-          
-        </Col>
-      </Row>
       <Row gutter={32}>
         <Col span={8}>
           <TaskList

@@ -50,10 +50,11 @@ export default function TaskCard({
         padding: "5px 10px",
         borderRadius: "5px",
       }}
+      onMouseOver={setActiveTask}
     >
       <Flex vertical justify="space-between">
         <Text style={{ color: "white", fontWeight: "bold" }}>
-          {`${task.displayName} No: ${requestProcess?.processId_string}`}{" "}
+          {task.displayName}
         </Text>
         <Text
           type="secondary"

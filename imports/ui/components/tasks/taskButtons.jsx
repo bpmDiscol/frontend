@@ -19,8 +19,9 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
   }
 
   function assignTask(button) {
-    Meteor.call("assign_task_to", { user: buttonData[button].user });
-    updateList(buttonData[button].filters);
+    Meteor.call("assign_task_to", { user: buttonData[button].user, taskId:task.id }, () => {
+      updateList(buttonData[button].filters);
+    });
   }
 
   const buttonData = {

@@ -20,6 +20,15 @@ Meteor.methods({
         params: {},
       });
   },
+  async get_employee_request_data(taskId) {
+    const context = await Meteor.callAsync("get_context", { taskId });
+
+    if (context)
+      return await Meteor.callAsync("get_data", {
+        url: context?.requestEmployeeData_ref?.link,
+        params: {},
+      });
+  },
 
   async get_request_process({ currentTask }) {
     const taskId = currentTask
@@ -76,7 +85,7 @@ Meteor.methods({
           isFullTime: false,
           isPartTime: false,
           isDayTime: false,
-          isRemote: false
+          isRemote: false,
         },
         motive: {
           isNewCharge: false,
@@ -116,7 +125,7 @@ Meteor.methods({
       },
     });
   },
-  async get_curricullums(){
+  async get_curricullums() {
     const { taskId } = Meteor.users.findOne(Meteor.userId());
     const context = await Meteor.callAsync("get_context", { taskId });
 
@@ -125,5 +134,5 @@ Meteor.methods({
         url: context?.curricullums_ref?.link,
         params: {},
       });
-  }
+  },
 });
