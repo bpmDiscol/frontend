@@ -16,6 +16,7 @@ const workingDay = zod.object({
   isFullTime: zod.boolean(),
   isPartTime: zod.boolean(),
   isDayTime: zod.boolean(),
+  isRemote: zod.boolean()
 });
 const motive = zod.object({
   isNewCharge: zod.boolean(),

@@ -31,4 +31,12 @@ export const gearOptions = [
       label: "Silla",
       value: "isChair",
     },
+    {
+      label: "Diadema",
+      value: "isHeadset",
+    },
+    {
+      label: "Teléfono Celular",
+      value: "isCelphone",
+    },
   ];

@@ -57,7 +57,7 @@ export default function RequestGeneralities({
               status={fiterErrors("workPlace")}
               defaultValue={requestData?.workPlace}
               options={workPlaceOptions}
-              onChange={(value) => update("site", value)}
+              onChange={(value) => update("workPlace", value)}
             />
           </Form.Item>
           <Form.Item label="Motivo de la solicitud">

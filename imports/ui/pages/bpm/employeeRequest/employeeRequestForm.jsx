@@ -106,6 +106,7 @@ export default function EmployeeRequestForm() {
             );
             return;
           }
+          console.log(response)
           setErrorFields(response.issues);
           openNotification(
             "warning",
@@ -142,7 +143,7 @@ export default function EmployeeRequestForm() {
     const fields = errorFields?.filter((field) =>
       field.path?.includes(fieldId)
     );
-    return fields.length == 0 ? "" : "error";
+    return fields?.length == 0 ? "" : "error";
   }
 
   return (

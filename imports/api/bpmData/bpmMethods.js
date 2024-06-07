@@ -85,7 +85,7 @@ Meteor.methods({
     Meteor.call("assing_task_to", { userId: "" });
   },
   async request_data_links({ requestLinks }) {
-    const requestData = requestLinks.map((link) => {
+    const requestData = requestLinks?.map((link) => {
       return Meteor.callAsync("get_data", {
         url: link.href,
         params: {},

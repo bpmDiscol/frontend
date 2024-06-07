@@ -27,8 +27,10 @@ export default function PositionGereralities({
     if (motives.isFullTime) return "Tiempo completo";
     if (motives.isPartTime) return "Medio tiempo";
     if (motives.isDayTime) return "Por dias";
+    if (motives.isRemote) return "Remoto"
     return "ERROR: Jornada no encontrado";
   }
+
 
   const generalities = [
     {
@@ -92,13 +94,11 @@ export default function PositionGereralities({
       key: "4",
       label: "Salario asignable",
       children: pesos.format(requestEmployee.salary),
-     
     },
     {
       key: "5",
       label: "Duración",
       children: `${requestEmployeeData?.duration.cuantity} ${requestEmployeeData?.duration.timePart}`,
-      
     },
 
     {

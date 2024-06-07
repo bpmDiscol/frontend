@@ -76,6 +76,7 @@ Meteor.methods({
           isFullTime: false,
           isPartTime: false,
           isDayTime: false,
+          isRemote: false
         },
         motive: {
           isNewCharge: false,

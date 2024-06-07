@@ -4,6 +4,7 @@ import ListCheckItems from "../../../components/listCheckItems";
 import { gearOptions } from "../../../misc/gearsOptions";
 import AddOtherGears from "../../../components/addOtherGears";
 
+//TODO: diadema, teléfono celular.
 export default function RequestGears({ requestData, update }) {
   return (
     <Flex justify="space-around">
