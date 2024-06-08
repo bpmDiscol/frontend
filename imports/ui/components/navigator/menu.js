@@ -25,10 +25,5 @@ export const menuItems = [
   },
   {
     type: "divider",
-  },
-  {
-    key: "notifications",
-    label: "Notificaciones",
-    icon: <BellOutlined />,
-  },
+  }
 ];

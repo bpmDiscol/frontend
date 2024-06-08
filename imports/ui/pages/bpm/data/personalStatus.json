@@ -1,0 +1,22 @@
+[
+    {
+        "label": "Soltero",
+        "value": "single"
+    },
+    {
+        "label": "Casado",
+        "value": "married"
+    },
+    {
+        "label": "Viudo",
+        "value": "widowed"
+    },
+    {
+        "label": "Separado",
+        "value": "separated"
+    },
+    {
+        "label": "Unión libre",
+        "value": "common_law"
+    }
+]
