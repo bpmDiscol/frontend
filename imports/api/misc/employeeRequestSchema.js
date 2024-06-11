@@ -43,7 +43,7 @@ const requestEmployeeData = zod.object({
   duration: timeExtension,
   salary: zod.number().refine(isnumberValid),
   isBonus: zod.boolean(),
-  bonusesFrecuency: timeExtension,
+  bonusesFrecuency: timeExtension.optional(),
   isVehicle: zod.boolean(),
   vehicleType: zod.string(),
   licenceType: zod.string(),

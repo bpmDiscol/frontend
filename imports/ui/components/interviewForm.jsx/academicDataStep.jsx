@@ -1,36 +1,10 @@
 import React from "react";
 import academicLevelOptions from "../../pages/bpm/data/academicLevel.json";
 import { Button, Col, Flex, Form, Input, List, Row, Select, Space } from "antd";
-import {
-  DeleteFilled,
-  PlusCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { DeleteFilled, PlusCircleOutlined } from "@ant-design/icons";
+import InputDataList from "./inputDataList";
 
 export default function AcademicDataStep() {
-  const [complementaryStudy, setComplementaryStudy] = React.useState([]);
-  const [knownSystems, setKnownSystems] = React.useState([]);
-
-  function addStudy(study) {
-    setComplementaryStudy([...complementaryStudy, study]);
-  }
-
-  function deleteStudy(index) {
-    copy = [...complementaryStudy];
-    copy.splice(index, 1);
-    setComplementaryStudy(copy);
-  }
-
-  function addKnownSystem(system) {
-    setKnownSystems([...knownSystems, system]);
-  }
-
-  function deleteSystem(index) {
-    copy = [...knownSystems];
-    copy.splice(index, 1);
-    setKnownSystems(copy);
-  }
-
   return (
     <Flex vertical gap={16} style={{ width: "75lvw" }}>
       <Row gutter={32}>
@@ -64,68 +38,34 @@ export default function AcademicDataStep() {
           </Form.Item>
         </Col>
       </Row>
-      <Row gutter={16}>
+      <Row gutter={32}>
         <Col
-          span={12}
+          span={11}
           style={{
             background: "#1677ff",
             padding: "10px 0 10px 20px",
             borderRadius: "10px",
+            marginLeft:32
           }}
         >
-          Estudios Complementarios
-          <Form.Item>
-            <Input
-              placeholder="inserta un estudio complementario"
-              addonAfter={<PlusCircleOutlined style={{color:'green', fontSize:'16px'}}/>}
-              type="text"
-              style={{background:'white', border: "1px solid white", borderRadius:'5px'}}
-              onKeyUp={(e) => {
-                e.preventDefault();
-                if (e.key == "Enter") addStudy(e.currentTarget.value);
-              }}
-            />
-          </Form.Item>
-          <Flex
-            vertical
-            style={{
-              overflowY: "auto",
-              overflowX: "hidden",
-              width: "99%",
-            }}
-          >
-            <List
-              grid={{ column: 1 }}
-              style={{ paddingTop: "5px" }}
-              size="small"
-              itemLayout="horizontal"
-              dataSource={complementaryStudy}
-              renderItem={(item, index) => (
-                <Flex
-                  justify="center"
-                  align="center"
-                  style={{ height: "2rem", margin:'0 8px 8px 0' }}
-                >
-                  <Input
-                    value={item}
-                    styles={{
-                      input: { height: "2rem", margin: "10px 10px 0 0" },
-                    }}
-                  />
-                  <Button
-                    danger
-                    onClick={() => deleteStudy(index)}
-                    icon={<DeleteFilled />}
-                  />
-                </Flex>
-              )}
-            />
-          </Flex>
+          <InputDataList
+            title={"Estudios Complementarios"}
+            placeholder="Inserta un estudio complementario"
+          />
         </Col>
-        <Col span={12}>
-          <Form.Item>
-            <Input placeholder="inserta una título" />
-          </Form.Item>
+        <Col
+          span={11}
+          style={{
+            background: "#1677ff",
+            padding: "10px 0 10px 20px",
+            borderRadius: "10px",
+            marginLeft:32
+          }}
+        >
+          <InputDataList
+            title={"Sistemas o software que conoce"}
+            placeholder="Inserta algun sistema o software"
+          />
         </Col>
       </Row>
     </Flex>
