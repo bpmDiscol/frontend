@@ -39,6 +39,7 @@ export default function EmployeeRequestInterview() {
         }
       );
     });
+    document.getElementById("segmented").scrollTo(1000, 0);
   }, []);
 
   React.useEffect(() => {
@@ -74,7 +75,7 @@ export default function EmployeeRequestInterview() {
     PositionRequirements,
     PositionGears,
     PositionObservations,
-    PositionInterviews
+    PositionInterviews,
   ];
 
   function handleButtonResponses(buttonResponse) {
@@ -153,13 +154,15 @@ export default function EmployeeRequestInterview() {
       </Flex>
 
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
-        <Segmented
-          options={tabTitles}
-          defaultValue={tabContents.length - 1}
-          onChange={(value) =>
-            setTabView(<LoadPage Component={tabContents[value]} />)
-          }
-        />
+        <Flex style={{ overflow: "auto" }} id="segmented">
+          <Segmented
+            options={tabTitles}
+            defaultValue={tabContents.length - 1}
+            onChange={(value) =>
+              setTabView(<LoadPage Component={tabContents[value]} />)
+            }
+          />
+        </Flex>
         <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
           {requestEmployee && requestEmployeeData && tabView}
         </Flex>

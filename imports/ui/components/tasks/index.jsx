@@ -22,38 +22,36 @@ export default function Tasks() {
   }
 
   return (
-    <Flex vertical>
-      <Row gutter={32}>
-        <Col span={8}>
-          <TaskList
-            title={"Pendientes"}
-            filter={"available"}
-            buttons={["accept"]}
-            resume
-            key={availableKey}
-            updateList={updateList}
-          />
-        </Col>
-        <Col span={8}>
-          <TaskList
-            title={"Por hacer"}
-            filter={"assigned"}
-            buttons={["dismiss", "do"]}
-            resume
-            key={assignedKey}
-            updateList={updateList}
-          />
-        </Col>
-        <Col span={8}>
-          <TaskList
-            title={"Terminadas"}
-            filter={"doneTasks"}
-            buttons={[]}
-            key={doneKey}
-            updateList={updateList}
-          />
-        </Col>
-      </Row>
+    <Flex style={{ overflow: "auto" }} gap={16}>
+      <Flex style={{width: '30lvw', minWidth:'300px'}}>
+        <TaskList
+          title={"Pendientes"}
+          filter={"available"}
+          buttons={["accept"]}
+          resume
+          key={availableKey}
+          updateList={updateList}
+        />
+      </Flex>
+      <Flex style={{width: '30lvw', minWidth:'300px'}}>
+        <TaskList
+          title={"Por hacer"}
+          filter={"assigned"}
+          buttons={["dismiss", "do"]}
+          resume
+          key={assignedKey}
+          updateList={updateList}
+        />
+      </Flex>
+      <Flex style={{width: '30lvw', minWidth:'300px'}}>
+        <TaskList
+          title={"Terminadas"}
+          filter={"doneTasks"}
+          buttons={[]}
+          key={doneKey}
+          updateList={updateList}
+        />
+      </Flex>
     </Flex>
   );
 }

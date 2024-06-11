@@ -64,6 +64,7 @@ export default function TaskList({
       setVisibleTasks(filteredTasks);
     }
   }, [searchTerm]);
+  //TODO: filtar por tiempo(meses, semanas...) dependiendo del tipo de actividad
 
   return (
     <Flex

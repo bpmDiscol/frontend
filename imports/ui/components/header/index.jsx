@@ -1,7 +1,7 @@
-import { Flex, Space } from "antd";
+import { Col, Flex, Row, Space } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
-import { SettingFilled } from "@ant-design/icons";
+import { MenuOutlined, SettingFilled } from "@ant-design/icons";
 import { safeLogOut } from "../../misc/userStatus";
 
 export default function Header() {
@@ -9,13 +9,16 @@ export default function Header() {
 
   return (
     <Flex
+      justify="space-between" align="center"
       style={{ background: "#2271b1", padding: "5px 10px" }}
-      justify="space-between"
-      align="center"
     >
-      <img src="/logo.png" id="main-logo" style={{ width: "100px" }} />
-
-      <Space wrap style={{ color: "HighlightText" }}>
+      <Space>
+        <Col xs={2} sm={0}>
+          <MenuOutlined />
+        </Col>
+        <img src="/logo.png" id="main-logo" style={{ width: "100px" }} />
+      </Space>
+      <Space>
         {userName}
         <SettingFilled
           id="logout"

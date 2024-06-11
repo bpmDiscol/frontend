@@ -3,9 +3,9 @@ import { Meteor } from "meteor/meteor";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { Button, Drawer, Empty, Flex, Modal, Spin, Tooltip } from "antd";
 import { EditFilled, FileTextFilled } from "@ant-design/icons";
-import EmployeeRequestInterviewForm from "./employeeRequestInterviewForm";
+import InterviewForm from "../../../components/interviewForm.jsx";
 
-export default function PositionInterviews() {
+export default function PositionInterviews({update}) {
   const { openNotification } = React.useContext(NotificationsContext);
   const [interviews, setInterviews] = React.useState([]);
   const [cvPreview, setCvPreview] = React.useState();
@@ -77,25 +77,21 @@ export default function PositionInterviews() {
                 >
                   {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
                   <Flex gap={16}>
-                    <Tooltip title={"Ver curricullum"}>
-                      <Button
-                        onClick={() => setCvPreview(interview.link)}
-                        type="primary"
-                        shape="circle"
-                        icon={<FileTextFilled />}
-                      />
-                    </Tooltip>{" "}
-                    <Tooltip title={"Llenar datos"}>
-                      <Button
-                        onClick={() => {
-                          setApplicant(interview)
-                          setShowDrawer(true);
-                        }}
-                        type="primary"
-                        shape="circle"
-                        icon={<EditFilled />}
-                      />
-                    </Tooltip>
+                    <Button
+                      onClick={() => setCvPreview(interview.link)}
+                      type="primary"
+                      shape="circle"
+                      icon={<FileTextFilled />}
+                    />
+                    <Button
+                      onClick={() => {
+                        setApplicant(interview);
+                        setShowDrawer(true);
+                      }}
+                      type="primary"
+                      shape="circle"
+                      icon={<EditFilled />}
+                    />
                   </Flex>
                 </Flex>
               );
@@ -114,11 +110,14 @@ export default function PositionInterviews() {
       {applicant && (
         <Drawer
           title={`${applicant.applicantName} ${applicant.applicantMidname} ${applicant.applicantLastname}`.toUpperCase()}
-          width={'70lvw'}
+          width={"100lvw"}
           open={showDrawer}
           onClose={() => setShowDrawer(false)}
+          styles={{body:{
+            paddingTop:'1lvh'
+          }}}
         >
-          <EmployeeRequestInterviewForm />
+          <InterviewForm update={update} onClose={setShowDrawer} />
         </Drawer>
       )}
     </Flex>
