@@ -1,0 +1,15 @@
+.interview-drawer{
+    width: 100lvw;
+}
+
+@media (max-width: 745) {
+    .interview-drawer{
+        width: 100lvw;
+    }
+}
+
+@media (min-width: 745) {
+    .interview-drawer{
+        width: 70lvw;
+    }
+}

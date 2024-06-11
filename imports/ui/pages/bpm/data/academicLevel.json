@@ -1,0 +1,30 @@
+[
+    {
+        "label": "Secundaria",
+        "value": "secundaria"
+    },
+    {
+        "label": "Bachiller",
+        "value": "bachiller"
+    },
+    {
+        "label": "Técnico",
+        "value": "tecnico"
+    },
+    {
+        "label": "Tecnólogo",
+        "value": "tecnologo"
+    },
+    {
+        "label": "Profesional",
+        "value": "profesional"
+    },
+    {
+        "label": "Posgrado",
+        "value": "posgrado"
+    },
+    {
+        "label": "Maestría",
+        "value": "maestria"
+    }
+]

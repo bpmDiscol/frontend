@@ -53,6 +53,9 @@ export default function InterviewForm({ update, onClose }) {
       onFinish={(values) => {
         setCurrentForm(formAttempt);
       }}
+      onKeyDown={(e) => {
+        if (e.key == "Enter") e.preventDefault();
+      }}
       labelAlign="left"
       labelCol={{
         span: 8,

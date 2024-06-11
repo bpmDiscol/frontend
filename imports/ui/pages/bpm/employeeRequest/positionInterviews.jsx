@@ -5,7 +5,7 @@ import { Button, Drawer, Empty, Flex, Modal, Spin, Tooltip } from "antd";
 import { EditFilled, FileTextFilled } from "@ant-design/icons";
 import InterviewForm from "../../../components/interviewForm.jsx";
 
-export default function PositionInterviews({update}) {
+export default function PositionInterviews({ update }) {
   const { openNotification } = React.useContext(NotificationsContext);
   const [interviews, setInterviews] = React.useState([]);
   const [cvPreview, setCvPreview] = React.useState();
@@ -113,9 +113,11 @@ export default function PositionInterviews({update}) {
           width={"100lvw"}
           open={showDrawer}
           onClose={() => setShowDrawer(false)}
-          styles={{body:{
-            paddingTop:'1lvh'
-          }}}
+          styles={{
+            body: {
+              paddingTop: "1lvh",
+            },
+          }}
         >
           <InterviewForm update={update} onClose={setShowDrawer} />
         </Drawer>

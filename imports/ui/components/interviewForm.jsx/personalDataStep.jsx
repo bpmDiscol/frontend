@@ -160,10 +160,16 @@ export default function PersonalDataStep() {
                 unCheckedChildren="No"
               />
               {isPreviusEmployee && (
-                <Input
-                  placeholder="Fecha de retiro"
-                  style={{ width: "190%" }}
-                />
+                <Flex vertical gap={8}>
+                  <Input
+                    placeholder="Fecha de retiro"
+                    style={{ width: "190%" }}
+                  />
+                  <Input
+                    placeholder="Motivo  de retiro"
+                    style={{ width: "190%" }}
+                  />
+                </Flex>
               )}
             </Space>
           </Form.Item>
@@ -187,7 +193,13 @@ export default function PersonalDataStep() {
                 unCheckedChildren="No"
               />
               {isAboutFamily && (
-                <Input placeholder="Parentezco" style={{ width: "190%" }} />
+                <Flex vertical gap={8}>
+                  <Input placeholder="Parentezco" style={{ width: "190%" }} />
+                  <Input
+                    placeholder="Nombre del familiar"
+                    style={{ width: "190%" }}
+                  />
+                </Flex>
               )}
             </Space>
           </Form.Item>
@@ -208,10 +220,20 @@ export default function PersonalDataStep() {
                 unCheckedChildren="No"
               />
               {isAboutBussiness && (
-                <Input
-                  placeholder="Mencionar empresa"
-                  style={{ width: "192%" }}
-                />
+                <Flex vertical gap={8}>
+                  <Input
+                    placeholder="Mencionar empresa"
+                    style={{ width: "192%" }}
+                  />
+                  <Input
+                    placeholder="Motivo de retiro"
+                    style={{ width: "192%" }}
+                  />
+                  <Input
+                    placeholder="Jefe inmediato"
+                    style={{ width: "192%" }}
+                  />
+                </Flex>
               )}
             </Space>
           </Form.Item>
