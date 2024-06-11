@@ -100,9 +100,7 @@ export default function PositionInterviews({ update }) {
       </Flex>
       <Flex justify="center" style={{ flex: 1 }}>
         {cvPreview ? (
-          <iframe type="application/pdf" src={cvPreview} style={{ flex: 1 }}>
-            Error
-          </iframe>
+          <iframe src={cvPreview} style={{ flex: 1 }} frameborder="0"></iframe>
         ) : (
           <Empty description="Vista previa del currícullum" />
         )}

@@ -107,8 +107,8 @@ Meteor.methods({
       url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
       params: {},
     });
-    if (memberships) {
-      const roles = await memberships.map(async (membership) => {
+    if (memberships != "error" && memberships != "no token") {
+      const roles = await memberships?.map(async (membership) => {
         const roleDescription = await Meteor.callAsync("get_data", {
           url: `/API/identity/role/${membership.role_id}`,
           params: {},

@@ -1,7 +1,6 @@
 import React from "react";
 import academicLevelOptions from "../../pages/bpm/data/academicLevel.json";
-import { Button, Col, Flex, Form, Input, List, Row, Select, Space } from "antd";
-import { DeleteFilled, PlusCircleOutlined } from "@ant-design/icons";
+import { Col, Flex, Form, Input, Row, Select } from "antd";
 import InputDataList from "./inputDataList";
 
 export default function AcademicDataStep() {
@@ -18,10 +17,12 @@ export default function AcademicDataStep() {
                 message: "Por favor, seleccione un nivel académico",
               },
             ]}
+            
           >
             <Select
               placeholder="Selecciona un nivel"
               options={academicLevelOptions}
+              id={`academic-level`}
             />
           </Form.Item>
           <Form.Item
@@ -34,37 +35,44 @@ export default function AcademicDataStep() {
               },
             ]}
           >
-            <Input placeholder="Inserta una título" />
+            <Input placeholder="Inserta una título" id={`academic-grade`} />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={32}>
         <Col
-          span={11}
+          xs={22}
+          
+          lg={11}
           style={{
-            background: "#1677ff",
+            background: "#2271b1",
             padding: "10px 0 10px 20px",
             borderRadius: "10px",
-            marginLeft:32
+            margin: "0 0 32px 32px",
           }}
         >
           <InputDataList
+            key={"study"}
             title={"Estudios Complementarios"}
             placeholder="Inserta un estudio complementario"
+            id={'study'}
           />
         </Col>
         <Col
-          span={11}
+          xs={22}
+          lg={11}
           style={{
-            background: "#1677ff",
+            background: "#2271b1",
             padding: "10px 0 10px 20px",
             borderRadius: "10px",
-            marginLeft:32
+            margin: "0 0 32px 32px",
           }}
         >
           <InputDataList
+            key={"system"}
             title={"Sistemas o software que conoce"}
             placeholder="Inserta algun sistema o software"
+            id={"system"}
           />
         </Col>
       </Row>
