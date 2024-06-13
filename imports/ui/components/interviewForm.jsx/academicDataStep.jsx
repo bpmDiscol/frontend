@@ -3,7 +3,8 @@ import academicLevelOptions from "../../pages/bpm/data/academicLevel.json";
 import { Col, Flex, Form, Input, Row, Select } from "antd";
 import InputDataList from "./inputDataList";
 
-export default function AcademicDataStep() {
+export default function AcademicDataStep({ update, form }) {
+  
   return (
     <Flex vertical gap={16} style={{ width: "75lvw" }}>
       <Row gutter={32}>
@@ -17,7 +18,7 @@ export default function AcademicDataStep() {
                 message: "Por favor, seleccione un nivel académico",
               },
             ]}
-            
+            hasFeedback
           >
             <Select
               placeholder="Selecciona un nivel"
@@ -34,6 +35,7 @@ export default function AcademicDataStep() {
                 message: "Por favor, introduce un título",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="Inserta una título" id={`academic-grade`} />
           </Form.Item>
@@ -42,7 +44,6 @@ export default function AcademicDataStep() {
       <Row gutter={32}>
         <Col
           xs={22}
-          
           lg={11}
           style={{
             background: "#2271b1",
@@ -55,7 +56,9 @@ export default function AcademicDataStep() {
             key={"study"}
             title={"Estudios Complementarios"}
             placeholder="Inserta un estudio complementario"
-            id={'study'}
+            id={"study"}
+            update={update}
+            form={form}
           />
         </Col>
         <Col
@@ -69,10 +72,12 @@ export default function AcademicDataStep() {
           }}
         >
           <InputDataList
-            key={"system"}
+            key={"systemKnown"}
             title={"Sistemas o software que conoce"}
             placeholder="Inserta algun sistema o software"
-            id={"system"}
+            id={"systemKnown"}
+            update={update}
+            form={form}
           />
         </Col>
       </Row>

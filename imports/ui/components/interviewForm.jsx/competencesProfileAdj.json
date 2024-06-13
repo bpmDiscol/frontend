@@ -1,0 +1,20 @@
+{
+  "espectedTotal": 80,
+  "aspects": [
+    {
+      "label": "Academico requerido",
+      "id":"requiredAcademic",
+      "value": 0
+    },
+    {
+      "label": "Experiencia requerida",
+      "id":"requiredExperience",
+      "value": 0
+    },
+    {
+      "label": "Competencias requeridas",
+      "id":"requiredCompetences",
+      "value": 0
+    }
+  ]
+}

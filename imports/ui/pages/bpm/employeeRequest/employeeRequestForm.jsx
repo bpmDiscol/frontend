@@ -87,7 +87,7 @@ export default function EmployeeRequestForm() {
     Meteor.call("get_task_data", "employeeRequestForm", (error, response) => {
       if (!error) {
         // console.log(response);
-        callback(response);
+        callback(response ? response[0] : []);
       }
     });
   }
@@ -106,7 +106,7 @@ export default function EmployeeRequestForm() {
             );
             return;
           }
-          console.log(response)
+          console.log(response);
           setErrorFields(response.issues);
           openNotification(
             "warning",

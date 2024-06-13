@@ -18,7 +18,8 @@ export default function PositionCurricullums() {
       if (!err) {
         const taskId = "employeeCurriculllums-" + currentTask;
         Meteor.call("get_task_data", taskId, (err, resp) => {
-          if (!err) setCurricullums(resp?.curricullums || []);
+          if (!err && resp)
+            setCurricullums( resp[0].curricullums || []);
         });
       }
     });
@@ -26,6 +27,7 @@ export default function PositionCurricullums() {
 
   function updateData(field, value) {
     Meteor.call("get_task_id", (Err, currentTask) => {
+
       const taskId = "employeeCurriculllums-" + currentTask;
       Meteor.call("update_task", { taskId, field, value });
     });
@@ -67,9 +69,6 @@ export default function PositionCurricullums() {
       align="center"
       style={{ padding: "1vw 5vw 0 2vw" }}
     >
-      {/* <iframe type="application/pdf" src={curricullumLink}>
-        Error
-      </iframe> */}
       {curricullums &&
         curricullums.map((curricullum, index) => {
           return (
@@ -88,7 +87,7 @@ export default function PositionCurricullums() {
                   id="applicantMiddleName"
                   type="text"
                   placeholder="1er apellido"
-                  value={curricullum?.applicantMiddleName}
+                  value={curricullum?.applicantMidname}
                   onChange={(e) =>
                     setAttribute(
                       "applicantMidname",
@@ -101,7 +100,7 @@ export default function PositionCurricullums() {
                   id="applicantLastName"
                   type="text"
                   placeholder="2do apellido"
-                  value={curricullum?.applicantLastName}
+                  value={curricullum?.applicantLastname}
                   onChange={(e) =>
                     setAttribute(
                       "applicantLastname",
@@ -124,22 +123,23 @@ export default function PositionCurricullums() {
                   style={{ cursor: "pointer" }}
                   for={`upload-file-${index}`}
                 >
-                  <Flex
+                  <div
                     id={`upload-file-label-${index}`}
-                    justify="space-between"
-                    align="center"
                     gap={16}
                     style={{
+                      display:'flex',
                       background: curricullum?.fileId ? "green" : "blue",
                       padding: "5px 15px",
                       borderRadius: "5px",
                       color: "white",
                       minWidth: "10vw",
+                      justifyContent: "space-around",
+                      alignItems: "center",
                     }}
                   >
                     {curricullum?.fileId ? "Cargado" : "Cargar"}
                     <FilePdfFilled />
-                  </Flex>
+                  </div>
                 </label>
                 <input
                   style={{ visibility: "hidden", width: 0 }}

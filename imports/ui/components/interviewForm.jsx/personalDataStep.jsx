@@ -17,25 +17,37 @@ import statusOptions from "../../pages/bpm/data/personalStatus.json";
 
 const { Text } = Typography;
 
-export default function PersonalDataStep() {
-  const [isPreviusEmployee, setIsPreviusEmployee] = React.useState(false);
-  const [isAboutBussiness, setIsAboutBussiness] = React.useState(false);
-  const [isAboutFamily, setIsAboutFamily] = React.useState(false);
-  const [applicationType, setApplicationType] = React.useState("internal");
+export default function PersonalDataStep({ form, update }) {
+  const [isPreviusEmployee, setIsPreviusEmployee] = React.useState();
+  const [isAboutBussiness, setIsAboutBussiness] = React.useState();
+  const [isAboutFamily, setIsAboutFamily] = React.useState();
+
+  React.useEffect(() => {
+    setIsPreviusEmployee(form.getFieldValue('isPreviusEmployee'));
+    setIsAboutBussiness(form.getFieldValue('isAboutBussiness'));
+    setIsAboutFamily(form.getFieldValue('isAboutFamily'));
+  }, []);
+
   return (
     <Flex vertical gap={16}>
       <Row gutter={32}>
         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-          <Form.Item name={"applicationType"} label="Tipo de postulación">
-            <Space>
-              <Radio.Group
-                value={applicationType}
-                onChange={(e) => setApplicationType(e.target.value)}
-              >
-                <Radio.Button value="internal">Interna</Radio.Button>
-                <Radio.Button value="external">Externa</Radio.Button>
-              </Radio.Group>
-            </Space>
+          <Form.Item
+            name={"applicationType"}
+            label="Tipo de postulación"
+            valuePropName="value"
+            initialValue={"internal"}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            hasFeedback
+          >
+            <Radio.Group>
+              <Radio.Button value="internal">Interna</Radio.Button>
+              <Radio.Button value="external">Externa</Radio.Button>
+            </Radio.Group>
           </Form.Item>
           <Col xs={{ span: 0 }} lg={{ span: 24 }}>
             <Divider style={{ margin: "20px 0" }} />
@@ -50,6 +62,7 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce una identificación",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta una identificación" />
           </Form.Item>
@@ -62,6 +75,7 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce una ciudad",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta la ciudad" />
           </Form.Item>
@@ -74,6 +88,7 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce una teléfono",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta un teléfono" />
           </Form.Item>
@@ -88,6 +103,7 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce una edad",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta una edad" />
           </Form.Item>
@@ -100,6 +116,7 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce un estado civil",
               },
             ]}
+            hasFeedback
           >
             <Select
               placeholder="Selecciona un estado"
@@ -115,11 +132,12 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce un lugar",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta un lugar de residencia" />
           </Form.Item>
           <Form.Item
-            name={"position"}
+            name={"expectedPosition"}
             label="Cargo aspirado"
             rules={[
               {
@@ -127,12 +145,13 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce un cargo",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta un cargo" />
           </Form.Item>
 
           <Form.Item
-            name={"SalaryGoal"}
+            name={"salaryGoal"}
             label="Aspiración salarial"
             rules={[
               {
@@ -140,6 +159,7 @@ export default function PersonalDataStep() {
                 message: "Por favor, introduce una aspiración salarial",
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="inserta una cifra" />
           </Form.Item>
@@ -147,62 +167,117 @@ export default function PersonalDataStep() {
       </Row>
       <Row>
         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+        <Flex vertical>
           <Space>
             <Text>¿Ha trabajado antes en discol?</Text>
-          </Space>
-
-          <Form.Item name={"isPreviusEmployee"}>
-            <Space>
+          
+            <Form.Item
+              name={"isPreviusEmployee"}
+              valuePropName="checked"
+              rules={[
+                {
+                  transform: (value) => {
+                    if (!value)
+                      update({ field: `isPreviusEmployee`, value: false });
+                  },
+                },
+              ]}
+            >
               <Switch
+                id={"isPreviusEmployee"}
                 value={isPreviusEmployee}
                 onChange={() => setIsPreviusEmployee(!isPreviusEmployee)}
                 checkedChildren="Si"
                 unCheckedChildren="No"
               />
-              {isPreviusEmployee && (
-                <Flex vertical gap={8}>
-                  <Input
-                    placeholder="Fecha de retiro"
-                    style={{ width: "190%" }}
-                  />
-                  <Input
-                    placeholder="Motivo  de retiro"
-                    style={{ width: "190%" }}
-                  />
-                </Flex>
-              )}
-            </Space>
-          </Form.Item>
+            </Form.Item>
+          </Space>
+          {isPreviusEmployee && (
+            <Flex vertical gap={8}>
+              <Form.Item
+                name={"retirementMotive"}
+                label="Motivo de retiro"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce un motivo",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Motivo de retiro" />
+              </Form.Item>
+              <Form.Item
+                name={"retirementDate"}
+                label="Fecha de retiro"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce una fecha",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Motivo  de retiro" />
+              </Form.Item>
+            </Flex>
+          )}
+        </Flex>
 
           <Space>
             <Text>¿Tiene familiares trabajando en DISCOL?</Text>
           </Space>
-          <Form.Item
-            name={"isPreviusEmployee"}
-            rules={[
-              {
-                message: "Por favor, introduce el parentezco",
-              },
-            ]}
-          >
-            <Space>
+          <Space>
+            <Form.Item
+              valuePropName="checked"
+              name={"isAboutFamily"}
+              rules={[
+                {
+                  transform: (value) => {
+                    if (!value)
+                      update({ field: `isAboutFamily`, value: false });
+                  },
+                },
+              ]}
+            >
               <Switch
                 value={isAboutFamily}
                 onChange={() => setIsAboutFamily(!isAboutFamily)}
                 checkedChildren="Si"
                 unCheckedChildren="No"
               />
-              {isAboutFamily && (
-                <Flex vertical gap={8}>
-                  <Input placeholder="Parentezco" style={{ width: "190%" }} />
-                  <Input
-                    placeholder="Nombre del familiar"
-                    style={{ width: "190%" }}
-                  />
-                </Flex>
-              )}
-            </Space>
-          </Form.Item>
+            </Form.Item>
+          </Space>
+          {isAboutFamily && (
+            <Flex vertical gap={8}>
+              <Form.Item
+                name={"kinship"}
+                label="Parentezco"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce el parentezco",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Parentezco" />
+              </Form.Item>
+              <Form.Item
+                name={"kinName"}
+                label="Nombre del familiar"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce el nombre",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Nombre del familiar" />
+              </Form.Item>
+            </Flex>
+          )}
         </Col>
         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
           <Space>
@@ -210,33 +285,70 @@ export default function PersonalDataStep() {
               ¿Ha laborado en empresas o contratistas vinculadas a Aguas de
               Cartagena, Gases del Caribe o Surtigas?
             </Text>
-          </Space>
-          <Form.Item name={"isPreviusEmployee"}>
-            <Space>
+
+            <Form.Item
+              name={"isAboutBussiness"}
+              valuePropName="checked"
+              rules={[
+                {
+                  transform: (value) => {
+                    if (!value)
+                      update({ field: `isAboutBussiness`, value: false });
+                  },
+                },
+              ]}
+            >
               <Switch
                 value={isAboutBussiness}
                 onChange={() => setIsAboutBussiness(!isAboutBussiness)}
                 checkedChildren="Si"
                 unCheckedChildren="No"
               />
-              {isAboutBussiness && (
-                <Flex vertical gap={8}>
-                  <Input
-                    placeholder="Mencionar empresa"
-                    style={{ width: "192%" }}
-                  />
-                  <Input
-                    placeholder="Motivo de retiro"
-                    style={{ width: "192%" }}
-                  />
-                  <Input
-                    placeholder="Jefe inmediato"
-                    style={{ width: "192%" }}
-                  />
-                </Flex>
-              )}
-            </Space>
-          </Form.Item>
+            </Form.Item>
+          </Space>
+          {isAboutBussiness && (
+            <Flex vertical gap={8}>
+              <Form.Item
+                name={"aboutBusinessName"}
+                label="Nombre de la empresa"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce el nombre",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Mencionar empresa" />
+              </Form.Item>
+              <Form.Item
+                name={"aboutBusinessMotive"}
+                label="Motivo de retiro"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce el motivo",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Motivo de retiro" />
+              </Form.Item>
+              <Form.Item
+                name={"aboutBusinessBoss"}
+                label="Nombre del jefe inmediato"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, introduce el nombre",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input placeholder="Jefe inmediato" />
+              </Form.Item>
+            </Flex>
+          )}
         </Col>
       </Row>
     </Flex>

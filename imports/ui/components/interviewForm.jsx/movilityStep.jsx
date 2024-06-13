@@ -1,8 +1,12 @@
 import { Col, Flex, Form, Input, Radio, Row, Space, Switch } from "antd";
 import React from "react";
 
-export default function MovilityStep() {
-  const [revisionVial, setRevisionVial] = React.useState("no");
+export default function MovilityStep({ update, form }) {
+  const [revisionVial, setRevisionVial] = React.useState();
+
+  React.useEffect(() => {
+    setRevisionVial(form.getFieldValue("revisionVial") || "no");
+  }, []);
   return (
     <Flex vertical gap={16} style={{ width: "75lvw" }}>
       <Row gutter={32}>
@@ -18,81 +22,108 @@ export default function MovilityStep() {
         >
           <Form.Item
             label="¿Cuenta con moto o vehículo?"
-            rules={[{ required: false }]}
+            rules={[
+              {
+                transform: (value) => {
+                  if (!value) update({ field: `isVehicle`, value: false });
+                },
+              },
+            ]}
             name={`isVehicle`}
+            valuePropName="checked"
           >
-            <Space>
-              <Switch
-                id={`isVehicle`}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Space>
+            <Switch
+              id={`isVehicle`}
+              value={false}
+              checkedChildren="Si"
+              unCheckedChildren="No"
+            />
           </Form.Item>
+
           <Form.Item
             label="¿Cuenta con licencia vigente?"
-            rules={[{ required: false }]}
+            rules={[
+              {
+                transform: (value) => {
+                  if (!value) update({ field: `isValidLicence`, value: false });
+                },
+              },
+            ]}
             name={`isValidLicence`}
+            valuePropName="checked"
           >
-            <Space>
-              <Switch
-                id={`isValidLicence`}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Space>
+            <Switch
+              id={`isValidLicence`}
+              checkedChildren="Si"
+              unCheckedChildren="No"
+            />
           </Form.Item>
+
           <Form.Item
             label="¿Documentos al dia?"
-            rules={[{ required: false }]}
+            rules={[
+              {
+                transform: (value) => {
+                  if (!value)
+                    update({ field: `isValidDocuments`, value: false });
+                },
+              },
+            ]}
             name={`isValidDocuments`}
+            valuePropName="checked"
           >
-            <Space>
-              <Switch
-                id={`isValidDocuments`}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Space>
+            <Switch
+              id={`isValidDocuments`}
+              checkedChildren="Si"
+              unCheckedChildren="No"
+            />
           </Form.Item>
           <Form.Item
             label="Placa del vehículo/moto"
             name={`vechiclePlate`}
             rules={[
               {
-                required: true,
-                message: "Por favor, introduce una placa",
+                transform: (value) => {
+                  if (!value) update({ field: `vechiclePlate`, value: " " });
+                },
               },
             ]}
+            hasFeedback
           >
             <Input placeholder="Inserta una placa" id={`vechiclePlate`} />
           </Form.Item>
           <Form.Item
             label="Nombre del propietario"
-            name={`vehicle-owner-name`}
+            name={`vehicle_owner_name`}
             rules={[
               {
-                required: true,
-                message: "Por favor, introduce un nombre",
+                transform: (value) => {
+                  if (!value)
+                    update({ field: `vehicle_owner_name`, value: " " });
+                },
               },
             ]}
+            hasFeedback
           >
             <Input
               placeholder="Inserta el nombre del propietario"
-              id={`vehicle-owner-name`}
+              id={`vehicle_owner_name`}
             />
           </Form.Item>
           <Form.Item
             label="Cédula del propietario"
-            name={`vehicle-owner-id`}
+            name={`vehicle_owner_id`}
             rules={[
               {
-                required: true,
-                message: "Por favor, introduce una cedula",
+                transform: (value) => {
+                  if (!value)
+                    update({ field: `vehicle_owner_id`, value: "  " });
+                },
               },
             ]}
+            hasFeedback
           >
-            <Input placeholder="Inserta la cedula" id={`vehicle-owner-id`} />
+            <Input placeholder="Inserta la cedula" id={`vehicle_owner_id`} />
           </Form.Item>
         </Col>
         <Col
@@ -107,55 +138,80 @@ export default function MovilityStep() {
         >
           <Form.Item
             label="¿Cumple/Vigente licencia?"
-            rules={[{ required: false }]}
+            rules={[
+              {
+                transform: (value) => {
+                  if (!value) update({ field: `isLicence`, value: false });
+                },
+              },
+            ]}
+            name={`isLicence`}
+            valuePropName="checked"
           >
-            <Space>
-              <Switch
-                id={`isLicence`}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Space>
+            <Switch
+              id={`isLicence`}
+              checkedChildren="Si"
+              unCheckedChildren="No"
+            />
           </Form.Item>
           <Form.Item
             label="¿Cumple/Vigente SOAT?"
-            rules={[{ required: false }]}
+            rules={[
+              {
+                transform: (value) => {
+                  if (!value) update({ field: `isSOAT`, value: false });
+                },
+              },
+            ]}
+            name={`isSOAT`}
+            valuePropName="checked"
           >
-            <Space>
-              <Switch
-                id={`isSOAT`}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Space>
+            <Switch id={`isSOAT`} checkedChildren="Si" unCheckedChildren="No" />
           </Form.Item>
           <Form.Item
             label="¿Cumple/Vigente tecnomecánica?"
-            rules={[{ required: false }]}
+            rules={[
+              {
+                transform: (value) => {
+                  if (!value)
+                    update({ field: `isTecnomecanica`, value: false });
+                },
+              },
+            ]}
+            name={`isTecnomecanica`}
+            valuePropName="checked"
           >
-            <Space>
-              <Switch
-                id={`isTecnomecanica`}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Space>
+            <Switch
+              id={`isTecnomecanica`}
+              checkedChildren="Si"
+              unCheckedChildren="No"
+            />
           </Form.Item>
           <Form.Item
             label="¿Aprobado revisión vial?"
-            rules={[{ required: false }]}
+            name={`revisionVial`}
+            valuePropName="value"
+            initialValue={revisionVial || "no"}
+            rules={[
+              {
+                transform: (value) => {
+                  update({ field: `revisionVial`, value });
+                },
+              },
+            ]}
           >
-            <Space>
-              <Radio.Group
-                value={revisionVial}
-                onChange={(e) => setRevisionVial(e.target.value)}
-                buttonStyle="solid"
-              >
-                <Radio.Button value="yes">Si</Radio.Button>
-                <Radio.Button value="no">No</Radio.Button>
-                <Radio.Button value="NA">N/A</Radio.Button>
-              </Radio.Group>
-            </Space>
+            <Radio.Group
+              value={revisionVial}
+              onChange={(e) => {
+                update({ field: "revisionVial", value: e.target.value });
+                setRevisionVial(e.target.value);
+              }}
+              buttonStyle="solid"
+            >
+              <Radio.Button value="yes">Si</Radio.Button>
+              <Radio.Button value="no">No</Radio.Button>
+              <Radio.Button value="NA">N/A</Radio.Button>
+            </Radio.Group>
           </Form.Item>
         </Col>
       </Row>

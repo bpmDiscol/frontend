@@ -1,7 +1,7 @@
 import { Col, Flex, Form, Input, Row } from "antd";
 import React from "react";
 
-function LaboralStep({index}) {
+function LaboralStep({ index }) {
   return (
     <Row gutter={32}>
       <Col
@@ -16,51 +16,67 @@ function LaboralStep({index}) {
       >
         <Form.Item
           label="Nombre de la empresa"
-          name={`business-name-${index}`}
+          name={`business_name_${index}`}
           rules={[
             {
               required: true,
               message: "Por favor, introduce un nombre",
             },
           ]}
+          hasFeedback
         >
-          <Input placeholder="Inserta una empresa" id={`business-name-${index}`}/>
+          <Input
+            placeholder="Inserta una empresa"
+            id={`business_name_${index}`}
+          />
         </Form.Item>
         <Form.Item
           label="Cargo desempeñado"
-          name={`business-labour-${index}`}
+          name={`business_labour_${index}`}
           rules={[
             {
               required: true,
               message: "Por favor, introduce un cargo",
             },
           ]}
+          hasFeedback
         >
-          <Input placeholder="Inserta una cargo" id={`business-labour-${index}`} />
+          <Input
+            placeholder="Inserta una cargo"
+            id={`business_labour_${index}`}
+          />
         </Form.Item>
         <Form.Item
           label="Tiempo laborado"
-          name={`business-time-${index}`}
+          name={`business_time_${index}`}
           rules={[
             {
               required: true,
               message: "Por favor, introduce un periodo",
             },
           ]}
+          hasFeedback
         >
-          <Input placeholder="Inserta una periodo" id={`business-time-${index}`}/>
+          <Input
+            placeholder="Inserta una periodo"
+            id={`business_time_${index}`}
+          />
         </Form.Item>
         <Form.Item
           label="Motivo de retiro"
-          name={`business-motive-${index}`}
+          name={`business_motive_${index}`}
           rules={[
             {
               required: true,
               message: "Por favor, introduce un motivo",
             },
           ]}
+          hasFeedback
         >
-          <Input placeholder="Inserta una motivo" id={`business-motive-${index}`} />
+          <Input
+            placeholder="Inserta una motivo"
+            id={`business_motive_${index}`}
+          />
         </Form.Item>
       </Col>
     </Row>

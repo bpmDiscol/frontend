@@ -60,11 +60,12 @@ Meteor.methods({
     });
   },
   async assign_task_to({ user }) {
+    const assigned_id = 
+    user == "me"
+    ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
+    : user;
     const taskId = await Meteor.callAsync("get_task_id");
-    const assigned_id =
-      user == "me"
-        ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
-        : user;
+    
     Meteor.call("put_data", {
       url: `/API/bpm/userTask/${taskId}`,
       data: {

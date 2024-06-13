@@ -20,6 +20,7 @@ export function goUserOffline() {
 }
 export function safeLogOut() {
   offlineTime.reset();
+  sessionStorage.removeItem('currentView')
   Meteor.call("go_offline");
   Meteor.logout();
 }

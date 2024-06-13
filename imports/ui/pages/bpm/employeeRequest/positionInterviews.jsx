@@ -1,23 +1,15 @@
 import React from "react";
-import { Meteor } from "meteor/meteor";
-import { NotificationsContext } from "../../../context/notificationsProvider";
-import { Button, Drawer, Empty, Flex, Modal, Spin, Tooltip } from "antd";
+import { Button, Drawer, Empty, Flex, Spin } from "antd";
 import { EditFilled, FileTextFilled } from "@ant-design/icons";
 import InterviewForm from "../../../components/interviewForm.jsx";
 
-export default function PositionInterviews({ update }) {
-  const { openNotification } = React.useContext(NotificationsContext);
-  const [interviews, setInterviews] = React.useState([]);
+export default function PositionInterviews({ update, interviews }) {
   const [cvPreview, setCvPreview] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [showDrawer, setShowDrawer] = React.useState(false);
-  const [applicant, setApplicant] = React.useState();
-
-  // const curricullums = useTracker(() => {
-  //   Meteor.subscribe("curricullums");
-  //   return curricullumCollection.find().fetch();
-  // });
-  // console.log(curricullums)
+  const [loading, setLoading] = React.useState(false);
+  const [drawerData, setDrawerData] = React.useState({
+    open: false,
+    applicant: null,
+  });
 
   function newTab(url) {
     let newTab = document.createElement("a");
@@ -26,77 +18,54 @@ export default function PositionInterviews({ update }) {
     newTab.click();
   }
 
-  React.useEffect(() => {
-    Meteor.callAsync("get_curricullums").then((response) => {
-      if (response == "error") {
-        openNotification(
-          "error",
-          "Error Critico",
-          "Los datos que se solicitados no estan disponibles o se encuentran dañados"
-        );
-        return;
-      }
-      response.forEach(async (curricullum) => {
-        Meteor.call(
-          "get_file_link",
-          { id: curricullum.fileId },
-          (err, resp) => {
-            if (!err) {
-              setInterviews([
-                ...interviews,
-                { ...curricullum, link: resp[0]?.link },
-              ]);
-            }
-          }
-        );
-      });
-      setLoading(false);
-    });
-  }, []);
+  function handleClose() {
+    setDrawerData({ applicant: null, open: false });
+  }
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
+      <Spin spinning={loading} fullscreen />
       <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
-        <Spin spinning={loading} style={{ flex: 1 }}>
-          {interviews.length == 0 && (
-            <Empty description="Cargando currícullums..." />
-          )}
-          {interviews &&
-            interviews.map((interview, index) => {
-              return (
-                <Flex
-                  key={index}
-                  justify="space-between"
-                  align="center"
-                  style={{
-                    borderRadius: "5px",
-                    border: "1px solid blue",
-                    padding: "5px 10px",
-                    boxShadow: "none",
-                  }}
-                >
-                  {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
-                  <Flex gap={16}>
-                    <Button
-                      onClick={() => setCvPreview(interview.link)}
-                      type="primary"
-                      shape="circle"
-                      icon={<FileTextFilled />}
-                    />
-                    <Button
-                      onClick={() => {
-                        setApplicant(interview);
-                        setShowDrawer(true);
-                      }}
-                      type="primary"
-                      shape="circle"
-                      icon={<EditFilled />}
-                    />
-                  </Flex>
+        {interviews && interviews.length == 0 && (
+          <Empty description="Cargando currícullums..." />
+        )}
+        {interviews &&
+          interviews.map((interview, index) => {
+            return (
+              <Flex
+                key={index}
+                justify="space-between"
+                align="center"
+                style={{
+                  borderRadius: "5px",
+                  border: "1px solid blue",
+                  padding: "5px 10px",
+                  boxShadow: "none",
+                }}
+              >
+                {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
+                <Flex gap={16}>
+                  <Button
+                    onClick={() => setCvPreview(interview.link)}
+                    type="primary"
+                    shape="circle"
+                    icon={<FileTextFilled />}
+                  />
+                  <Button
+                    onClick={() => {
+                      setDrawerData({
+                        applicant: interview,
+                        open: true,
+                      });
+                    }}
+                    type="primary"
+                    shape="circle"
+                    icon={<EditFilled />}
+                  />
                 </Flex>
-              );
-            })}
-        </Spin>
+              </Flex>
+            );
+          })}
       </Flex>
       <Flex justify="center" style={{ flex: 1 }}>
         {cvPreview ? (
@@ -105,21 +74,26 @@ export default function PositionInterviews({ update }) {
           <Empty description="Vista previa del currícullum" />
         )}
       </Flex>
-      {applicant && (
-        <Drawer
-          title={`${applicant.applicantName} ${applicant.applicantMidname} ${applicant.applicantLastname}`.toUpperCase()}
-          width={"100lvw"}
-          open={showDrawer}
-          onClose={() => setShowDrawer(false)}
-          styles={{
-            body: {
-              paddingTop: "1lvh",
-            },
-          }}
-        >
-          <InterviewForm update={update} onClose={setShowDrawer} />
-        </Drawer>
-      )}
+
+      <Drawer
+        title={`${drawerData.applicant?.applicantName} ${drawerData.applicant?.applicantMidname} ${drawerData.applicant?.applicantLastname}`.toUpperCase()}
+        width={"100lvw"}
+        open={drawerData.open}
+        onClose={() => handleClose()}
+        styles={{
+          body: {
+            paddingTop: "1lvh",
+          },
+        }}
+      >
+        {drawerData.applicant && (
+          <InterviewForm
+            update={update}
+            onClose={handleClose}
+            fileId={drawerData.applicant?.fileId}
+          />
+        )}
+      </Drawer>
     </Flex>
   );
 }

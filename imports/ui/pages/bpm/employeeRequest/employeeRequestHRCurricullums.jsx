@@ -94,8 +94,9 @@ export default function EmployeeRequestCurricullums() {
       if (!err) {
         const taskId = "employeeCurriculllums-" + currentTask;
         Meteor.call("get_task_data", taskId, (err, resp) => {
-          if (!err) {
-            if (resp?.curricullums.length == 0) {
+          if (!err && resp.length) {
+            const curricullums = resp[0].curricullums
+            if (curricullums.length == 0) {
               openNotification(
                 "warning",
                 "Esto debe ser un error...",
@@ -104,7 +105,7 @@ export default function EmployeeRequestCurricullums() {
               return;
             }
 
-            const documents = resp?.curricullums?.filter(
+            const documents = curricullums?.filter(
               (it) => it.fileId == ""
             );
             if (documents.length > 0) {
@@ -118,7 +119,7 @@ export default function EmployeeRequestCurricullums() {
             Meteor.call(
               "send_curricullums",
               {
-                curricullumsInput: resp.curricullums,
+                curricullumsInput: curricullums,
               },
               (error, response) => {
                 if (response == "no token") {

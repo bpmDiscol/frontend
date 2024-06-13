@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Flex, Form, Row } from "antd";
+import { Button, Col, Divider, Flex, Form, Row, Spin } from "antd";
 import React from "react";
 
 import Icon, { SafetyCertificateFilled, UserOutlined } from "@ant-design/icons";
@@ -16,69 +16,87 @@ const menuList = [
     label: "Personal",
     title: "Información Personal",
     icon: UserOutlined,
-    form: <PersonalDataStep />,
+    form: PersonalDataStep,
   },
   {
     label: "Anotación",
     title: "Anotaciones Personal/Familiar",
     icon: UserOutlined,
-    form: <PersonalAnotationsStep />,
+    form: PersonalAnotationsStep,
   },
   {
     label: "Académico",
     title: "Formación Académica",
     icon: UserOutlined,
-    form: <AcademicDataStep />,
+    form: AcademicDataStep,
   },
   {
     label: "Laboral",
     title: "Antecedentes laborales",
     icon: UserOutlined,
-    form: <LaboralDataStep />,
+    form: LaboralDataStep,
   },
   {
     label: "Movilidad",
     title: "Movilidad",
     icon: UserOutlined,
-    form: <MovilityStep />,
+    form: MovilityStep,
   },
   {
     label: "Competencias",
     title: "Evaluación de competencias",
     icon: UserOutlined,
-    form: <CompetencesStep />,
+    form: CompetencesStep,
   },
   {
     label: "Lider",
     title: "Evaluación del lider de area/proyecto",
     icon: UserOutlined,
-    form: <LeaderStep />,
+    form: LeaderStep,
   },
   {
     label: "Concepto",
     title: "Concepto final",
     icon: UserOutlined,
-    form: <FinalConceptStep />,
+    form: FinalConceptStep,
   },
 ];
 
-export default function InterviewForm({ update, onClose }) {
-  const [currentForm, setCurrentForm] = React.useState(1);
+export default function InterviewForm({ update, onClose, fileId }) {
+  const [currentForm, setCurrentForm] = React.useState(0);
   const [formAttempt, setFormAttempt] = React.useState();
   const [form] = Form.useForm();
-  const changedFields = {};
 
+  React.useEffect(() => {
+    +Meteor.call("get_task_id", (err, currentTask) => {
+      if (!err) {
+        const taskId = "employeeInterview-" + currentTask;
+        Meteor.call("get_task_data", taskId, (err, resp) => {
+          if (!err) {
+            form.setFieldsValue(resp[0][`interview-${fileId}`]);
+            setCurrentForm(resp[0][`interview-${fileId}`].currentForm);
+          }
+        });
+      }
+    });
+  }, []);
+
+  const changedFields = {};
   function updateFields(changed) {
     if (
       changed.field != changedFields?.field ||
       changed.value != changedFields?.value
     ) {
       const { field, value } = changed;
-      console.log({ field, value });
+      update(`interview-${fileId}.${field}`, value || false);
       changedFields.field = field;
       changedFields.value = value;
     }
   }
+
+  const FormElement = (Component) => {
+    return <Component update={updateFields} form={form} />;
+  };
 
   return (
     <Form
@@ -86,13 +104,13 @@ export default function InterviewForm({ update, onClose }) {
       layout="inline"
       requiredMark={false}
       labelWrap
-      onFinish={(values) => {
+      onFinish={() => {
         setCurrentForm(formAttempt);
+        updateFields({ field: "currentForm", value: formAttempt || 0 });
       }}
       onKeyDown={(e) => {
         if (e.key == "Enter") {
           e.preventDefault();
-          e.stopPropagation();
         }
       }}
       labelAlign="left"
@@ -105,7 +123,7 @@ export default function InterviewForm({ update, onClose }) {
         style: { padding: "15px 10px" },
       }}
       onFieldsChange={(field) => {
-        // updateFields({ field: field[0].name[0], value: field[0].value });
+        updateFields({ field: field[0].name[0], value: field[0].value });
       }}
     >
       <Row gutter={{ xs: 8, lg: 32 }}>
@@ -120,7 +138,7 @@ export default function InterviewForm({ update, onClose }) {
                       <Icon
                         component={menuItem.icon}
                         style={{
-                          color: currentForm == index ? "white":"#2271b1" ,
+                          color: currentForm == index ? "white" : "#2271b1",
                           fontSize: "20px",
                         }}
                       />
@@ -129,7 +147,9 @@ export default function InterviewForm({ update, onClose }) {
                     title={menuItem.title}
                     onClick={() => setFormAttempt(index)}
                     size="large"
-                    style={{background: currentForm == index ? "#2271b1" : "white",}}
+                    style={{
+                      background: currentForm == index ? "#2271b1" : "white",
+                    }}
                   />
                   <Col
                     xs={0}
@@ -150,7 +170,11 @@ export default function InterviewForm({ update, onClose }) {
                   />
                 }
                 title={"Guardar"}
-                onClick={() => onClose(false)}
+                htmlType="submit"
+                onClick={() => {
+                  setFormAttempt(currentForm);
+                  onClose(false);
+                }}
                 size="large"
               />
               <Col
@@ -169,7 +193,7 @@ export default function InterviewForm({ update, onClose }) {
               <Divider>{menuList[currentForm || 0].title}</Divider>
             </Col>
           </Row>
-          {menuList[currentForm || 0].form}
+          {FormElement(menuList[currentForm || 0].form)}
         </Col>
       </Row>
     </Form>

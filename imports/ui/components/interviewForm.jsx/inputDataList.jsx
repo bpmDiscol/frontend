@@ -2,13 +2,18 @@ import { DeleteFilled, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Flex, Form, Input, List } from "antd";
 import React from "react";
 
-export default function InputDataList({ title, placeholder, id }) {
+export default function InputDataList({ title, placeholder, id, update, form }) {
   const [dataSource, setDataSource] = React.useState([]);
   const [currentValue, setCurrentValue] = React.useState("");
+
+  React.useEffect(()=>{
+    setDataSource(form.getFieldValue(id)||[])
+  },[])
 
   function addItem() {
     if (currentValue) {
       setDataSource([...dataSource, currentValue]);
+      update({ field: id, value: [...dataSource, currentValue] });
       setCurrentValue("");
     }
   }
@@ -17,6 +22,7 @@ export default function InputDataList({ title, placeholder, id }) {
     copy = [...dataSource];
     copy.splice(index, 1);
     setDataSource(copy);
+    update({ field: id, value: copy });
   }
 
   return (
@@ -37,8 +43,8 @@ export default function InputDataList({ title, placeholder, id }) {
             background: "white",
             border: "1px solid white",
             borderRadius: "5px",
-            width:'15rem',
-            margin:0
+            width: "15rem",
+            margin: 0,
           }}
           value={currentValue}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
@@ -55,7 +61,7 @@ export default function InputDataList({ title, placeholder, id }) {
           overflowY: "auto",
           overflowX: "hidden",
           width: "99%",
-          minHeight:'170px'
+          minHeight: "170px",
         }}
       >
         <List

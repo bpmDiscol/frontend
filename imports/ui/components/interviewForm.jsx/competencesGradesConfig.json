@@ -1,0 +1,32 @@
+{
+  "isEvaluationSensibility": {
+    "label": "Sensibilidad a lineamientos",
+    "value": "",
+    "warning": false,
+    "minGrade": "A"
+  },
+  "isEvaluationFocus": {
+    "label": "Enfoque a resultados",
+    "value": "",
+    "warning": false,
+    "minGrade": "B"
+  },
+  "isEvaluationControl": {
+    "label": "Control de actividades",
+    "value": "",
+    "warning": false,
+    "minGrade": "B"
+  },
+  "isEvaluationOrientation": {
+    "label": "Orientación al servicio",
+    "value": "",
+    "warning": false,
+    "minGrade": "A"
+  },
+  "isEvaluationLearning": {
+    "label": "Aprendizaje",
+    "value": "",
+    "warning": false,
+    "minGrade": "A"
+  }
+}

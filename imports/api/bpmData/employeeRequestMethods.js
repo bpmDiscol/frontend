@@ -7,6 +7,74 @@ function justTrueInObject(attribute, keys) {
     result[key] = attribute == key ? true : false;
   });
   return result;
+  
+}
+
+function processInterviews(interviewsData) {
+  return interviewsData.map(currentInterviewInput => {
+      return {
+          aboutBusinessBoss: currentInterviewInput.aboutBusinessBoss || null,
+          aboutBusinessMotive: currentInterviewInput.aboutBusinessMotive || null,
+          aboutBusinessName: currentInterviewInput.aboutBusinessName || null,
+          academicLevel: currentInterviewInput.academicLevel || null,
+          age: currentInterviewInput.age || null,
+          applicationType: currentInterviewInput.applicationType || null,
+          business_labour_1: currentInterviewInput.business_labour_1 || null,
+          business_labour_2: currentInterviewInput.business_labour_2 || null,
+          business_motive_1: currentInterviewInput.business_motive_1 || null,
+          business_motive_2: currentInterviewInput.business_motive_2 || null,
+          business_name_1: currentInterviewInput.business_name_1 || null,
+          business_name_2: currentInterviewInput.business_name_2 || null,
+          business_time_1: currentInterviewInput.business_time_1 || null,
+          business_time_2: currentInterviewInput.business_time_2 || null,
+          city: currentInterviewInput.city || null,
+          currentForm: currentInterviewInput.currentForm || null,
+          expectedPosition: currentInterviewInput.expectedPosition || null,
+          finalConcept: currentInterviewInput.finalConcept || null,
+          grade: currentInterviewInput.grade || null,
+          id: currentInterviewInput.id || null,
+          interviewId: currentInterviewInput.interviewId,
+          isAboutBussiness: currentInterviewInput.isAboutBussiness || null,
+          isAboutFamily: currentInterviewInput.isAboutFamily || null,
+          isEvaluationControl: currentInterviewInput.isEvaluationControl || null,
+          isEvaluationFocus: currentInterviewInput.isEvaluationFocus || null,
+          isEvaluationLearning: currentInterviewInput.isEvaluationLearning || null,
+          isEvaluationOrientation: currentInterviewInput.isEvaluationOrientation || null,
+          isEvaluationSensibility: currentInterviewInput.isEvaluationSensibility || null,
+          isLicence: currentInterviewInput.isLicence || null,
+          isPreviusEmployee: currentInterviewInput.isPreviusEmployee || null,
+          isSOAT: currentInterviewInput.isSOAT || null,
+          isTecnomecanica: currentInterviewInput.isTecnomecanica || null,
+          isValidDocuments: currentInterviewInput.isValidDocuments || null,
+          isValidLicence: currentInterviewInput.isValidLicence || null,
+          isVehicle: currentInterviewInput.isVehicle || null,
+          kinName: currentInterviewInput.kinName || null,
+          kinship: currentInterviewInput.kinship || null,
+          learningAdaptation: currentInterviewInput.learningAdaptation || null,
+          personalAnnotation: currentInterviewInput.personalAnnotation || null,
+          phone: currentInterviewInput.phone || null,
+          requiredAcademic: currentInterviewInput.requiredAcademic || null,
+          requiredCompetences: currentInterviewInput.requiredCompetences || null,
+          requiredExperience: currentInterviewInput.requiredExperience || null,
+          residence: currentInterviewInput.residence || null,
+          retirementDate: currentInterviewInput.retirementDate || null,
+          retirementMotive: currentInterviewInput.retirementMotive || null,
+          revisionVial: currentInterviewInput.revisionVial || null,
+          salaryGoal: currentInterviewInput.SalaryGoal || null,
+          selected: currentInterviewInput.selected || null,
+          sizePants: currentInterviewInput.sizePants || null,
+          sizeShirt: currentInterviewInput.sizeShirt || null,
+          sizeShoes: currentInterviewInput.sizeShoes || null,
+          status: currentInterviewInput.status || null,
+          study: currentInterviewInput.study || null,
+          systemKnown: currentInterviewInput.systemKnown || null,
+          tecnicalEvaluation: currentInterviewInput.tecnicalEvaluation || null,
+          tecnicalknowledge: currentInterviewInput.tecnicalknowledge || null,
+          vehicle_owner_id: currentInterviewInput.vehicle_owner_id || null,
+          vehicle_owner_name: currentInterviewInput.vehicle_owner_name || null,
+          vechiclePlate: currentInterviewInput.vechiclePlate || null
+      };
+  });
 }
 
 Meteor.methods({
@@ -134,5 +202,16 @@ Meteor.methods({
         url: context?.curricullums_ref?.link,
         params: {},
       });
+  },
+  
+  async send_interviews( iData ) {
+    const { username, taskId } = Meteor.users.findOne(Meteor.userId());
+    return await Meteor.callAsync("post_data", {
+      url: `/API/bpm/userTask/${taskId}/execution`,
+      data: {
+        interviewData: processInterviews(iData),
+        responsible: username,
+      },
+    });
   },
 });
