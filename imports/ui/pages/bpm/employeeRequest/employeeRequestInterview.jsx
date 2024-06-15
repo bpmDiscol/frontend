@@ -59,19 +59,27 @@ export default function EmployeeRequestInterview() {
         );
         return;
       }
-      let tempInterviews = [];
-      response.forEach(async (curricullum) => {
-        Meteor.call(
-          "get_file_link",
-          { id: curricullum.fileId },
-          (err, resp) => {
-            if (!err) {
-              tempInterviews.push({ ...curricullum, link: resp[0]?.link });
-            }
-          }
-        );
+      // var tempInterviews = [];
+      const interviewsPromises = response?.map((curricullum) => {
+        return Meteor.callAsync("get_file_link", { id: curricullum.fileId });
       });
-      setInterviews(tempInterviews);
+
+      Promise.all(interviewsPromises)
+        .then((values) =>
+          values.map((value, index) => {
+            const curricullum = response[index];
+            return { ...curricullum, link: value[0].link };
+          })
+        )
+        .then((interviews) => setInterviews(interviews));
+
+      // (err, resp) => {
+      //   if (!err) {
+      //     tempInterviews.push({ ...curricullum, link: resp[0]?.link });
+      //     console.log(tempInterviews)
+      //     setInterviews(tempInterviews);
+      //   } else(console.log(err))
+      // }
     });
   }, []);
 
@@ -80,9 +88,14 @@ export default function EmployeeRequestInterview() {
   }, [requestEmployee, requestEmployeeData]);
 
   React.useEffect(() => {
-    loaded &&
-      setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
-  }, [loaded]);
+    console.log("loading new view " + interviews?.length);
+    setTabView(
+      <LoadPage
+        Component={tabContents[tabContents.length - 1]}
+        data={interviews}
+      />
+    );
+  }, [interviews]);
 
   function setReload() {
     Meteor.call("get_task_id", (err, currentTask) => {
@@ -102,19 +115,20 @@ export default function EmployeeRequestInterview() {
     await Meteor.callAsync("update_task", { taskId: myTaskId, field, value });
   }
 
-  function LoadPage({ Component }) {
+  function LoadPage({ Component, data }) {
     return (
       <Component
         requestEmployee={requestEmployee}
         requestEmployeeData={requestEmployeeData}
         update={updateData}
         interviewData={interviewData}
-        interviews={interviews}
+        interviews={data}
         getInterviewData={getInterviewData}
         setReload={setReload}
       />
     );
   }
+
   const tabTitles = [
     { label: "Datos del cargo", value: 0 },
     { label: "Vehiculo", value: 1 },
@@ -153,7 +167,7 @@ export default function EmployeeRequestInterview() {
             console.log(error);
             return;
           }
-          console.log(response);
+          console.log(response)
           if (response == "no token") {
             openNotification(
               "Error",
@@ -192,13 +206,15 @@ export default function EmployeeRequestInterview() {
             defaultValue={tabContents.length - 1}
             onChange={(value) =>
               setTabView(
-                <LoadPage Component={tabContents[value]} />
+                <LoadPage Component={tabContents[value]} data={interviews} />
               )
             }
           />
         </Flex>
         <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployee && requestEmployeeData && tabView}
+          <Spin spinning={!requestEmployeeData}>
+            {requestEmployee && requestEmployeeData && tabView}
+          </Spin>
         </Flex>
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>

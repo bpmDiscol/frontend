@@ -105,7 +105,7 @@ export default function PersonalDataStep({ form, update }) {
             ]}
             hasFeedback
           >
-            <Input placeholder="inserta una edad" />
+            <Input placeholder="inserta una edad" type="number"/>
           </Form.Item>
           <Form.Item
             name={"status"}
@@ -161,7 +161,7 @@ export default function PersonalDataStep({ form, update }) {
             ]}
             hasFeedback
           >
-            <Input placeholder="inserta una cifra" />
+            <Input placeholder="inserta una cifra" type="number" />
           </Form.Item>
         </Col>
       </Row>

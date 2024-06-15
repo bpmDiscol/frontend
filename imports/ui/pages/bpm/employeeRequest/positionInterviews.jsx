@@ -22,11 +22,12 @@ export default function PositionInterviews({ update, interviews }) {
     setDrawerData({ applicant: null, open: false });
   }
 
+
   return (
     <Flex gap={16} style={{ flex: 1 }}>
       <Spin spinning={loading} fullscreen />
       <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
-        {interviews && interviews.length == 0 && (
+        {interviews && !interviews?.length && (
           <Empty description="Cargando currícullums..." />
         )}
         {interviews &&

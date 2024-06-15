@@ -74,7 +74,7 @@ export default function InterviewForm({ update, onClose, fileId }) {
         Meteor.call("get_task_data", taskId, (err, resp) => {
           if (!err) {
             form.setFieldsValue(resp[0][`interview-${fileId}`]);
-            setCurrentForm(resp[0][`interview-${fileId}`].currentForm);
+            setCurrentForm(resp[0][`interview-${fileId}`]?.currentForm||0);
           }
         });
       }

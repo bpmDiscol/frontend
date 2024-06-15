@@ -20,6 +20,7 @@ Meteor.methods({
         params: {},
       });
     }
+    console.log('no user id')
     return [];
   },
   async get_available_tasks() {

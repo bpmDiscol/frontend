@@ -15,6 +15,7 @@ import RequestRequirements from "./requestRequirements";
 import RequestGears from "./requestGears";
 import RequestObservations from "./requestObservations";
 import { NotificationsContext } from "../../../context/notificationsProvider";
+import { safeLogOut } from "../../../misc/userStatus";
 
 const { Text, Title } = Typography;
 
@@ -98,7 +99,17 @@ export default function EmployeeRequestForm() {
       { request, processId },
       (error, response) => {
         if (response?.error) {
-          if (response?.status == 401) {
+          if (response?.status >= 500) {
+            openNotification(
+              "error",
+              "Esto no esta bien 🤔",
+              "Algo funciona mal con el servidor. Contacta personal de sistemas, por favor"
+            );
+            return;
+          }
+          
+          if (response?.status >= 400) {
+            safeLogOut()
             openNotification(
               "error",
               "Ha ocurrido un error 😓",
@@ -106,7 +117,6 @@ export default function EmployeeRequestForm() {
             );
             return;
           }
-          console.log(response);
           setErrorFields(response.issues);
           openNotification(
             "warning",
