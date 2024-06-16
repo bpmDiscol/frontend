@@ -93,6 +93,7 @@ h3{
 }
 
 .form .login-button {
+  cursor: pointer;
   width: 100%;
   font-weight: bold;
   background: linear-gradient(
@@ -102,6 +103,7 @@ h3{
   );
   color: white;
   margin: 30px auto;
+  padding: 10px;
   border-radius: 10px;
   box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 20px 10px -15px;
   border: none;

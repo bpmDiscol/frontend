@@ -27,7 +27,7 @@ export default function TaskList({
   }, []);
 
   React.useEffect(() => {
-    if (taskList?.length > 0 && taskList != 'error')
+    if (taskList?.length > 0 && taskList != "error")
       taskList.forEach((task) => {
         Meteor.call("get_employee_request_data", task.id, (err, data) => {
           if (!err)
@@ -74,11 +74,17 @@ export default function TaskList({
         borderRadius: "10px",
         padding: "10px",
         height: "85lvh",
+        width: "30lvw",
+        minWidth: "300px",
       }}
       className="task-list"
     >
-      <Flex style={{ width: "100%", margin:'0 0 10px 0' }} justify="space-between" align="center">
-        <Title level={4} style={{margin:0}}>
+      <Flex
+        style={{ width: "100%", margin: "0 0 10px 0" }}
+        justify="space-between"
+        align="center"
+      >
+        <Title level={4} style={{ margin: 0 }}>
           {title} | {taskList ? taskList.length : <Spin size="small" />}
         </Title>
         <Space.Compact style={{ maxWidth: "50%" }}>
@@ -95,21 +101,23 @@ export default function TaskList({
         style={{ overflowY: "auto", height: "100%", padding: "0 5px 0 0" }}
         gap={"15px"}
       >
-        {visibleTasks && visibleTasks != 'error' && visibleTasks?.map((task, index) => {
-          return (
-            <TaskCard
-              key={index}
-              task={task}
-              buttons={buttons}
-              index={index}
-              activeResume={index == activeResume}
-              setActiveResume={setActiveResume}
-              resume={resume}
-              updateList={updateList}
-              filter={filter}
-            />
-          );
-        })}
+        {visibleTasks &&
+          visibleTasks != "error" &&
+          visibleTasks?.map((task, index) => {
+            return (
+              <TaskCard
+                key={index}
+                task={task}
+                buttons={buttons}
+                index={index}
+                activeResume={index == activeResume}
+                setActiveResume={setActiveResume}
+                resume={resume}
+                updateList={updateList}
+                filter={filter}
+              />
+            );
+          })}
         {taskList?.length == 0 && <Empty description="Sin tareas" />}
         {!taskList && <Spin fullscreen />}
       </Flex>

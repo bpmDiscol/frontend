@@ -4,7 +4,8 @@ import AppCard from "./appCard";
 
 export default function Process() {
   return (
-    <div>
+    <div style={{padding:'20px'}}>
+      <h2>Procesos disponibles</h2>
       {aplications.map((application, index) => {
         return <AppCard key={index} application={application}/>;
       })}

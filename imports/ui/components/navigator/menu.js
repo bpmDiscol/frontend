@@ -11,19 +11,16 @@ export const menuItems = [
   {
     key: "dashboard",
     label: "Dashboard",
-    icon: <AppstoreAddOutlined />,
+    icon: AppstoreAddOutlined,
   },
   {
     key: "tasks",
     label: "Tareas",
-    icon: <SisternodeOutlined />,
+    icon: SisternodeOutlined,
   },
   {
     key: "process",
     label: "Iniciar proceso",
-    icon: <SettingOutlined />,
+    icon: SettingOutlined,
   },
-  {
-    type: "divider",
-  }
 ];

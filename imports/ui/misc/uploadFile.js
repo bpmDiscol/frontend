@@ -1,5 +1,8 @@
 import { curricullumCollection } from "../../api/curricullums/curricullumCollection";
 
+export function deleteFile(_id) {
+  curricullumCollection.remove({ _id });
+}
 export function uploadFile(fileData, index, callback) {
   const upload = curricullumCollection.insert(
     {

@@ -9,15 +9,12 @@ export default function Header() {
 
   return (
     <Flex
-      justify="space-between" align="center"
-      style={{ background: "#2271b1", padding: "5px 10px" }}
+      justify="space-between"
+      align="center"
+      style={{ background: "#2271b1", padding: "5px 10px", height: "30px" }}
     >
-      <Space>
-        <Col xs={2} sm={0}>
-          <MenuOutlined />
-        </Col>
-        <img src="/logo.png" id="main-logo" style={{ width: "100px" }} />
-      </Space>
+      <img src="/logo.png" id="main-logo" style={{ width: "120px" }} />
+
       <Space>
         {userName}
         <SettingFilled

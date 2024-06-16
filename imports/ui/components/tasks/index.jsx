@@ -22,36 +22,35 @@ export default function Tasks() {
   }
 
   return (
-    <Flex style={{ overflow: "auto" }} gap={16}>
-      <Flex style={{width: '30lvw', minWidth:'300px'}}>
-        <TaskList
-          title={"Pendientes"}
-          filter={"available"}
-          buttons={["accept"]}
-          resume
-          key={availableKey}
-          updateList={updateList}
-        />
-      </Flex>
-      <Flex style={{width: '30lvw', minWidth:'300px'}}>
-        <TaskList
-          title={"Por hacer"}
-          filter={"assigned"}
-          buttons={["dismiss", "do"]}
-          resume
-          key={assignedKey}
-          updateList={updateList}
-        />
-      </Flex>
-      <Flex style={{width: '30lvw', minWidth:'300px'}}>
-        <TaskList
-          title={"Terminadas"}
-          filter={"doneTasks"}
-          buttons={[]}
-          key={doneKey}
-          updateList={updateList}
-        />
-      </Flex>
+    <Flex
+      justify="center"
+      align="center"
+      style={{padding:'2%' }}
+      gap={16}
+    >
+      <TaskList
+        title={"Pendientes"}
+        filter={"available"}
+        buttons={["accept"]}
+        resume
+        key={availableKey}
+        updateList={updateList}
+      />
+      <TaskList
+        title={"Por hacer"}
+        filter={"assigned"}
+        buttons={["dismiss", "do"]}
+        resume
+        key={assignedKey}
+        updateList={updateList}
+      />
+      <TaskList
+        title={"Terminadas"}
+        filter={"doneTasks"}
+        buttons={[]}
+        key={doneKey}
+        updateList={updateList}
+      />
     </Flex>
   );
 }

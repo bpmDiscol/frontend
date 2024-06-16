@@ -16,5 +16,11 @@ import "../imports/api/curricullums/curricullumCollection"
 import "../imports/api/curricullums/curricullumMethods"
 import "../imports/api/curricullums/curricullumsPublication"
 
+//files
+import "../imports/api/files/filesCollection"
+import "../imports/api/files/filesMethods"
+import "../imports/api/files/filesPublication"
+
+
 
 Meteor.startup(async () => {});

@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import { Picker } from "meteor/meteorhacks:picker";
 
 const humanTasks = "/API/bpm/humanTask?p=0&c=100&";
 
@@ -9,6 +10,11 @@ const taskMode = {
   doneTasks:
     "/API/bpm/archivedHumanTask?p=0&c=100&&f=state%3Dcompleted&f=assigned_id%3D",
 };
+
+Picker.route("/post", function (params, req, res, next) {
+  res.end();
+});
+
 Meteor.methods({
   async get_task_list(filter) {
     const userId = Meteor.userId({});
@@ -20,7 +26,7 @@ Meteor.methods({
         params: {},
       });
     }
-    console.log('no user id')
+    console.log("no user id");
     return [];
   },
   async get_available_tasks() {
@@ -61,12 +67,12 @@ Meteor.methods({
     });
   },
   async assign_task_to({ user }) {
-    const assigned_id = 
-    user == "me"
-    ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
-    : user;
+    const assigned_id =
+      user == "me"
+        ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
+        : user;
     const taskId = await Meteor.callAsync("get_task_id");
-    
+
     Meteor.call("put_data", {
       url: `/API/bpm/userTask/${taskId}`,
       data: {
@@ -87,7 +93,7 @@ Meteor.methods({
     Meteor.call("assing_task_to", { userId: "" });
   },
   async request_data_links({ requestLinks }) {
-    if(!requestLinks) return
+    if (!requestLinks) return;
     const requestData = requestLinks?.map((link) => {
       return Meteor.callAsync("get_data", {
         url: link.href,
@@ -133,5 +139,4 @@ Meteor.methods({
       params: {},
     });
   },
- 
 });

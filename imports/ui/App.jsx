@@ -7,7 +7,6 @@ import { ConfigProvider } from "antd";
 import { antStyles } from "./pages/styles/antStiles";
 import { App as AntdApp } from "antd";
 import NotificationsProvider from "./context/notificationsProvider";
-import PublicPage from "./components/publicPage";
 import PublicLogin from "./components/publicLogin";
 
 export function App() {

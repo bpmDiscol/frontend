@@ -7,15 +7,24 @@ import PositionObservations from "./positionObservations";
 
 import { MainViewContext } from "../../../context/mainViewProvider";
 
-import { Button, Flex, Popconfirm, Segmented, Spin, Typography } from "antd";
+import {
+  Button,
+  Empty,
+  Flex,
+  Popconfirm,
+  Segmented,
+  Spin,
+  Typography,
+} from "antd";
 import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import PositionInterviews from "./positionInterviews";
+import PositionBackgroud from "./positionBackground";
 import SpinningLoader from "../../../components/spinningLoader";
 
 const { Text, Title } = Typography;
-export default function EmployeeRequestInterview() {
+export default function EmployeeRequestBackground() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
   const [requestEmployee, setRequestEmployee] = React.useState();
   const { setView } = React.useContext(MainViewContext);
@@ -127,7 +136,7 @@ export default function EmployeeRequestInterview() {
     { label: "Requerimientos", value: 2 },
     { label: "Equipo necesario", value: 3 },
     { label: "Observaciones", value: 4 },
-    { label: "Entrevistas", value: 5 },
+    { label: "Antecedentes", value: 5 },
   ];
   const tabContents = [
     PositionGereralities,
@@ -135,7 +144,7 @@ export default function EmployeeRequestInterview() {
     PositionRequirements,
     PositionGears,
     PositionObservations,
-    PositionInterviews,
+    PositionBackgroud,
   ];
 
   function handleButtonResponses(buttonResponse) {
@@ -187,7 +196,7 @@ export default function EmployeeRequestInterview() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Requisición de personal<Text strong>(Entrevistas)</Text>
+          Requisición de personal<Text strong>(Antecedentes)</Text>
         </Title>
       </Flex>
 
