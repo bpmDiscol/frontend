@@ -18,7 +18,9 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
     Meteor.call(
       "assign_task_to",
       { user: buttonData[button].user, taskId: task.id },
-      () => {
+      (error, resp) => {
+        if (error) console.log(error);
+        if (resp) console.log(resp);
         updateList(buttonData[button].filters);
       }
     );
@@ -31,6 +33,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       user: "me",
       execute: assignTask,
       icon: FileAddFilled,
+      id: "take-task_button",
     },
     dismiss: {
       label: "Abandonar tarea",
@@ -38,11 +41,13 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       user: "",
       execute: assignTask,
       icon: CloseCircleFilled,
+      id: "undone-task-button",
     },
     do: {
       label: "Realizar tarea",
       execute: doTask,
       icon: EditFilled,
+      id: "do-task",
     },
   };
 
@@ -52,9 +57,10 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
         return (
           <Tooltip key={index} title={buttonData[button].label}>
             <Button
+              id={buttonData[button].id}
               loading={loading}
               onClick={() => {
-                setLoading(true)
+                setLoading(true);
                 buttonData[button].execute(button);
               }}
               type="primary"

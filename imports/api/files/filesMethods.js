@@ -16,10 +16,12 @@ Meteor.methods({
     const collectionType = collection[`${collectionId}`];
     return await collectionType.find({ _id: id });
   },
-  getFileLink({ id, collectionName }) {
+  async getFileLink({ id, collectionName }) {
     return collection[`${collectionName}`].collection
       .find({})
       .map(function (fileRef) {
+        console.log("🚀 ~ fileRef:", fileRef)
+        
         return {
           link: collection[`${collectionName}`].link(fileRef),
           id: fileRef._id,

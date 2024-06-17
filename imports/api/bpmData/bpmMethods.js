@@ -67,18 +67,17 @@ Meteor.methods({
     });
   },
   async assign_task_to({ user }) {
-    const assigned_id =
-      user == "me"
-        ? Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser
-        : user;
-    const taskId = await Meteor.callAsync("get_task_id");
-
-    Meteor.call("put_data", {
-      url: `/API/bpm/userTask/${taskId}`,
-      data: {
-        assigned_id,
-      },
-    });
+    const currentUser = Meteor.users.findOne(Meteor.userId({}));
+    const taskId = currentUser.taskId;
+    const assigned_id = user == "me" ? currentUser.profile.bonitaUser : user;
+    if (taskId) {
+      Meteor.call("put_data", {
+        url: `/API/bpm/userTask/${taskId}`,
+        data: {
+          assigned_id,
+        },
+      });
+    }else return 'no taskId'
   },
   set_task_id({ taskId }) {
     Meteor.users.update({ _id: Meteor.userId() }, { $set: { taskId } });
