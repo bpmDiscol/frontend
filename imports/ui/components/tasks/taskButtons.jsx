@@ -2,27 +2,26 @@ import { Button, Flex, Tooltip } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 import Icon, {
-  ClockCircleOutlined,
   CloseCircleFilled,
-  DeleteFilled,
   EditFilled,
-  ExclamationCircleOutlined,
-  FieldNumberOutlined,
   FileAddFilled,
-  FormOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 export default function TaskButtons({ buttons = [], updateList, task }) {
   const { setView } = React.useContext(MainViewContext);
+  const [loading, setLoading] = React.useState(false);
 
   function doTask() {
     setView(task.name, { taskId: task.id });
   }
 
   function assignTask(button) {
-    Meteor.call("assign_task_to", { user: buttonData[button].user, taskId:task.id }, () => {
-      updateList(buttonData[button].filters);
-    });
+    Meteor.call(
+      "assign_task_to",
+      { user: buttonData[button].user, taskId: task.id },
+      () => {
+        updateList(buttonData[button].filters);
+      }
+    );
   }
 
   const buttonData = {
@@ -53,7 +52,11 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
         return (
           <Tooltip key={index} title={buttonData[button].label}>
             <Button
-              onClick={() => buttonData[button].execute(button)}
+              loading={loading}
+              onClick={() => {
+                setLoading(true)
+                buttonData[button].execute(button);
+              }}
               type="primary"
               shape="circle"
               icon={<Icon component={buttonData[button].icon} />}

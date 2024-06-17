@@ -1,22 +1,26 @@
 import React from "react";
 import { Button, Drawer, Empty, Flex, Spin } from "antd";
-import { EditFilled, FileTextFilled } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  EditFilled,
+  FileTextFilled,
+} from "@ant-design/icons";
 import InterviewForm from "../../../components/interviewForm.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 export default function PositionInterviews({ update, interviews }) {
-  const [cvPreview, setCvPreview] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const [drawerData, setDrawerData] = React.useState({
     open: false,
     applicant: null,
   });
 
-  function newTab(url) {
-    let newTab = document.createElement("a");
+  function newTab(url, download = false) {
+    const newTab = document.createElement("a");    
     newTab.href = url;
     newTab.target = "_blank";
+    newTab.download = download;
     newTab.click();
   }
 
@@ -48,12 +52,14 @@ export default function PositionInterviews({ update, interviews }) {
                 {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
                 <Flex gap={16}>
                   <Button
-                    onClick={() => setCvPreview(interview.link)}
+                    onClick={() => newTab(interview.link, true)}
                     type="primary"
                     shape="circle"
-                    icon={<FileTextFilled />}
+                    icon={<DownloadOutlined />}
+                    id="download-cv"
                   />
                   <Button
+                  loading={!interview.link}
                     title="Ver curricullum"
                     id="watch-cv-button"
                     onClick={() => newTab(googleDocsViewer + interview.link)}
@@ -78,13 +84,6 @@ export default function PositionInterviews({ update, interviews }) {
               </Flex>
             );
           })}
-      </Flex>
-      <Flex justify="center" style={{ flex: 1 }}>
-        {cvPreview ? (
-          <iframe src={cvPreview} style={{ flex: 1 }} frameborder="0"></iframe>
-        ) : (
-          <Empty description="Vista previa del currícullum" />
-        )}
       </Flex>
 
       <Drawer

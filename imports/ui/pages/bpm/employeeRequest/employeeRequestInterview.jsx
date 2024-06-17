@@ -60,16 +60,18 @@ export default function EmployeeRequestInterview() {
         );
         return;
       }
-      // var tempInterviews = [];
       const interviewsPromises = response?.map((curricullum) => {
-        return Meteor.callAsync("get_file_link", { id: curricullum.fileId });
+        return Meteor.callAsync("getFileLink", {
+          id: curricullum.fileId,
+          collectionName: "curricullums",
+        });
       });
 
       Promise.all(interviewsPromises)
         .then((values) =>
           values.map((value, index) => {
             const curricullum = response[index];
-            return { ...curricullum, link: value[0].link };
+            return { ...curricullum, link: value[0]?.link };
           })
         )
         .then((interviews) => setInterviews(interviews));
@@ -159,7 +161,6 @@ export default function EmployeeRequestInterview() {
             console.log(error);
             return;
           }
-          console.log(response);
           if (response == "no token") {
             openNotification(
               "Error",

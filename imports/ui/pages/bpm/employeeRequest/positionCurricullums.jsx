@@ -1,7 +1,6 @@
-import { Button, Flex, Input, Select, Space } from "antd";
+import { Button, Flex, Input, Select, Space, message } from "antd";
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import { uploadFile } from "../../../misc/uploadFile";
 import { emptySpace } from "../../../misc/emptySpace";
 import { fontList } from "../../../misc/fontList";
 import {
@@ -9,6 +8,7 @@ import {
   FilePdfFilled,
   FolderAddOutlined,
 } from "@ant-design/icons";
+import { deleteFile, uploadFile } from "../../../misc/filemanagement";
 
 export default function PositionCurricullums() {
   const [curricullums, setCurricullums] = React.useState([]);
@@ -32,8 +32,13 @@ export default function PositionCurricullums() {
     Meteor.call("update_task", { taskId, field, value });
   }
 
-  function saveFile(fileData, index) {
-    uploadFile(fileData, index, setAttribute);
+  async function saveFile(fileData, index) {
+    const currentFile = curricullums[index].fileId;
+    if (currentFile) deleteFile("curricullums", currentFile);
+    uploadFile("curricullums", fileData, index, (fileId) => {
+      if (fileId) setAttribute("fileId", fileId, index);
+      else message.error('No fue posible cargar el archivo')
+    });
   }
 
   function addSpace() {
@@ -55,7 +60,7 @@ export default function PositionCurricullums() {
     const fileId = currentCurricullums[index].fileId;
     currentCurricullums.splice(index, 1);
 
-    if (fileId) Meteor.call("delete_file", { fileId });
+    if (fileId) deleteFile("curricullums", fileId);
     setCurricullums(currentCurricullums);
     updateData("curricullums", currentCurricullums);
   }

@@ -12,7 +12,9 @@ Meteor.methods({
   async get_curricullum_by_id({ id }) {
     return await curricullumCollection.find({ _id: id });
   },
+  
   get_file_link({ id }) {
+    console.log(curricullumCollection)
     return curricullumCollection.collection
       .find({})
       .map(function (fileRef) {

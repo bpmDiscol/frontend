@@ -1,8 +1,9 @@
 [
   {
     "processName": "employeeRequest",
-    "displayName": "employee_request",
     "restrictions": ["Lider"],
-    "page": "employee_request_form"
+    "page": "employee_request_form",
+    "displayName": "Requisición de personal",
+    "description": "Solicitud oficial de talento humano"
   }
 ]

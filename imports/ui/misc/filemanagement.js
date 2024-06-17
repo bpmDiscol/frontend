@@ -8,14 +8,13 @@ const collection = {
   curricullums: curricullumsCollection,
 };
 
-export function deleteFile(name, _id) {
-    console.log(_id)
-  collection[`${name}`].collection.remove({ _id });
+export function deleteFile(collectionId, _id) {
+  collection[`${collectionId}`].remove({ _id });
 }
 
-export function uploadFile(name, fileData, index, callback) {
-  console.log(name);
-  const collectionType = collection[`${name}`];
+export async function uploadFile(collectionId, fileData, index, callback) {
+  console.log(collectionId);
+  const collectionType = collection[`${collectionId}`];
   const upload = collectionType.insert(
     {
       file: fileData,
@@ -27,8 +26,11 @@ export function uploadFile(name, fileData, index, callback) {
   upload.on("end", (error, fileObj) => {
     if (error) console.log(error);
     else {
-      callback("fileId", fileObj._id, index);
+      return callback(fileObj._id);
     }
   });
   upload.start();
 }
+
+
+

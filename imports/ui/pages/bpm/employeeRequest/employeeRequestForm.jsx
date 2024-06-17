@@ -107,9 +107,9 @@ export default function EmployeeRequestForm() {
             );
             return;
           }
-          
+
           if (response?.status >= 400) {
-            safeLogOut()
+            safeLogOut();
             openNotification(
               "error",
               "Ha ocurrido un error 😓",
@@ -157,14 +157,19 @@ export default function EmployeeRequestForm() {
   }
 
   return (
-    <Flex id="employee-request-container" vertical gap={"10px"}>
+    <Flex
+      id="employee-request-container"
+      vertical
+      gap={"10px"}
+      style={{ width: "90%" }}
+    >
       <Flex vertical wrap>
         <Title level={1}>
           Requisición de personal<Text strong>(Petición de lider)</Text>
         </Title>
       </Flex>
 
-      <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
+      <Flex vertical gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
           onChange={changeTab}
@@ -173,7 +178,7 @@ export default function EmployeeRequestForm() {
         />
         <Flex
           vertical
-          style={{ height: "55lvh", overflowY: "auto", overflowX: "hidden" }}
+          style={{ height: "55lvh", overflow: "hidden" }}
         >
           {tabView}
         </Flex>

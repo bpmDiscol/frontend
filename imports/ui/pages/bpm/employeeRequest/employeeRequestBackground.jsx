@@ -22,6 +22,7 @@ import { NotificationsContext } from "../../../context/notificationsProvider";
 import PositionInterviews from "./positionInterviews";
 import PositionBackgroud from "./positionBackground";
 import SpinningLoader from "../../../components/spinningLoader";
+import { get_file_link } from "../../../misc/filemanagement";
 
 const { Text, Title } = Typography;
 export default function EmployeeRequestBackground() {
@@ -33,6 +34,7 @@ export default function EmployeeRequestBackground() {
   const [myTaskId, setMyTaskId] = React.useState();
   const [interviewData, setInterviewData] = React.useState([]);
   const [interviews, setInterviews] = React.useState([]);
+  const [interviewForms, setInterviewForms] = React.useState([]);
 
   const { openNotification } = React.useContext(NotificationsContext);
 
@@ -69,9 +71,11 @@ export default function EmployeeRequestBackground() {
         );
         return;
       }
-      // var tempInterviews = [];
       const interviewsPromises = response?.map((curricullum) => {
-        return Meteor.callAsync("get_file_link", { id: curricullum.fileId });
+        return Meteor.callAsync("getFileLink", {
+          id: curricullum.fileId,
+          collectionName: "curricullums",
+        });
       });
 
       Promise.all(interviewsPromises)
@@ -86,6 +90,20 @@ export default function EmployeeRequestBackground() {
   }, []);
 
   React.useEffect(() => {
+    Meteor.callAsync("get_interviews").then((response) => {
+      if (response == "error") {
+        openNotification(
+          "error",
+          "Error Critico",
+          "Los datos que se solicitados no estan disponibles o se encuentran dañados"
+        );
+        return;
+      }
+      setInterviewForms(response);
+    });
+  }, []);
+
+  React.useEffect(() => {
     requestEmployee && requestEmployeeData && setLoaded(true);
   }, [requestEmployee, requestEmployeeData]);
 
@@ -94,6 +112,7 @@ export default function EmployeeRequestBackground() {
       <LoadPage
         Component={tabContents[tabContents.length - 1]}
         data={interviews}
+        interviews={interviewForms}
       />
     );
   }, [interviews]);
@@ -116,7 +135,7 @@ export default function EmployeeRequestBackground() {
     await Meteor.callAsync("update_task", { taskId: myTaskId, field, value });
   }
 
-  function LoadPage({ Component, data }) {
+  function LoadPage({ Component, data, interviews }) {
     return (
       <Component
         requestEmployee={requestEmployee}
@@ -126,6 +145,7 @@ export default function EmployeeRequestBackground() {
         interviews={data}
         getInterviewData={getInterviewData}
         setReload={setReload}
+        interviewForms={interviews}
       />
     );
   }

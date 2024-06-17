@@ -22,16 +22,15 @@ export default function Workshop() {
       {/* Header */}
       <Header />
       {/* Body */}
-      <Flex  style={{ height: "calc(100lvh - 40px)" }}>
+      <Flex style={{ height: "calc(100lvh - 40px)" }}>
         {/* Drawer */}
         <Flex
           vertical
           style={{
             width: openNav ? "200px" : "20px",
             transition: "all 300ms ease-in-out",
-            background:'#f6f6f6',
-            borderRight:'1px solid #e6e6ef',
-            
+            background: "#f6f6f6",
+            borderRight: "1px solid #e6e6ef",
           }}
           id="navigator-menu"
         >
@@ -58,10 +57,13 @@ export default function Workshop() {
             }}
           >
             <Navigator />
-          </div>
+          </div> 
         </Flex>
         {/* Main view */}
-        <Flex id="main-view" style={{ flex: 1, overflow: "auto" }}>
+        <Flex
+          id="main-view"
+          style={{ flex: 1, overflowX: "auto", scrollbarGutter:'stable both-edges', paddingLeft: "1%" }}
+        >
           {view}
         </Flex>
       </Flex>

@@ -1,8 +1,7 @@
-import { Col, Flex, Row, Space } from "antd";
+import { Flex } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
-import { MenuOutlined, SettingFilled } from "@ant-design/icons";
-import { safeLogOut } from "../../misc/userStatus";
+import { UnlockFilled } from "@ant-design/icons";
 
 export default function Header() {
   const { userName } = React.useContext(MainViewContext);
@@ -11,18 +10,14 @@ export default function Header() {
     <Flex
       justify="space-between"
       align="center"
-      style={{ background: "#2271b1", padding: "5px 10px", height: "30px" }}
+      style={{ background: "#2271b1", padding: "5px 20px", height: "30px" }}
     >
       <img src="/logo.png" id="main-logo" style={{ width: "120px" }} />
 
-      <Space>
+      <Flex style={{ color: "white", fontWeight: "bold" }} gap={10}>
         {userName}
-        <SettingFilled
-          id="logout"
-          style={{ cursor: "pointer" }}
-          onClick={() => safeLogOut()}
-        />
-      </Space>
+        <UnlockFilled />
+      </Flex>
     </Flex>
   );
 }

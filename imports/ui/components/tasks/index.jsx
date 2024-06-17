@@ -25,7 +25,7 @@ export default function Tasks() {
     <Flex
       justify="center"
       align="center"
-      style={{padding:'2%' }}
+      style={{padding:'3%' }}
       gap={16}
     >
       <TaskList

@@ -16,7 +16,7 @@ function processInterviews(interviewsData) {
       aboutBusinessMotive: currentInterviewInput.aboutBusinessMotive || "",
       aboutBusinessName: currentInterviewInput.aboutBusinessName || "",
       academicLevel: currentInterviewInput.academicLevel || "",
-      age: parseInt(currentInterviewInput.age||0),
+      age: parseInt(currentInterviewInput.age || 0),
       applicationType: currentInterviewInput.applicationType || "",
       business_labour_1: currentInterviewInput.business_labour_1 || "",
       business_labour_2: currentInterviewInput.business_labour_2 || "",
@@ -198,7 +198,7 @@ Meteor.methods({
       return { error: true, issues: errorValidation.issues };
     }
     return await Meteor.callAsync("post_data", {
-      url: `/API/bpm/process/${processId}/instantiation`, 
+      url: `/API/bpm/process/${processId}/instantiation`,
       data,
     });
   },
@@ -226,8 +226,7 @@ Meteor.methods({
   async send_interviews(iData) {
     const { username, taskId } = Meteor.users.findOne(Meteor.userId());
     const interviewInput = processInterviews(iData);
- 
-  
+
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
@@ -235,5 +234,15 @@ Meteor.methods({
         responsible: username,
       },
     });
+  },
+  async get_interviews() {
+    const { taskId } = Meteor.users.findOne(Meteor.userId());
+    const context = await Meteor.callAsync("get_context", { taskId });
+
+    if (context)
+      return await Meteor.callAsync("get_data", {
+        url: context?.interview_ref?.link,
+        params: {},
+      });
   },
 });

@@ -14,48 +14,56 @@ import FinalConceptStep from "./finalConceptStep";
 const menuList = [
   {
     label: "Personal",
+    id: "personal",
     title: "Información Personal",
     icon: UserOutlined,
     form: PersonalDataStep,
   },
   {
     label: "Anotación",
+    id: "anotation",
     title: "Anotaciones Personal/Familiar",
     icon: UserOutlined,
     form: PersonalAnotationsStep,
   },
   {
     label: "Académico",
+    id: "academic",
     title: "Formación Académica",
     icon: UserOutlined,
     form: AcademicDataStep,
   },
   {
     label: "Laboral",
+    id: "laboral",
     title: "Antecedentes laborales",
     icon: UserOutlined,
     form: LaboralDataStep,
   },
   {
     label: "Movilidad",
+    id: "movility",
     title: "Movilidad",
     icon: UserOutlined,
     form: MovilityStep,
   },
   {
     label: "Competencias",
+    id: "competences",
     title: "Evaluación de competencias",
     icon: UserOutlined,
     form: CompetencesStep,
   },
   {
     label: "Lider",
+    id: "leader",
     title: "Evaluación del lider de area/proyecto",
     icon: UserOutlined,
     form: LeaderStep,
   },
   {
     label: "Concepto",
+    id: "final-concept",
     title: "Concepto final",
     icon: UserOutlined,
     form: FinalConceptStep,
@@ -74,7 +82,7 @@ export default function InterviewForm({ update, onClose, fileId }) {
         Meteor.call("get_task_data", taskId, (err, resp) => {
           if (!err) {
             form.setFieldsValue(resp[0][`interview-${fileId}`]);
-            setCurrentForm(resp[0][`interview-${fileId}`]?.currentForm||0);
+            setCurrentForm(resp[0][`interview-${fileId}`]?.currentForm || 0);
           }
         });
       }
@@ -128,11 +136,12 @@ export default function InterviewForm({ update, onClose, fileId }) {
     >
       <Row gutter={{ xs: 8, lg: 32 }}>
         <Col span={3}>
-          <Flex vertical>
+          <Flex vertical gap={10}>
             {menuList.map((menuItem, index) => {
               return (
                 <Flex key={index} vertical justify="center" align="center">
                   <Button
+                    id={menuItem.id}
                     shape="circle"
                     icon={
                       <Icon
@@ -161,8 +170,9 @@ export default function InterviewForm({ update, onClose, fileId }) {
                 </Flex>
               );
             })}
-            <Flex vertical>
+            <Flex vertical justify="center" align="center">
               <Button
+                id="save"
                 shape="circle"
                 icon={
                   <SafetyCertificateFilled

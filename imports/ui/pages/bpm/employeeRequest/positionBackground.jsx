@@ -1,13 +1,20 @@
 import React from "react";
 import { Button, Drawer, Empty, Flex } from "antd";
 import { EditFilled, FileTextFilled, WechatFilled } from "@ant-design/icons";
-import InterviewForm from "../../../components/interviewForm.jsx/index.jsx";
+
 import BackgroundForm from "../../../components/backgroundForm/index.jsx";
+import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
-const closed = { applicant: null, open: false };
-export default function PositionBackgroud({ update, interviews }) {
+const closed = { applicant: null, open: false, view: null };
+export default function PositionBackgroud({
+  update,
+  interviews,
+  interviewForms,
+}) {
+  console.log("🚀 ~ interviewForms:", interviewForms)
+  console.log("🚀 ~ PositionBackgroud ~ interviews:", interviews);
   const [drawerData, setDrawerData] = React.useState(closed);
 
   function newTab(url) {
@@ -53,6 +60,13 @@ export default function PositionBackgroud({ update, interviews }) {
                       setDrawerData({
                         applicant: interview,
                         open: true,
+                        view: (
+                          <InterviewView
+                            fileId={interview.fileId}
+                            onClose={handleClose}
+                            interviewForm={interviewForms[index]}
+                          />
+                        ),
                       });
                     }}
                     type="primary"
@@ -65,6 +79,7 @@ export default function PositionBackgroud({ update, interviews }) {
                       setDrawerData({
                         applicant: interview,
                         open: true,
+                        view: <BackgroundForm />,
                       });
                     }}
                     type="primary"
@@ -88,7 +103,7 @@ export default function PositionBackgroud({ update, interviews }) {
           },
         }}
       >
-        <BackgroundForm />
+        {drawerData.view}
       </Drawer>
     </Flex>
   );

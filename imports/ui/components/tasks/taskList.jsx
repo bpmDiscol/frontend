@@ -74,7 +74,7 @@ export default function TaskList({
         borderRadius: "10px",
         padding: "10px",
         height: "85lvh",
-        width: "30lvw",
+        width: "25lvw",
         minWidth: "300px",
       }}
       className="task-list"
