@@ -70,7 +70,6 @@ export default function EmployeeRequestInterview() {
       Promise.all(interviewsPromises)
       .then((values) =>
         values.map((value, index) => {
-            console.log("🚀 ~ values.map ~ response:", value)
             const curricullum = response[index]; 
             
             return { ...curricullum, link: value[0]?.link };
@@ -99,7 +98,6 @@ export default function EmployeeRequestInterview() {
         const taskId = "employeeInterview-" + currentTask;
         setMyTaskId(taskId);
         Meteor.call("get_task_data", taskId, (err, resp) => {
-          console.log("🚀 ~ Meteor.call ~ resp:", resp)
           
           if (!err) setInterviewData(resp[0] || []);
         });

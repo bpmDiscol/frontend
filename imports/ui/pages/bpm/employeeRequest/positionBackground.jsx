@@ -13,8 +13,6 @@ export default function PositionBackgroud({
   interviews,
   interviewForms,
 }) {
-  console.log("🚀 ~ interviewForms:", interviewForms)
-  console.log("🚀 ~ PositionBackgroud ~ interviews:", interviews);
   const [drawerData, setDrawerData] = React.useState(closed);
 
   function newTab(url) {

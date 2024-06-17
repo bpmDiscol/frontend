@@ -37,7 +37,6 @@ export default function PositionInterviews({ update, interviews }) {
         )}
         {interviews &&
           interviews.map((interview, index) => {
-            console.log("🚀 ~ interviews.map ~ interview:", interview)
             
             return (
               <Flex

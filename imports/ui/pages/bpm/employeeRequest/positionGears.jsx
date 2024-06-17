@@ -10,7 +10,6 @@ import { gearOptions } from "../../../misc/gearsOptions";
 const { Text } = Typography;
 
 export default function PositionGears({ requestEmployeeData }) {
-  console.log("🚀 ~ PositionGears ~ requestEmployeeData:", requestEmployeeData)
   function ListItems({ header, dataSource, checkavailability = false }) {
     return (
       <List

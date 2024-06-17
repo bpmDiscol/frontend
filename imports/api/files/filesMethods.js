@@ -20,7 +20,6 @@ Meteor.methods({
     return collection[`${collectionName}`].collection
       .find({})
       .map(function (fileRef) {
-        console.log("🚀 ~ fileRef:", fileRef)
         
         return {
           link: collection[`${collectionName}`].link(fileRef),
