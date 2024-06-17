@@ -176,10 +176,7 @@ export default function EmployeeRequestForm() {
           defaultValue={0}
           value={currentTab}
         />
-        <Flex
-          vertical
-          style={{ height: "55lvh", overflow: "hidden" }}
-        >
+        <Flex vertical style={{ height: "55lvh", overflow: "hidden" }}>
           {tabView}
         </Flex>
       </Flex>

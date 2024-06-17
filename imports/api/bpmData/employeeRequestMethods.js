@@ -4,7 +4,7 @@ import { validateEmployeeRequest } from "../misc/validation";
 function justTrueInObject(attribute, keys) {
   const result = {};
   keys.forEach((key) => {
-    result[key] = attribute == key ? true : false;
+    result[key] = attribute == key ?? false;
   });
   return result;
 }
@@ -80,17 +80,18 @@ function processInterviews(interviewsData) {
 
 function verifyGears(inputData) {
   inputData = inputData || {};
+
   return {
-    isDesktopPC: inputData.gears?.isDesktopPC ?? false,
-    isLaptop: inputData.gears?.isLaptop ?? false,
-    isScreen: inputData.gears?.isScreen ?? false,
-    isKeyboard: inputData.gears?.isKeyboard ?? false,
-    isMouse: inputData.gears?.isMouse ?? false,
-    isEmail: inputData.gears?.isEmail ?? false,
-    isDesk: inputData.gears?.isDesk ?? false,
-    isChair: inputData.gears?.isChair ?? false,
-    isHeadset: inputData.gears?.isHeadset ?? false,
-    isCelphone: inputData.gears?.isCelphone ?? false,
+    isDesktopPC: inputData.isDesktopPC ?? false,
+    isLaptop: inputData.isLaptop ?? false,
+    isScreen: inputData.isScreen ?? false,
+    isKeyboard: inputData.isKeyboard ?? false,
+    isMouse: inputData.isMouse ?? false,
+    isEmail: inputData.isEmail ?? false,
+    isDesk: inputData.isDesk ?? false,
+    isChair: inputData.isChair ?? false,
+    isHeadset: inputData.isHeadset ?? false,
+    isCelphone: inputData.isCelphone ?? false,
     isOther: inputData.isOther ?? false,
     other: inputData.other || [],
   };
@@ -193,6 +194,7 @@ Meteor.methods({
         observations: [request?.observations || ""],
       },
     };
+
     const errorValidation = validateEmployeeRequest(data);
     if (errorValidation) {
       return { error: true, issues: errorValidation.issues };
