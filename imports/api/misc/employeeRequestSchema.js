@@ -40,7 +40,7 @@ const requestEmployeeData = zod.object({
   isHandbookFunction: zod.boolean(),
   workPlace: zod.string().refine(isStringValid),
   vacancies: zod.number(),
-  duration: timeExtension,
+  duration: timeExtension.optional(),
   salary: zod.number().refine(isnumberValid),
   isBonus: zod.boolean(),
   bonusesFrecuency: timeExtension.optional(),

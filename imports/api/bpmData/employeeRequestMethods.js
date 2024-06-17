@@ -156,7 +156,7 @@ Meteor.methods({
         workPlace: request?.workPlace,
         vacancies: parseInt(request?.vacancies || 0),
         duration: {
-          cuantity: parseInt(request?.duration?.cuantity || 0),
+          cuantity: parseInt(request?.duration?.cuantity || -1),
           timePart: request?.duration?.timePart || "mes",
         },
         salary: parseFloat(request?.salary || 0),

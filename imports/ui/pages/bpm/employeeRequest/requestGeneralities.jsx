@@ -15,9 +15,13 @@ export default function RequestGeneralities({
   fiterErrors,
 }) {
   const [isBonus, setIsBonus] = React.useState();
+  const [isUndefinedTermContract, setUndefinedTerm] = React.useState(false);
 
   React.useEffect(() => {
-    if (requestData) setIsBonus(requestData?.isBonus);
+    if (requestData) {
+      setUndefinedTerm(requestData?.contractType === "undefined");
+      setIsBonus(requestData?.isBonus);
+    }
   }, [requestData]);
 
   return (
@@ -69,23 +73,14 @@ export default function RequestGeneralities({
               onChange={(value) => update("motive", value)}
             />
           </Form.Item>
-          <Form.Item label="Duración" id="duration">
-            <Space.Compact>
-              <Input
-                id="durationCuantity"
-                status={fiterErrors("duration")}
-                defaultValue={requestData?.duration?.cuantity || 0}
-                type="number"
-                onChange={(e) => update("duration.cuantity", e.target.value)}
-              />
-              <Select
-                options={timeOptions}
-                id="durationTimePart"
-                status={fiterErrors("duration")}
-                defaultValue={requestData?.duration?.timePart}
-                onChange={(value) => update("duration.timePart", value)}
-              />
-            </Space.Compact>
+          <Form.Item label="Dentro del manual de funciones">
+            <Switch
+              id="isHandbookFunction"
+              checkedChildren="Si"
+              unCheckedChildren="No"
+              defaultValue={requestData?.isHandbookFunction}
+              onChange={(value) => update("isHandbookFunction", value)}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -113,20 +108,34 @@ export default function RequestGeneralities({
               id="contractType"
               status={fiterErrors("contractType")}
               defaultValue={requestData?.contractType}
-              onChange={(value) => update("contractType", value)}
+              onChange={(value) => {
+                setUndefinedTerm(value === "undefined");
+                update("contractType", value);
+              }}
               options={contractTypeOptions}
             />
           </Form.Item>
-          <Space style={{ width: "100%", justifyContent: "space-around" }}>
-            <Form.Item label="Dentro del manual de funciones">
-              <Switch
-                id="isHandbookFunction"
-                checkedChildren="Si"
-                unCheckedChildren="No"
-                defaultValue={requestData?.isHandbookFunction}
-                onChange={(value) => update("isHandbookFunction", value)}
-              />
+          {!isUndefinedTermContract && (
+            <Form.Item label="Duración" id="duration">
+              <Space.Compact style={{ width: "100%" }}>
+                <Input
+                  id="durationCuantity"
+                  status={fiterErrors("duration")}
+                  defaultValue={requestData?.duration?.cuantity || 0}
+                  type="number"
+                  onChange={(e) => update("duration.cuantity", e.target.value)}
+                />
+                <Select
+                  options={timeOptions}
+                  id="durationTimePart"
+                  status={fiterErrors("duration")}
+                  defaultValue={requestData?.duration?.timePart}
+                  onChange={(value) => update("duration.timePart", value)}
+                />
+              </Space.Compact>
             </Form.Item>
+          )}
+          <Space>
             <Form.Item label="Bono salarial">
               <Switch
                 id="isBonus"
@@ -141,11 +150,14 @@ export default function RequestGeneralities({
               />
             </Form.Item>
           </Space>
-          <Form.Item style={{ width: "100&" }} id={"bonusesFrecuency"}>
-            {isBonus && (
-              <Space.Compact>
+          {isBonus && (
+            <Form.Item
+              label="Bono cada"
+              style={{ width: "100&" }}
+              id={"bonusesFrecuency"}
+            >
+              <Space.Compact style={{ width: "100%" }}>
                 <Input
-                  addonBefore="Bono cada"
                   id="bonusesFrecuencyCuantity"
                   status={fiterErrors("bonusesFrecuency")}
                   defaultValue={requestData?.bonusesFrecuency?.cuantity || 0}
@@ -164,8 +176,8 @@ export default function RequestGeneralities({
                   }
                 />
               </Space.Compact>
-            )}
-          </Form.Item>
+            </Form.Item>
+          )}
         </Col>
       </Row>
     </Form>
