@@ -6,10 +6,11 @@ export const MainViewContext = React.createContext();
 export default function MainViewProvider({ children, defaultView }) {
   const [view, setNewView] = React.useState();
   const [userName, setUserName] = React.useState("");
-
+  const [newKey, setNewKey] = React.useState(0);
   function setView(newView, params = {}) {
     window.sessionStorage.setItem("currentView", newView);
     setNewView(getView(newView, params));
+    setNewKey(Math.random());
   }
 
   React.useEffect(() => {
@@ -23,7 +24,7 @@ export default function MainViewProvider({ children, defaultView }) {
 
   return (
     <MainViewContext.Provider value={{ view, setView, userName }}>
-      {children}
+      <React.Fragment key={newKey}>{children}</React.Fragment>
     </MainViewContext.Provider>
   );
 }

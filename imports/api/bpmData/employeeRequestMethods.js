@@ -18,16 +18,9 @@ function processInterviews(interviewsData) {
       academicLevel: currentInterviewInput.academicLevel || "",
       age: parseInt(currentInterviewInput.age || 0),
       applicationType: currentInterviewInput.applicationType || "",
-      business_labour_1: currentInterviewInput.business_labour_1 || "",
-      business_labour_2: currentInterviewInput.business_labour_2 || "",
-      business_motive_1: currentInterviewInput.business_motive_1 || "",
-      business_motive_2: currentInterviewInput.business_motive_2 || "",
-      business_name_1: currentInterviewInput.business_name_1 || "",
-      business_name_2: currentInterviewInput.business_name_2 || "",
-      business_time_1: currentInterviewInput.business_time_1 || "",
-      business_time_2: currentInterviewInput.business_time_2 || "",
       city: currentInterviewInput.city || "",
       currentForm: currentInterviewInput.currentForm || 0,
+      email: currentInterviewInput.email || "",
       expectedPosition: currentInterviewInput.expectedPosition || "",
       finalConcept: currentInterviewInput.finalConcept || "",
       grade: currentInterviewInput.grade || "",
@@ -52,6 +45,7 @@ function processInterviews(interviewsData) {
       kinName: currentInterviewInput.kinName || "",
       kinship: currentInterviewInput.kinship || "",
       learningAdaptation: currentInterviewInput.learningAdaptation || "",
+      laboralExperience: currentInterviewInput.laboralExperience || [],
       personalAnnotation: currentInterviewInput.personalAnnotation || "",
       phone: currentInterviewInput.phone || "",
       requiredAcademic: currentInterviewInput.requiredAcademic || "",
@@ -244,6 +238,22 @@ Meteor.methods({
     if (context)
       return await Meteor.callAsync("get_data", {
         url: context?.interview_ref?.link,
+        params: {},
+      });
+  },
+  async get_laboralExperience({ href }) {
+    if (href)
+      console.log("🚀 ~ get_laboralExperience ~ href:", href)
+      
+      return await Meteor.callAsync("get_data", {
+        url:href,
+        params: {},
+      });
+  },
+  async get_link_data({ href }) {
+    if (href)      
+      return await Meteor.callAsync("get_data", {
+        url:href,
         params: {},
       });
   },

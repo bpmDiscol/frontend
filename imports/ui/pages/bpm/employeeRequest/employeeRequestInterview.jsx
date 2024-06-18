@@ -24,6 +24,7 @@ export default function EmployeeRequestInterview() {
   const [myTaskId, setMyTaskId] = React.useState();
   const [interviewData, setInterviewData] = React.useState([]);
   const [interviews, setInterviews] = React.useState([]);
+  const [waitToSend, setWaitingToSend] = React.useState(false);
 
   const { openNotification } = React.useContext(NotificationsContext);
 
@@ -52,30 +53,32 @@ export default function EmployeeRequestInterview() {
 
   React.useEffect(() => {
     Meteor.callAsync("get_curricullums").then((response) => {
-      if (response == "error") {
-        openNotification(
-          "error",
-          "Error Critico",
-          "Los datos que se solicitados no estan disponibles o se encuentran dañados"
-        );
-        return;
-      }
-      const interviewsPromises = response?.map((curricullum) => {
-        return Meteor.callAsync("getFileLink", {
-          id: curricullum.fileId,
-          collectionName: "curricullums",
+      if (response) {
+        if (response == "error") {
+          openNotification(
+            "error",
+            "Error Critico",
+            "Los datos que se solicitados no estan disponibles o se encuentran dañados"
+          );
+          return;
+        }
+        const interviewsPromises = response?.map((curricullum) => {
+          return Meteor.callAsync("getFileLink", {
+            id: curricullum.fileId,
+            collectionName: "curricullums",
+          });
         });
-      });
-      
-      Promise.all(interviewsPromises)
-      .then((values) =>
-        values.map((value, index) => {
-            const curricullum = response[index]; 
-            
-            return { ...curricullum, link: value[0]?.link };
-          })
-        )
-        .then((interviews) => setInterviews(interviews));
+
+        Promise.all(interviewsPromises)
+          .then((values) =>
+            values.map((value, index) => {
+              const curricullum = response[index];
+
+              return { ...curricullum, link: value[0]?.link };
+            })
+          )
+          .then((interviews) => setInterviews(interviews));
+      }
     });
   }, []);
 
@@ -98,7 +101,6 @@ export default function EmployeeRequestInterview() {
         const taskId = "employeeInterview-" + currentTask;
         setMyTaskId(taskId);
         Meteor.call("get_task_data", taskId, (err, resp) => {
-          
           if (!err) setInterviewData(resp[0] || []);
         });
       }
@@ -148,7 +150,11 @@ export default function EmployeeRequestInterview() {
   }
 
   function request() {
+    setWaitingToSend(true);
+
     Meteor.call("get_task_data", myTaskId, (err, resp) => {
+      console.log("🚀 ~ Meteor.call ~ err:", err);
+      console.log("🚀 ~ Meteor.call ~ resp:", resp);
       if (!err && resp.length) {
         const savedData = resp[0];
         const req = interviews.map((interview) => {
@@ -159,6 +165,9 @@ export default function EmployeeRequestInterview() {
         });
 
         Meteor.call("send_interviews", req, (error, response) => {
+          console.log("🚀 ~ Meteor.call ~ response:", response);
+          setWaitingToSend(false);
+
           if (error) {
             console.log(error);
             return;
@@ -225,6 +234,7 @@ export default function EmployeeRequestInterview() {
           cancelText="Déjame pensarlo"
         >
           <Button
+            loading={waitToSend}
             type="primary"
             danger
             icon={<SendOutlined />}

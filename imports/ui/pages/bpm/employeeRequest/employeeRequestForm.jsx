@@ -27,6 +27,7 @@ export default function EmployeeRequestForm() {
   const [currentTab, setCurrentTab] = React.useState(0);
   const [errorFields, setErrorFields] = React.useState([]);
   const { openNotification } = React.useContext(NotificationsContext);
+  const [waitToSend, setWaitingToSend] = React.useState(false);
 
   React.useEffect(() => {
     request(setRequestData);
@@ -94,10 +95,12 @@ export default function EmployeeRequestForm() {
   }
 
   function startRequest(request) {
+    setWaitingToSend(true);
     Meteor.call(
       "start_employee_request",
       { request, processId },
       (error, response) => {
+        setWaitingToSend(false)
         if (response?.error) {
           if (response?.status >= 500) {
             openNotification(
@@ -132,6 +135,7 @@ export default function EmployeeRequestForm() {
             "La requisición de personal se ha creado correctamente"
           );
         }
+        
       }
     );
   }
@@ -201,6 +205,7 @@ export default function EmployeeRequestForm() {
         </Button>
         <Button
           type="primary"
+          loading={waitToSend}
           onClick={handleButtonNext}
           icon={
             currentTab == tabContents.length - 1 ? (

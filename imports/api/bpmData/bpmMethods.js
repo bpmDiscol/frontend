@@ -70,14 +70,14 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(Meteor.userId({}));
     const taskId = currentUser.taskId;
     const assigned_id = user == "me" ? currentUser.profile.bonitaUser : user;
-    if (taskId) {
+    if (taskId && assigned_id) {
       Meteor.call("put_data", {
         url: `/API/bpm/userTask/${taskId}`,
         data: {
           assigned_id,
         },
       });
-    }else return 'no taskId'
+    } else console.log({error:'Tarea no asignada', taskId, assigned_id });
   },
   set_task_id({ taskId }) {
     Meteor.users.update({ _id: Meteor.userId() }, { $set: { taskId } });

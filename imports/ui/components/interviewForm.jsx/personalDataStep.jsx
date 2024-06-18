@@ -49,9 +49,19 @@ export default function PersonalDataStep({ form, update }) {
               <Radio.Button value="external">Externa</Radio.Button>
             </Radio.Group>
           </Form.Item>
-          <Col xs={{ span: 0 }} lg={{ span: 24 }}>
-            <Divider style={{ margin: "20px 0" }} />
-          </Col>
+          <Form.Item
+            name={"email"}
+            label="Email"
+            rules={[
+              {
+                required: true,
+                message: "Por favor, introduce un correo electrónico",
+              },
+            ]}
+            hasFeedback
+          >
+            <Input placeholder="inserta un correo" />
+          </Form.Item>
 
           <Form.Item
             name={"id"}

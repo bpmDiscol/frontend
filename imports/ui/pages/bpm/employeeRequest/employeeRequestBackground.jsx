@@ -100,6 +100,7 @@ export default function EmployeeRequestBackground() {
         return;
       }
       setInterviewForms(response);
+      console.log("🚀 ~ Meteor.callAsync ~ response:", response)
     });
   }, []);
 
@@ -123,7 +124,7 @@ export default function EmployeeRequestBackground() {
         const taskId = "employeeInterview-" + currentTask;
         setMyTaskId(taskId);
         Meteor.call("get_task_data", taskId, (err, resp) => {
-          if (!err) setInterviewData(resp[0] || []);
+          if (!err && resp?.length) setInterviewData(resp[0] || []);
         });
       }
     });

@@ -1,94 +1,118 @@
-import { Col, Flex, Form, Input, Row } from "antd";
+import { CloseOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Col,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Space,
+} from "antd";
 import React from "react";
 
-function LaboralStep({ index }) {
-  return (
-    <Row gutter={32}>
-      <Col
-        xs={22}
-        sm={12}
-        style={{
-          background: "#67abe0",
-          padding: "10px 0 10px 20px",
-          borderRadius: "10px",
-          margin: "0 0 32px 32px",
-        }}
-      >
-        <Form.Item
-          label="Nombre de la empresa"
-          name={`business_name_${index}`}
-          rules={[
-            {
-              required: true,
-              message: "Por favor, introduce un nombre",
-            },
-          ]}
-          hasFeedback
-        >
-          <Input
-            placeholder="Inserta una empresa"
-            id={`business_name_${index}`}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Cargo desempeñado"
-          name={`business_labour_${index}`}
-          rules={[
-            {
-              required: true,
-              message: "Por favor, introduce un cargo",
-            },
-          ]}
-          hasFeedback
-        >
-          <Input
-            placeholder="Inserta una cargo"
-            id={`business_labour_${index}`}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Tiempo laborado"
-          name={`business_time_${index}`}
-          rules={[
-            {
-              required: true,
-              message: "Por favor, introduce un periodo",
-            },
-          ]}
-          hasFeedback
-        >
-          <Input
-            placeholder="Inserta una periodo"
-            id={`business_time_${index}`}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Motivo de retiro"
-          name={`business_motive_${index}`}
-          rules={[
-            {
-              required: true,
-              message: "Por favor, introduce un motivo",
-            },
-          ]}
-          hasFeedback
-        >
-          <Input
-            placeholder="Inserta una motivo"
-            id={`business_motive_${index}`}
-          />
-        </Form.Item>
-      </Col>
-    </Row>
-  );
-}
+import timeOptions from "../../pages/bpm/data/time.json";
 
 export default function LaboralDataStep() {
   return (
-    <Flex vertical gap={16} style={{ width: "75lvw" }}>
-      {[1, 2].map((index) => {
-        return <LaboralStep key={index} index={index} />;
-      })}
-    </Flex>
+    <Form.List name={"laboralExperience"}>
+      {(fields, { add, remove }, { errors }) => (
+        <Row gutter={[16, 16]} style={{ width: "75lvw" }}>
+          <Button type="primary" onClick={() => add()} block>
+            + Agregar Experiencia
+          </Button>
+          {fields.map((field, index) => (
+            <Col span={11} key={field.key}>
+              <Card
+                actions={[
+                  <Button
+                    danger
+                    onClick={() => remove(field.name)}
+                    icon={<DeleteOutlined />}
+                  >
+                    Eliminar
+                  </Button>,
+                ]}
+                style={{
+                  border: "1px solid gray",
+                  width: "27rem",
+                  background: "#aed4e8",
+                }}
+                hoverable
+              >
+                Nombre de la empresa
+                <Form.Item
+                  name={[field.name, "companyName"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Introduce un nombre de empresa",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input style={{ width: "22.5rem" }} />
+                </Form.Item>
+                Cargo desempeñado
+                <Form.Item
+                  name={[field.name, "laboredPosition"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Introduce un cargo",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input style={{ width: "22.5rem" }} />
+                </Form.Item>
+                Tiempo laborado
+                <Flex>
+                  <Form.Item
+                    name={[field.name, "companyTime", "cuantity"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Introduce una cantidad",
+                      },
+                    ]}
+                    hasFeedback
+                  >
+                    <InputNumber style={{ width: "10rem" }} type="number" />
+                  </Form.Item>
+                  <Form.Item
+                    name={[field.name, "companyTime", "timePart"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Introduce una unidad de tiempo",
+                      },
+                    ]}
+                    hasFeedback
+                  >
+                    <Select options={timeOptions} style={{ width: "10rem" }} />
+                  </Form.Item>
+                </Flex>
+                Motivo de retiro
+                <Form.Item
+                  name={[field.name, "dismissMotive"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Introduce un motivo",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input style={{ width: "22.5rem" }} />
+                </Form.Item>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
+    </Form.List>
   );
 }

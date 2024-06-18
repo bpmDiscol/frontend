@@ -36,7 +36,7 @@ const menuList = [
   {
     label: "Laboral",
     id: "laboral",
-    title: "Antecedentes laborales",
+    title: "Experiencia laboral",
     icon: UserOutlined,
     form: LaboralDataStep,
   },
@@ -131,7 +131,10 @@ export default function InterviewForm({ update, onClose, fileId }) {
         style: { padding: "15px 10px" },
       }}
       onFieldsChange={(field) => {
-        updateFields({ field: field[0].name[0], value: field[0].value });
+        updateFields({
+          field: field[0].name[0],
+          value: form.getFieldValue(field[0].name[0]),
+        });
       }}
     >
       <Row gutter={{ xs: 8, lg: 32 }}>

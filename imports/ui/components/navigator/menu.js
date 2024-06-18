@@ -1,11 +1,8 @@
 import {
   AppstoreAddOutlined,
-  BellFilled,
-  BellOutlined,
   SettingOutlined,
   SisternodeOutlined,
 } from "@ant-design/icons";
-import React from "react";
 
 export const menuItems = [
   {
@@ -20,7 +17,7 @@ export const menuItems = [
   },
   {
     key: "process",
-    label: "Iniciar proceso",
+    label: "Procesos",
     icon: SettingOutlined,
   },
 ];
