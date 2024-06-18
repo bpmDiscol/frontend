@@ -242,18 +242,15 @@ Meteor.methods({
       });
   },
   async get_laboralExperience({ href }) {
-    if (href)
-      console.log("🚀 ~ get_laboralExperience ~ href:", href)
-      
-      return await Meteor.callAsync("get_data", {
-        url:href,
-        params: {},
-      });
+    return await Meteor.callAsync("get_data", {
+      url: href,
+      params: {},
+    });
   },
   async get_link_data({ href }) {
-    if (href)      
+    if (href)
       return await Meteor.callAsync("get_data", {
-        url:href,
+        url: href,
         params: {},
       });
   },

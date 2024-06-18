@@ -100,7 +100,6 @@ export default function EmployeeRequestBackground() {
         return;
       }
       setInterviewForms(response);
-      console.log("🚀 ~ Meteor.callAsync ~ response:", response)
     });
   }, []);
 

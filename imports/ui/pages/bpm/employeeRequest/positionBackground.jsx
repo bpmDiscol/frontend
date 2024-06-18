@@ -1,6 +1,12 @@
 import React from "react";
 import { Button, Drawer, Empty, Flex } from "antd";
-import { EditFilled, FileTextFilled, WechatFilled } from "@ant-design/icons";
+import Icon, {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  EditFilled,
+  FileTextFilled,
+  WechatFilled,
+} from "@ant-design/icons";
 
 import BackgroundForm from "../../../components/backgroundForm/index.jsx";
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
@@ -38,12 +44,30 @@ export default function PositionBackgroud({
                 align="center"
                 style={{
                   borderRadius: "5px",
-                  border: "1px solid blue",
+                  border: `2px solid ${
+                    interviewForms[index].selected ? "green" : "red"
+                  }`,
                   padding: "5px 10px",
                   boxShadow: "none",
+                  // background: !interviewForms[index].selected ? "#d9fcd9" : "#efd0d0",
                 }}
               >
-                {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
+                <Flex
+                  gap={10}
+                  style={{
+                    color: interviewForms[index].selected ? "green" : "red",
+                  }}
+                >
+                  <Icon
+                    component={
+                      interviewForms[index].selected
+                        ? CheckCircleOutlined
+                        : (CloseCircleOutlined = {})
+                    }
+                    style={{ fontSize: 20 }}
+                  />
+                  {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
+                </Flex>
                 <Flex gap={16}>
                   <Button
                     title="Ver curricullum"
