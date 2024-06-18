@@ -249,7 +249,7 @@ Meteor.methods({
   },
   async get_link_data({ href }) {
     if (href)
-      return await Meteor.callAsync("get_data", {
+       await Meteor.callAsync("get_data", {
         url: href,
         params: {},
       });

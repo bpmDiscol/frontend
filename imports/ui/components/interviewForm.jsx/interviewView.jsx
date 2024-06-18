@@ -7,16 +7,18 @@ function gimmeThaLinks(datastream, callback) {
       Meteor.callAsync("get_link_data", { href })
     );
     Promise.all(linksPromises)
-      .then((data) => callback(data))
+      .then((data) => callback(data[0]))
       .catch((error) => console.log(error));
   }
 }
 
 export default function InterviewView({ onClose, fileId, interviewForm }) {
   const [laboralExperience, setLaboralExperience] = React.useState();
+  console.log("🚀 ~ InterviewView ~ laboralExperience:", laboralExperience)
+  
   React.useEffect(() => {
     gimmeThaLinks(interviewForm, setLaboralExperience);
-  });
+  },[]);
 
   return <div>Interview</div>;
 }

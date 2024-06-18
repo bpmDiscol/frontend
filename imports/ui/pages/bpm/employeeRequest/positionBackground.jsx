@@ -62,7 +62,7 @@ export default function PositionBackgroud({
                     component={
                       interviewForms[index].selected
                         ? CheckCircleOutlined
-                        : (CloseCircleOutlined = {})
+                        : CloseCircleOutlined
                     }
                     style={{ fontSize: 20 }}
                   />
