@@ -7,6 +7,7 @@ export default function MainViewProvider({ children, defaultView }) {
   const [view, setNewView] = React.useState();
   const [userName, setUserName] = React.useState("");
   const [newKey, setNewKey] = React.useState(0);
+  
   function setView(newView, params = {}) {
     window.sessionStorage.setItem("currentView", newView);
     setNewView(getView(newView, params));

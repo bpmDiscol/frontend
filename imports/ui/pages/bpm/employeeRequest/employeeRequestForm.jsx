@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Flex, Segmented, Typography } from "antd";
+import { Button, Flex, Popconfirm, Segmented, Typography } from "antd";
 import {
   BackwardOutlined,
   ForwardOutlined,
@@ -100,7 +100,7 @@ export default function EmployeeRequestForm() {
       "start_employee_request",
       { request, processId },
       (error, response) => {
-        setWaitingToSend(false)
+        setWaitingToSend(false);
         if (response?.error) {
           if (response?.status >= 500) {
             openNotification(
@@ -135,7 +135,6 @@ export default function EmployeeRequestForm() {
             "La requisición de personal se ha creado correctamente"
           );
         }
-        
       }
     );
   }
@@ -180,7 +179,7 @@ export default function EmployeeRequestForm() {
           defaultValue={0}
           value={currentTab}
         />
-        <Flex vertical style={{ height: "55lvh", overflow: "hidden" }}>
+        <Flex vertical style={{ height: "60lvh", overflow: "hidden" }}>
           {tabView}
         </Flex>
       </Flex>
@@ -203,23 +202,34 @@ export default function EmployeeRequestForm() {
         >
           Anterior
         </Button>
-        <Button
-          type="primary"
-          loading={waitToSend}
-          onClick={handleButtonNext}
-          icon={
-            currentTab == tabContents.length - 1 ? (
-              <SendOutlined />
-            ) : (
-              <ForwardOutlined />
-            )
-          }
-          iconPosition="end"
-          id="approve-button"
-          danger={currentTab == tabContents.length - 1}
+        <Popconfirm
+          title="Rechazas la solicitud?"
+          description="¿Estás de acuerdo con esta solicitud? Recuerda dejar un concepto "
+          onConfirm={handleButtonNext}
+          okText="¡Por supuesto, adelante!"
+          cancelText="Déjame pensarlo"
+          disabled={currentTab !== tabContents.length - 1}
         >
-          {currentTab == tabContents.length - 1 ? "Enviar" : "Siguiente"}
-        </Button>
+          <Button
+            type="primary"
+            loading={waitToSend}
+            onClick={
+              currentTab == tabContents.length - 1 ? null : handleButtonNext
+            }
+            icon={
+              currentTab == tabContents.length - 1 ? (
+                <SendOutlined />
+              ) : (
+                <ForwardOutlined />
+              )
+            }
+            iconPosition="end"
+            id="approve-button"
+            danger={currentTab == tabContents.length - 1}
+          >
+            {currentTab == tabContents.length - 1 ? "Enviar" : "Siguiente"}
+          </Button>
+        </Popconfirm>
       </Flex>
     </Flex>
   );

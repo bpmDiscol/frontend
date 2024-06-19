@@ -70,7 +70,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(Meteor.userId({}));
     const taskId = currentUser.taskId;
     const assigned_id = user == "me" ? currentUser.profile.bonitaUser : user;
-    if (taskId && assigned_id) {
+    if (taskId) {
       Meteor.call("put_data", {
         url: `/API/bpm/userTask/${taskId}`,
         data: {

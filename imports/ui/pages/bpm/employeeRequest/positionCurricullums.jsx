@@ -37,7 +37,7 @@ export default function PositionCurricullums() {
     if (currentFile) deleteFile("curricullums", currentFile);
     uploadFile("curricullums", fileData, index, (fileId) => {
       if (fileId) setAttribute("fileId", fileId, index);
-      else message.error('No fue posible cargar el archivo')
+      else message.error("No fue posible cargar el archivo");
     });
   }
 

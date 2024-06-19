@@ -70,15 +70,21 @@ const menuList = [
   },
 ];
 
-export default function InterviewForm({ update, onClose, fileId }) {
+export default function InterviewForm({ onClose, fileId }) {
   const [currentForm, setCurrentForm] = React.useState(0);
   const [formAttempt, setFormAttempt] = React.useState();
+  const [taskId, setTaskId] = React.useState();
   const [form] = Form.useForm();
+
+  async function update(field, value) {
+    await Meteor.callAsync("update_task", { taskId, field, value });
+  }
 
   React.useEffect(() => {
     +Meteor.call("get_task_id", (err, currentTask) => {
       if (!err) {
         const taskId = "employeeInterview-" + currentTask;
+        setTaskId(taskId);
         Meteor.call("get_task_data", taskId, (err, resp) => {
           if (!err) {
             form.setFieldsValue(resp[0][`interview-${fileId}`]);

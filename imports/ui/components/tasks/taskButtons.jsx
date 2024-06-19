@@ -9,9 +9,9 @@ import Icon, {
 export default function TaskButtons({ buttons = [], updateList, task }) {
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
-
+  
   function doTask() {
-    setView(task.name, { taskId: task.id });
+    setView(task.name, { caseId: task.caseId });
   }
 
   function assignTask(button) {

@@ -24,128 +24,77 @@ import PositionBackgroud from "./positionBackground";
 import SpinningLoader from "../../../components/spinningLoader";
 import { get_file_link } from "../../../misc/filemanagement";
 
-const { Text, Title } = Typography;
-export default function EmployeeRequestBackground() {
-  const [requestEmployeeData, setRequestEmployeeData] = React.useState();
-  const [requestEmployee, setRequestEmployee] = React.useState();
+import { useTracker } from "meteor/react-meteor-data";
+import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
+
+export default function EmployeeRequestBackground({ caseId }) {
+  const { Text, Title } = Typography;
   const { setView } = React.useContext(MainViewContext);
-  const [tabView, setTabView] = React.useState();
-  const [loaded, setLoaded] = React.useState(false);
-  const [myTaskId, setMyTaskId] = React.useState();
-  const [interviewData, setInterviewData] = React.useState([]);
-  const [interviews, setInterviews] = React.useState([]);
-  const [interviewForms, setInterviewForms] = React.useState([]);
-
   const { openNotification } = React.useContext(NotificationsContext);
+  const [tabView, setTabView] = React.useState();
 
-  function getInterviewData() {
-    return interviewData;
-  }
+  const [waitToSend, setWaitingToSend] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
+  const [curricullums, setCurricullums] = React.useState([]);
+  const [interviews, setInterviews] = React.useState([]);
+
+  const requestEmployeeData = useTracker(() => {
+    Meteor.subscribe("requestEmployee");
+    const req = requestEmployeeCollection
+      .find({ caseId: parseInt(caseId) })
+      .fetch();
+
+    if (req.length) {
+      const { requestEmployeeDataInput, ...outterData } = req[0];
+      const requestEmployee = {
+        ...req[0]?.requestEmployeeDataInput,
+        ...outterData,
+      };
+      return requestEmployee;
+    }
+  });
 
   React.useEffect(() => {
-    Meteor.callAsync("get_employee_request").then((response) => {
-      setRequestEmployee(response);
-      Meteor.call(
-        "request_data_links",
-        {
-          requestLinks: response.links,
-        },
-        (error, response) => {
-          if (!error) {
-            setRequestEmployeeData(response);
-          }
+    if (!reload && requestEmployeeData) {
+      setReload(true);
+      const curricullums = requestEmployeeData?.curricullumsInput?.map(
+        (curricullum) => {
+          return Meteor.callAsync("getFileLink", {
+            id: curricullum.fileId,
+            collectionName: "curricullums",
+          });
         }
       );
-    });
 
-    document.getElementById("segmented").scrollTo(1000, 0);
-  }, []);
-
-  React.useEffect(() => {
-    Meteor.callAsync("get_curricullums").then((response) => {
-      if (response == "error") {
-        openNotification(
-          "error",
-          "Error Critico",
-          "Los datos que se solicitados no estan disponibles o se encuentran dañados"
-        );
-        return;
-      }
-      const interviewsPromises = response?.map((curricullum) => {
-        return Meteor.callAsync("getFileLink", {
-          id: curricullum.fileId,
-          collectionName: "curricullums",
-        });
-      });
-
-      Promise.all(interviewsPromises)
+      Promise.all(curricullums)
         .then((values) =>
           values.map((value, index) => {
-            const curricullum = response[index];
+            const curricullum = requestEmployeeData?.curricullumsInput[index];
             return { ...curricullum, link: value[0].link };
           })
         )
-        .then((interviews) => setInterviews(interviews));
-    });
-  }, []);
-
-  React.useEffect(() => {
-    Meteor.callAsync("get_interviews").then((response) => {
-      if (response == "error") {
-        openNotification(
-          "error",
-          "Error Critico",
-          "Los datos que se solicitados no estan disponibles o se encuentran dañados"
-        );
-        return;
-      }
-      setInterviewForms(response);
-    });
-  }, []);
-
-  React.useEffect(() => {
-    requestEmployee && requestEmployeeData && setLoaded(true);
-  }, [requestEmployee, requestEmployeeData]);
-
-  React.useEffect(() => {
-    setTabView(
-      <LoadPage
-        Component={tabContents[tabContents.length - 1]}
-        data={interviews}
-        interviews={interviewForms}
-      />
-    );
-  }, [interviews]);
-
-  function setReload() {
-    Meteor.call("get_task_id", (err, currentTask) => {
-      if (!err) {
-        const taskId = "employeeInterview-" + currentTask;
-        setMyTaskId(taskId);
-        Meteor.call("get_task_data", taskId, (err, resp) => {
-          if (!err && resp?.length) setInterviewData(resp[0] || []);
+        .then((curricullums) => {
+          //Guardar data de entrevistas
+          setCurricullums(curricullums);
+          //establecer primera vista
+          setTabView(
+            <LoadPage
+              Component={tabContents[0]}
+              curricullums={curricullums}
+              interviews={requestEmployeeData.interviewInput}
+            />
+          );
+          document.getElementById("segmented").scrollTo(1000, 0);
         });
-      }
-    });
-  }
+    }
+  }, [requestEmployeeData]);
 
-  React.useEffect(() => setReload(), []);
-
-  async function updateData(field, value) {
-    await Meteor.callAsync("update_task", { taskId: myTaskId, field, value });
-  }
-
-  function LoadPage({ Component, data, interviews }) {
+  function LoadPage({ Component, curricullums, interviews }) {
     return (
       <Component
-        requestEmployee={requestEmployee}
-        requestEmployeeData={requestEmployeeData}
-        update={updateData}
-        interviewData={interviewData}
-        interviews={data}
-        getInterviewData={getInterviewData}
-        setReload={setReload}
-        interviewForms={interviews}
+        requestEmployee={requestEmployeeData}
+        curricullums={curricullums}
+        interviews={interviews}
       />
     );
   }
@@ -224,10 +173,14 @@ export default function EmployeeRequestBackground() {
         <Flex style={{ overflow: "auto" }} id="segmented">
           <Segmented
             options={tabTitles}
-            defaultValue={tabContents.length - 1}
+            defaultValue={0}
             onChange={(value) =>
               setTabView(
-                <LoadPage Component={tabContents[value]} data={interviews} />
+                <LoadPage
+                  Component={tabContents[value]}
+                  curricullums={curricullums}
+                  interviews={requestEmployeeData.interviewInput}
+                />
               )
             }
           />

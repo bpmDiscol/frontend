@@ -14,11 +14,9 @@ import InterviewView from "../../../components/interviewForm.jsx/interviewView.j
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
-export default function PositionBackgroud({
-  update,
-  interviews,
-  interviewForms,
-}) {
+
+export default function PositionBackgroud({ curricullums, interviews }) {
+  
   const [drawerData, setDrawerData] = React.useState(closed);
 
   function newTab(url) {
@@ -35,8 +33,8 @@ export default function PositionBackgroud({
   return (
     <Flex gap={16} style={{ flex: 1 }}>
       <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
-        {interviews &&
-          interviews.map((interview, index) => {
+        {curricullums &&
+          curricullums.map((interview, index) => {
             return (
               <Flex
                 key={index}
@@ -45,22 +43,22 @@ export default function PositionBackgroud({
                 style={{
                   borderRadius: "5px",
                   border: `2px solid ${
-                    interviewForms[index].selected ? "green" : "red"
+                    interviews[index].selected ? "green" : "red"
                   }`,
                   padding: "5px 10px",
                   boxShadow: "none",
-                  // background: !interviewForms[index].selected ? "#d9fcd9" : "#efd0d0",
+                  // background: !interviews[index].selected ? "#d9fcd9" : "#efd0d0",
                 }}
               >
                 <Flex
                   gap={10}
                   style={{
-                    color: interviewForms[index].selected ? "green" : "red",
+                    color: interviews[index].selected ? "green" : "red",
                   }}
                 >
                   <Icon
                     component={
-                      interviewForms[index].selected
+                      interviews[index].selected
                         ? CheckCircleOutlined
                         : CloseCircleOutlined
                     }
@@ -86,7 +84,7 @@ export default function PositionBackgroud({
                           <InterviewView
                             fileId={interview.fileId}
                             onClose={handleClose}
-                            interviewForm={interviewForms[index]}
+                            interviewForm={interviews[index]}
                           />
                         ),
                       });

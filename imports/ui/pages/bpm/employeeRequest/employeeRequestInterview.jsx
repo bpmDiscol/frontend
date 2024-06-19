@@ -12,118 +12,74 @@ import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import PositionInterviews from "./positionInterviews";
+
+import { useTracker } from "meteor/react-meteor-data";
+import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
 
-const { Text, Title } = Typography;
-export default function EmployeeRequestInterview() {
-  const [requestEmployeeData, setRequestEmployeeData] = React.useState();
-  const [requestEmployee, setRequestEmployee] = React.useState();
+export default function EmployeeRequestInterview({ caseId }) {
+  const { Text, Title } = Typography;
   const { setView } = React.useContext(MainViewContext);
-  const [tabView, setTabView] = React.useState();
-  const [loaded, setLoaded] = React.useState(false);
-  const [myTaskId, setMyTaskId] = React.useState();
-  const [interviewData, setInterviewData] = React.useState([]);
-  const [interviews, setInterviews] = React.useState([]);
-  const [waitToSend, setWaitingToSend] = React.useState(false);
-
   const { openNotification } = React.useContext(NotificationsContext);
 
-  function getInterviewData() {
-    return interviewData;
-  }
+  const [tabView, setTabView] = React.useState();
+  const [interviews, setInterviews] = React.useState([]);
+  const [reload, setReload] = React.useState(false);
+  const [waitToSend, setWaitingToSend] = React.useState(false);
+
+  const requestEmployeeData = useTracker(() => {
+    Meteor.subscribe("requestEmployee");
+    const req = requestEmployeeCollection
+      .find({ caseId: parseInt(caseId) })
+      .fetch();
+
+    if (req.length) {
+      const { requestEmployeeDataInput, ...outterData } = req[0];
+      const requestEmployee = {
+        ...req[0]?.requestEmployeeDataInput,
+        ...outterData,
+      };
+      return requestEmployee;
+    }
+  });
 
   React.useEffect(() => {
-    Meteor.callAsync("get_employee_request").then((response) => {
-      setRequestEmployee(response);
-      Meteor.call(
-        "request_data_links",
-        {
-          requestLinks: response.links,
-        },
-        (error, response) => {
-          if (!error) {
-            setRequestEmployeeData(response);
-          }
-        }
-      );
-    });
-
-    document.getElementById("segmented").scrollTo(1000, 0);
-  }, []);
-
-  React.useEffect(() => {
-    Meteor.callAsync("get_curricullums").then((response) => {
-      if (response) {
-        if (response == "error") {
-          openNotification(
-            "error",
-            "Error Critico",
-            "Los datos que se solicitados no estan disponibles o se encuentran dañados"
-          );
-          return;
-        }
-        const interviewsPromises = response?.map((curricullum) => {
+    if (!reload && requestEmployeeData) {
+      setReload(true);
+      const interviewsPromises = requestEmployeeData?.curricullumsInput?.map(
+        (curricullum) => {
           return Meteor.callAsync("getFileLink", {
             id: curricullum.fileId,
             collectionName: "curricullums",
           });
+        }
+      );
+
+      Promise.all(interviewsPromises)
+        .then((values) =>
+          values.map((value, index) => {
+            const curricullum = requestEmployeeData?.curricullumsInput[index];
+            return { ...curricullum, link: value[0].link };
+          })
+        )
+        .then((interviews) => {
+          //Guardar data de entrevistas
+          setInterviews(interviews);
+          //establecer primera vista
+          setTabView(
+            <LoadPage
+              Component={tabContents[tabContents.length - 1]}
+              data={interviews}
+            />
+          );
+          document.getElementById("segmented").scrollTo(1000, 0);
         });
-
-        Promise.all(interviewsPromises)
-          .then((values) =>
-            values.map((value, index) => {
-              const curricullum = response[index];
-
-              return { ...curricullum, link: value[0]?.link };
-            })
-          )
-          .then((interviews) => setInterviews(interviews));
-      }
-    });
-  }, []);
-
-  React.useEffect(() => {
-    requestEmployee && requestEmployeeData && setLoaded(true);
-  }, [requestEmployee, requestEmployeeData]);
-
-  React.useEffect(() => {
-    setTabView(
-      <LoadPage
-        Component={tabContents[tabContents.length - 1]}
-        data={interviews}
-      />
-    );
-  }, [interviews]);
-
-  function setReload() {
-    Meteor.call("get_task_id", (err, currentTask) => {
-      if (!err) {
-        const taskId = "employeeInterview-" + currentTask;
-        setMyTaskId(taskId);
-        Meteor.call("get_task_data", taskId, (err, resp) => {
-          if (!err) setInterviewData(resp[0] || []);
-        });
-      }
-    });
-  }
-
-  React.useEffect(() => setReload(), []);
-
-  async function updateData(field, value) {
-    await Meteor.callAsync("update_task", { taskId: myTaskId, field, value });
-  }
+    }
+  }, [requestEmployeeData]);
 
   function LoadPage({ Component, data }) {
     return (
-      <Component
-        requestEmployee={requestEmployee}
-        requestEmployeeData={requestEmployeeData}
-        update={updateData}
-        interviewData={interviewData}
-        interviews={data}
-        getInterviewData={getInterviewData}
-        setReload={setReload}
-      />
+      <Component requestEmployee={requestEmployeeData} interviews={data} />
     );
   }
 
@@ -149,50 +105,51 @@ export default function EmployeeRequestInterview() {
     if (buttonResponse == "send") return request();
   }
 
-  function request() {
+  async function request() {
     setWaitingToSend(true);
+    const currentTask = await Meteor.callAsync("get_task_id");
+    Meteor.call(
+      "get_task_data",
+      "employeeInterview-" + currentTask,
+      (err, resp) => {
+        if (!err && resp.length) {
+          const savedData = resp[0];
+          const req = interviews.map((interview) => {
+            return {
+              ...savedData[`interview-${interview.fileId}`],
+              interviewId: interview.fileId,
+            };
+          });
 
-    Meteor.call("get_task_data", myTaskId, (err, resp) => {
-      console.log("🚀 ~ Meteor.call ~ err:", err);
-      console.log("🚀 ~ Meteor.call ~ resp:", resp);
-      if (!err && resp.length) {
-        const savedData = resp[0];
-        const req = interviews.map((interview) => {
-          return {
-            ...savedData[`interview-${interview.fileId}`],
-            interviewId: interview.fileId,
-          };
-        });
+          Meteor.call("send_interviews", req, caseId, (error, response) => {
+            setWaitingToSend(false);
 
-        Meteor.call("send_interviews", req, (error, response) => {
-          console.log("🚀 ~ Meteor.call ~ response:", response);
-          setWaitingToSend(false);
-
-          if (error) {
-            console.log(error);
-            return;
-          }
-          if (response == "no token") {
-            openNotification(
-              "Error",
-              "Algo ha salido mal",
-              "Hubo error del servidor, por favor ingresa nuevamente"
-            );
-            safeLogOut();
-          } else {
-            if (!response.error) {
-              Meteor.call("delete_task", myTaskId);
-              setView("tasks");
-              openNotification(
-                "success",
-                "¡Buen trabajo!",
-                "Los archivos se han enviado satisfactoriamente"
-              );
+            if (error) {
+              console.log(error);
+              return;
             }
-          }
-        });
+            if (response == "no token") {
+              openNotification(
+                "Error",
+                "Algo ha salido mal",
+                "Hubo error del servidor, por favor ingresa nuevamente"
+              );
+              safeLogOut();
+            } else {
+              if (!response.error) {
+                Meteor.call("delete_task", "employeeInterview-" + currentTask);
+                setView("tasks");
+                openNotification(
+                  "success",
+                  "¡Buen trabajo!",
+                  "Los archivos se han enviado satisfactoriamente"
+                );
+              }
+            }
+          });
+        }
       }
-    });
+    );
   }
 
   return (

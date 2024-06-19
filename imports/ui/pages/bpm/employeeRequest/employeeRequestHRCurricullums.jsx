@@ -4,68 +4,44 @@ import PositionVehicle from "./positionVehicle";
 import PositionRequirements from "./positionRequirements";
 import PositionGears from "./positionGears";
 import PositionObservations from "./positionObservations";
-
 import { MainViewContext } from "../../../context/mainViewProvider";
-
-import { Button, Flex, Popconfirm, Segmented, Typography, message } from "antd";
-import {
-  RotateLeftOutlined,
-  DislikeFilled,
-  LikeFilled,
-  SendOutlined,
-} from "@ant-design/icons";
+import { Button, Flex, Popconfirm, Segmented, Typography } from "antd";
+import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
 import PositionCurricullums from "./positionCurricullums";
 import { NotificationsContext } from "../../../context/notificationsProvider";
+import { useTracker } from "meteor/react-meteor-data";
+import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 
-const { Text, Title } = Typography;
-export default function EmployeeRequestCurricullums() {
-  const [requestEmployeeData, setRequestEmployeeData] = React.useState();
-  const [requestEmployee, setRequestEmployee] = React.useState();
+export default function EmployeeRequestCurricullums({ caseId }) {
+  const { Text, Title } = Typography;
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
-  const [loaded, setLoaded] = React.useState(false);
-  const [concept, setConcept] = React.useState("");
-  const [curricullumList, setCurricullumList] = React.useState([]);
-
+  const [waitToSend, setWaitingToSend] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
 
+  const requestEmployeeData = useTracker(() => {
+    Meteor.subscribe("requestEmployee");
+    const req = requestEmployeeCollection
+      .find({ caseId: parseInt(caseId) })
+      .fetch();
+
+    if (req.length) {
+      const { requestEmployeeDataInput, ...outterData } = req[0];
+      const requestEmployee = {
+        ...req[0]?.requestEmployeeDataInput,
+        ...outterData,
+      };
+      return requestEmployee;
+    }
+  });
+
   React.useEffect(() => {
-    Meteor.callAsync("get_employee_request").then((response) => {
-      setRequestEmployee(response);
-      Meteor.call(
-        "request_data_links",
-        {
-          requestLinks: response.links,
-        },
-        (error, response) => {
-          if (!error) {
-            setRequestEmployeeData(response);
-          }
-        }
-      );
-    });
+    setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
   }, []);
 
-  React.useEffect(() => {
-    requestEmployee && requestEmployeeData && setLoaded(true);
-  }, [requestEmployee, requestEmployeeData]);
-
-  React.useEffect(() => {
-    loaded &&
-      setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
-  }, [loaded]);
-
   function LoadPage({ Component }) {
-    return (
-      <Component
-        requestEmployee={requestEmployee}
-        requestEmployeeData={requestEmployeeData}
-        concept={concept}
-        setConcept={setConcept}
-        setCurricullumList={setCurricullumList}
-      />
-    );
+    return <Component requestEmployee={requestEmployeeData} />;
   }
   const tabTitles = [
     { label: "Datos del cargo", value: 0 },
@@ -90,59 +66,29 @@ export default function EmployeeRequestCurricullums() {
   }
 
   function request() {
-    Meteor.call("get_task_id", (err, currentTask) => {
-      if (!err) {
-        const taskId = "employeeCurriculllums-" + currentTask;
-        Meteor.call("get_task_data", taskId, (err, resp) => {
-          if (!err && resp.length) {
-            const curricullums = resp[0].curricullums
-            if (curricullums.length == 0) {
-              openNotification(
-                "warning",
-                "Esto debe ser un error...",
-                "No se ha cargado ningun archivo a la lista"
-              );
-              return;
-            }
-
-            const documents = curricullums?.filter(
-              (it) => it.fileId == ""
-            );
-            if (documents.length > 0) {
-              openNotification(
-                "warning",
-                "Esto debe ser un error...",
-                "Faltan archivos en la lista que haces. Revisa e intenta nuevamente"
-              );
-              return;
-            }
-            Meteor.call(
-              "send_curricullums",
-              {
-                curricullumsInput: curricullums,
-              },
-              (error, response) => {
-                if (response == "no token") {
-                  openNotification(
-                    "Error",
-                    "Algo ha salido mal",
-                    "Un error del servidor obliga a que ingreses nuevamente"
-                  );
-                  safeLogOut();
-                } else {
-                  if (!response.error) {
-                    openNotification(
-                      "success",
-                      "¡Buen trabajo!",
-                      "Los archivos se han enviado satisfactoriamente"
-                    );
-                    setView("tasks");
-                  }
-                }
-              }
-            );
-          }
-        });
+    setWaitingToSend(true);
+    Meteor.call("send_curricullums", caseId, (error, response) => {
+      setWaitingToSend(false);
+      if (error) {
+        console.log(error);
+        return;
+      }
+      if (response == "no token") {
+        openNotification(
+          "Error",
+          "Algo ha salido mal",
+          "Un error del servidor obliga a que ingreses nuevamente"
+        );
+        safeLogOut();
+      } else {
+        if (!response?.error) {
+          openNotification(
+            "success",
+            "¡Buen trabajo!",
+            "Los archivos se han enviado satisfactoriamente"
+          );
+          setView("tasks");
+        }
       }
     });
   }
@@ -164,7 +110,7 @@ export default function EmployeeRequestCurricullums() {
           }
         />
         <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployee && requestEmployeeData && tabView}
+          {requestEmployeeData && tabView}
         </Flex>
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
@@ -184,6 +130,7 @@ export default function EmployeeRequestCurricullums() {
           cancelText="Déjame pensarlo"
         >
           <Button
+            loading={waitToSend}
             type="primary"
             danger
             icon={<SendOutlined />}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Drawer, Empty, Flex, Spin } from "antd";
+import { Button, Drawer, Empty, Flex } from "antd";
 import {
   DownloadOutlined,
   EditFilled,
@@ -10,14 +10,13 @@ import InterviewForm from "../../../components/interviewForm.jsx";
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 export default function PositionInterviews({ update, interviews }) {
-  const [loading, setLoading] = React.useState(false);
   const [drawerData, setDrawerData] = React.useState({
     open: false,
     applicant: null,
   });
 
   function newTab(url, download = false) {
-    const newTab = document.createElement("a");    
+    const newTab = document.createElement("a");
     newTab.href = url;
     newTab.target = "_blank";
     newTab.download = download;
@@ -30,14 +29,12 @@ export default function PositionInterviews({ update, interviews }) {
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Spin spinning={loading} fullscreen />
       <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
         {interviews && !interviews?.length && (
           <Empty description="Cargando currícullums..." />
         )}
         {interviews &&
           interviews.map((interview, index) => {
-            
             return (
               <Flex
                 key={index}
@@ -60,7 +57,7 @@ export default function PositionInterviews({ update, interviews }) {
                     id="download-cv"
                   />
                   <Button
-                  loading={!interview.link}
+                    loading={!interview.link}
                     title="Ver curricullum"
                     id="watch-cv-button"
                     onClick={() => newTab(googleDocsViewer + interview.link)}

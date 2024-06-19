@@ -9,7 +9,7 @@ import { gearOptions } from "../../../misc/gearsOptions";
 
 const { Text } = Typography;
 
-export default function PositionGears({ requestEmployeeData }) {
+export default function PositionGears({ requestEmployee }) {
   function ListItems({ header, dataSource, checkavailability = false }) {
     return (
       <List
@@ -32,8 +32,8 @@ export default function PositionGears({ requestEmployeeData }) {
             placement="left"
             title={
               checkavailability
-                ? requestEmployeeData.gears[item.value] == true ||
-                  requestEmployeeData.gears[item.value] == "true"
+                ? requestEmployee.gears[item.value] == true ||
+                  requestEmployee.gears[item.value] == "true"
                   ? "Requerido"
                   : "No requerido"
                 : "Adicional"
@@ -42,8 +42,8 @@ export default function PositionGears({ requestEmployeeData }) {
             <List.Item>
               <Text size={18}>
                 {checkavailability ? (
-                  requestEmployeeData.gears[item.value] == true ||
-                  requestEmployeeData.gears[item.value] == "true" ? (
+                  requestEmployee.gears[item.value] == true ||
+                  requestEmployee.gears[item.value] == "true" ? (
                     <CheckCircleTwoTone twoToneColor={"green"} />
                   ) : (
                     <CloseCircleTwoTone twoToneColor={"red"} />
@@ -69,7 +69,7 @@ export default function PositionGears({ requestEmployeeData }) {
       />
       <ListItems
         header={"Equipo adicional"}
-        dataSource={requestEmployeeData.gears.other}
+        dataSource={requestEmployee.gears.other}
       />
     </Flex>
   );

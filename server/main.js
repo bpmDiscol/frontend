@@ -16,6 +16,10 @@ import "../imports/api/curricullums/curricullumCollection"
 import "../imports/api/curricullums/curricullumMethods"
 import "../imports/api/curricullums/curricullumsPublication"
 
+import "../imports/api/requestEmployeData/requestEmployeeDataCollection"
+import "../imports/api/requestEmployeData/requestEmployeeDataPublication"
+import "../imports/api/requestEmployeData/requestEmployeeMethods"
+
 //files
 import "../imports/api/files/filesCollection"
 import "../imports/api/files/filesMethods"

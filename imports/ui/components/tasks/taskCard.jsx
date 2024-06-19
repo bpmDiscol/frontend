@@ -1,43 +1,14 @@
 import React from "react";
 import { formatDate } from "../../misc/formatDate";
-import { Avatar, Card, Collapse, Flex, Tag, Tooltip, Typography } from "antd";
+import { Flex, Tooltip, Typography } from "antd";
 
-import TaskResume from "./taskResume";
 import TaskButtons from "./taskButtons";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-const { Meta } = Card;
 const { Text } = Typography;
 
-export default function TaskCard({
-  task,
-  buttons,
-  index,
-  activeResume,
-  setActiveResume,
-  resume = false,
-  updateList,
-  filter,
-}) {
-  const [requestProcess, setRequestProcess] = React.useState();
-
-  React.useEffect(() => {
-    Meteor.call(
-      "get_request_process",
-      { currentTask: filter == "doneTasks" ? task.sourceObjectId : task.id },
-      (error, response) => {
-        setRequestProcess(response);
-      }
-    );
-  }, []);
-
+export default function TaskCard({ task, buttons, updateList }) {
+  
   function setActiveTask() {
     Meteor.call("set_task_id", { taskId: task.id });
-  }
-
-  function detectActiveCollapse(e) {
-    if (e.length > 0) {
-      setActiveResume(index);
-    } else setActiveResume(null);
   }
 
   return (
@@ -54,7 +25,14 @@ export default function TaskCard({
     >
       <Flex justify="space-between" align="center">
         <Tooltip title={`Prioridad: ${task?.priority}`}>
-          <Flex style={{ height: "5px", width: "100px", background: "#3af271", borderRadius:'5px' }}>
+          <Flex
+            style={{
+              height: "5px",
+              width: "100px",
+              background: "#3af271",
+              borderRadius: "5px",
+            }}
+          >
             {" "}
           </Flex>
         </Tooltip>

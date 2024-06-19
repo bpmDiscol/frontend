@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Form, Input, Row, Select, Space, Switch } from "antd";
+import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from "antd";
 
 import siteOptions from "../data/sites.json";
 import areaProyectOptions from "../data/area.json";
@@ -28,7 +28,17 @@ export default function RequestGeneralities({
     <Form>
       <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
         <Col span={12}>
-          <Form.Item label="Puesto solicitado">
+          <Form.Item label="Vacantes" hasFeedback>
+            <Input
+            inputMode="numeric"
+            type="number"
+              id="vacancies"
+              status={fiterErrors("vacancies")}
+              defaultValue={requestData?.vacancies}
+              onChange={(e) => update("vacancies", e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item label="Puesto solicitado" hasFeedback>
             <Input
               id="companyPosition"
               status={fiterErrors("companyPosition")}
@@ -37,7 +47,7 @@ export default function RequestGeneralities({
             />
           </Form.Item>
 
-          <Form.Item label="Sede">
+          <Form.Item label="Sede" hasFeedback>
             <Select
               id="site"
               status={fiterErrors("site")}

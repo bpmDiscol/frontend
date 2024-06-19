@@ -1,36 +1,15 @@
 import React from "react";
 import { Badge, Descriptions, Divider, Flex } from "antd";
 import { pesos } from "../../../misc/pesos";
+import motives from "../../bpm/data/motives.json";
+import contracts from "../../bpm/data/contractType.json";
+import journals from "../../bpm/data/workingDay.json";
 
-export default function PositionGereralities({
-  requestEmployee,
-  requestEmployeeData,
-}) {
-  function getMotiveString(motives) {
-    if (motives.isEmployeeExpanding) return "Aumento de personal";
-    if (motives.isEmployeeInhability) return "Incapacidad de empleado";
-    if (motives.isLicence) return "Licencia";
-    if (motives.isNewCharge) return "Nuevo cargo";
-    if (motives.isNewProject) return "Nuevo proyecto";
-    if (motives.isReplacement) return "Reemplazo de personal";
-    return "ERROR: motivo no encontrado";
+export default function PositionGereralities({ requestEmployee }) {
+  function getValueString(selecter, select) {
+    const obj = selecter.filter((item) => item.value == select)[0];
+    return obj.label ?? "ERROR: item no encontrado";
   }
-  function getContractTypeString(motives) {
-    if (motives.isContractedLabor) return "Obra/Labor";
-    if (motives.isUndefined) return "Termino indefinido";
-    if (motives.isFixedTerm) return "Termino fijo";
-    if (motives.isLearning) return "Aprendizaje";
-    return "ERROR: Tipo no encontrado";
-  }
-
-  function getWorkingDayString(motives) {
-    if (motives.isFullTime) return "Tiempo completo";
-    if (motives.isPartTime) return "Medio tiempo";
-    if (motives.isDayTime) return "Por dias";
-    if (motives.isRemote) return "Remoto"
-    return "ERROR: Jornada no encontrado";
-  }
-
 
   const generalities = [
     {
@@ -58,7 +37,7 @@ export default function PositionGereralities({
     {
       key: "5",
       label: "Motivo del requerimiento",
-      children: getMotiveString(requestEmployeeData.motive),
+      children: getValueString(motives, requestEmployee.motive),
       span: 2,
     },
     {
@@ -72,12 +51,12 @@ export default function PositionGereralities({
     {
       key: "1",
       label: "Tipo de contrato",
-      children: getContractTypeString(requestEmployeeData.contractType),
+      children: getValueString(contracts, requestEmployee.contractType),
     },
     {
       key: "2",
       label: "Jornada laboral",
-      children: getWorkingDayString(requestEmployeeData.workingDay),
+      children: getValueString(journals, requestEmployee.workingDayType),
     },
     {
       key: "3",
@@ -98,7 +77,7 @@ export default function PositionGereralities({
     {
       key: "5",
       label: "Duración",
-      children: `${requestEmployeeData?.duration.cuantity} ${requestEmployeeData?.duration.timePart}`,
+      children: `${requestEmployee?.duration.cuantity} ${requestEmployee?.duration.timePart}`,
     },
 
     {
@@ -109,7 +88,7 @@ export default function PositionGereralities({
           status={requestEmployee.isBonus ? "success" : "error"}
           text={
             requestEmployee.isBonus
-              ? ` Cada ${requestEmployeeData.bonusesFrecuency.cuantity} ${requestEmployeeData.bonusesFrecuency.timePart}`
+              ? ` Cada ${requestEmployee.bonusesFrecuency.cuantity} ${requestEmployee.bonusesFrecuency.timePart}`
               : "No bono"
           }
         />

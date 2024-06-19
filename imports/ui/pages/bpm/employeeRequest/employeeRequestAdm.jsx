@@ -7,6 +7,8 @@ import PositionObservations from "./positionObservations";
 import PositionConcept from "./positionConcept";
 import { MainViewContext } from "../../../context/mainViewProvider";
 
+import { useTracker } from "meteor/react-meteor-data";
+
 import { Button, Flex, Popconfirm, Segmented, Typography } from "antd";
 import {
   RotateLeftOutlined,
@@ -15,47 +17,38 @@ import {
 } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
+import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 
-export default function EmployeeRequestAdm() {
-  const [requestEmployeeData, setRequestEmployeeData] = React.useState();
-  const [requestEmployee, setRequestEmployee] = React.useState();
+export default function EmployeeRequestAdm({ caseId }) {
+  const { Text, Title } = Typography;
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
-  const [loaded, setLoaded] = React.useState(false);
   const [concept, setConcept] = React.useState("");
+  const [waitToSend, setWaitingToSend] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
 
+  const requestEmployeeData = useTracker(() => {
+    Meteor.subscribe("requestEmployee");
+    const req = requestEmployeeCollection.find({caseId:parseInt(caseId)}).fetch();
+
+    if (req.length) {
+      const { requestEmployeeDataInput, ...outterData } = req[0];
+      const requestEmployee = {
+        ...req[0]?.requestEmployeeDataInput,
+        ...outterData,
+      };
+      return requestEmployee;
+    }
+  });
+
   React.useEffect(() => {
-    Meteor.callAsync("get_employee_request").then((response) => {
-      setRequestEmployee(response);
-      Meteor.call(
-        "request_data_links",
-        {
-          requestLinks: response.links,
-        },
-        (error, response) => {
-          if (!error) {
-            setRequestEmployeeData(response);
-          }
-        }
-      );
-    });
+    setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
   }, []);
-
-  React.useEffect(() => {
-    requestEmployee && requestEmployeeData && setLoaded(true);
-  }, [requestEmployee, requestEmployeeData]);
-
-  React.useEffect(() => {
-    loaded &&
-      setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
-  }, [loaded]);
 
   function LoadPage({ Component }) {
     return (
       <Component
-        requestEmployee={requestEmployee}
-        requestEmployeeData={requestEmployeeData}
+        requestEmployee={requestEmployeeData}
         concept={concept}
         setConcept={setConcept}
       />
@@ -85,19 +78,22 @@ export default function EmployeeRequestAdm() {
   }
 
   function request(response) {
+    setWaitingToSend(true);
     Meteor.call(
       "send_employee_request",
       {
         response,
         concept,
+        caseId,
       },
       (error, response) => {
+        setWaitingToSend(false);
         if (response == "no token") safeLogOut();
         else {
-          if (!response.error) {
+          if (!response?.error) {
             openNotification(
-              response.error ? "error" : "success",
-              response.error ? "Ha ocurrido un error" : "¡Buenas noticias!",
+              response?.error ? "error" : "success",
+              response?.error ? "Ha ocurrido un error" : "¡Buenas noticias!",
               response?.message
             );
             setView("tasks");
@@ -106,8 +102,6 @@ export default function EmployeeRequestAdm() {
       }
     );
   }
-
-  const { Text, Title } = Typography;
 
   return (
     <Flex id="employee-request-container" vertical gap={"10px"}>
@@ -120,13 +114,13 @@ export default function EmployeeRequestAdm() {
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
-          onChange={(value) =>
-            setTabView(<LoadPage Component={tabContents[value]} />)
-          }
+          onChange={(value) => {
+            setTabView(<LoadPage Component={tabContents[value]} />);
+          }}
           defaultValue={tabContents.length - 1}
         />
         <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployee && requestEmployeeData && tabView}
+          {requestEmployeeData && tabView}
         </Flex>
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
@@ -139,7 +133,7 @@ export default function EmployeeRequestAdm() {
           Regresar
         </Button>
         <Popconfirm
-          title="Rechazas la solicitud?"
+          title="¿Rechazas la solicitud?"
           description="Confirmas que no estas de acuerdo con esta solicitud. Recuerda dejar tu concepto "
           onConfirm={() => handleButtonResponses("reject")}
           okText="Descártala"
@@ -162,6 +156,7 @@ export default function EmployeeRequestAdm() {
           cancelText="Déjame pensarlo"
         >
           <Button
+            loading={waitToSend}
             type="primary"
             style={{ background: "green" }}
             icon={<LikeFilled />}

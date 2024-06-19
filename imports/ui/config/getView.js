@@ -21,11 +21,11 @@ export function getView(view, params = {}) {
     employee_request_form: (
       <EmployeeRequestForm bonitaUserId={user?.profile?.bonitaUser} />
     ),
-    employee_request_adm: <EmployeeRequestAdm />,
-    employee_request_hr: <EmployeeRequestHR />,
-    load_curricullum: <EmployeeRequestCurricullums />,
-    interview: <EmployeeRequestInterview />,
-    legal_background: <EmployeeRequestBackground />,
+    employee_request_adm: <EmployeeRequestAdm caseId={params.caseId} />,
+    employee_request_hr: <EmployeeRequestHR caseId={params.caseId} />,
+    load_curricullum: <EmployeeRequestCurricullums caseId={params.caseId} />,
+    interview: <EmployeeRequestInterview caseId={params.caseId} />,
+    legal_background: <EmployeeRequestBackground caseId={params.caseId} />,
   };
 
   if (view in views) return views[view];
