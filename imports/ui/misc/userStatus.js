@@ -21,6 +21,7 @@ export function goUserOffline() {
 export function safeLogOut() {
   offlineTime.reset();
   sessionStorage.removeItem('currentView')
+  sessionStorage.removeItem('constId')
   Meteor.call("go_offline");
   Meteor.logout();
 }

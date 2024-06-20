@@ -66,18 +66,19 @@ Meteor.methods({
       params: {},
     });
   },
-  async assign_task_to({ user }) {
-    const currentUser = Meteor.users.findOne(Meteor.userId({}));
-    const taskId = currentUser.taskId;
-    const assigned_id = user == "me" ? currentUser.profile.bonitaUser : user;
-    if (taskId) {
-      Meteor.call("put_data", {
-        url: `/API/bpm/userTask/${taskId}`,
-        data: {
-          assigned_id,
-        },
-      });
-    } else console.log({error:'Tarea no asignada', taskId, assigned_id });
+  async assign_task_to({ user, currentUser }) {
+    if (currentUser) {
+      const taskId = currentUser.taskId;
+      const assigned_id = user == "me" ? currentUser.profile.bonitaUser : user;
+      if (taskId) {
+        Meteor.call("put_data", {
+          url: `/API/bpm/userTask/${taskId}`,
+          data: {
+            assigned_id,
+          },
+        });
+      } else console.log({ error: "Tarea no asignada", taskId, assigned_id });
+    } else return { error: "no user" };
   },
   set_task_id({ taskId }) {
     Meteor.users.update({ _id: Meteor.userId() }, { $set: { taskId } });

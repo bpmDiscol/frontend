@@ -25,6 +25,7 @@ export default function PublicLogin() {
         Meteor.loginWithPassword(username, password);
       }
     });
+    sessionStorage.setItem("constId", bonitaUser);
     Meteor.callAsync("update_credentials", { bonitaUser, token, JSESSIONID });
   }
 
@@ -47,11 +48,7 @@ export default function PublicLogin() {
                 password,
               });
 
-            openNotification(
-              result.variant,
-              result?.message,
-              ""
-            );
+            openNotification(result.variant, result?.message, "");
           }
           setIsLoading(false);
         }
