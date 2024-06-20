@@ -77,7 +77,7 @@ export default function InterviewForm({ onClose, fileId }) {
   const [form] = Form.useForm();
 
   async function update(field, value) {
-    await Meteor.callAsync("update_task", { taskId, field, value });
+    await Meteor.callAsync("update_task", { taskId, field, value }).catch(error=> console.error(error));
   }
 
   React.useEffect(() => {

@@ -1,4 +1,4 @@
-import { Descriptions, Form } from "antd";
+import { Badge, Col, Descriptions, Flex, Form, Row, Space, Tag } from "antd";
 import React from "react";
 
 function gimmeThaLinks(datastream, callback) {
@@ -120,35 +120,60 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
     },
   ];
   return (
-    <div>
+    <Flex vertical>
       <Descriptions
         title="Generalidades"
         items={generalities}
         bordered
         size="small"
       />
-      {interviewForm.previousEmployee ? (
+      <Row style={{padding: '16px', background:'#aed4e8'}} gutter={['10px', '10px']}>
+        {!interviewForm.previousEmployee && (
+          <Col xs={24} sm={12} md={8} style={{display:'flex',justifyContent:'center'}}>
+            <Tag color="success">
+              <h4>No ha laborado en Discol anteriormente</h4>
+            </Tag>
+          </Col>
+        )}
+        {!interviewForm.aboutBusiness && (
+          <Col xs={24} sm={12} md={8} style={{display:'flex',justifyContent:'center'}}>
+            <Tag color="success">
+              <h4>No ha trabajado en empresas asociadas</h4>
+            </Tag>
+          </Col>
+        )}
+        {!interviewForm.isAboutFamily && (
+          <Col xs={24} sm={12} md={8} style={{display:'flex',justifyContent:'center'}}>
+            <Tag color="success">
+              <h4>No tiene familiares en discol</h4>
+            </Tag>
+          </Col>
+        )}
+      </Row>
+      {interviewForm.previousEmployee && (
         <Descriptions
           title="Laboró en discol"
           items={laboredBefore}
           bordered
           size="small"
         />
-      ) : (
-        "No ha laborado en Discol anteriormente"
       )}
-     {interviewForm.aboutBusiness? <Descriptions
-        title="Laboró en empresa vinculada"
-        items={asociatedBefore}
-        bordered
-        size="small"
-      />:"No ha trabajado en empresas asociadas"}
-     {interviewForm.isAboutFamily? <Descriptions
-        title="Familiar en Discol"
-        items={family}
-        bordered
-        size="small"
-      />:"No tiene familiares en discol"}
-    </div>
+      {interviewForm.aboutBusiness && (
+        <Descriptions
+          title="Laboró en empresa vinculada"
+          items={asociatedBefore}
+          bordered
+          size="small"
+        />
+      )}
+      {interviewForm.isAboutFamily && (
+        <Descriptions
+          title="Familiar en Discol"
+          items={family}
+          bordered
+          size="small"
+        />
+      )}
+    </Flex>
   );
 }

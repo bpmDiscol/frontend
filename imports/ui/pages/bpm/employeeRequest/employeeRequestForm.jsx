@@ -50,7 +50,7 @@ export default function EmployeeRequestForm() {
 
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    await Meteor.callAsync("update_task", { taskId, field, value });
+    await Meteor.callAsync("update_task", { taskId, field, value }).catch(error=> console.error(error));
   }
 
   const LoadPage = React.useCallback(

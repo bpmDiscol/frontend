@@ -85,7 +85,7 @@ Meteor.methods({
     return response;
   },
   async get_data({ url, params }) {
-    const token = await Meteor.callAsync("get_token");
+    const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
     if (token)
       return await Axios.get(url, params, {
         headers: {
@@ -102,7 +102,7 @@ Meteor.methods({
     else return "no token";
   },
   async post_data({ url, data }) {
-    const token = await Meteor.callAsync("get_token");
+    const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
     if (token) {
       // console.log(data)
       return await Axios.post(url, data, {
@@ -127,7 +127,7 @@ Meteor.methods({
     } else return "no token";
   },
   async put_data({ url, data }) {
-    const token = await Meteor.callAsync("get_token");
+    const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
     if (token) {
       return await Axios.put(url, data, {
         headers: {

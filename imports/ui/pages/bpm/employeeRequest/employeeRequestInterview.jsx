@@ -51,7 +51,7 @@ export default function EmployeeRequestInterview({ caseId }) {
           return Meteor.callAsync("getFileLink", {
             id: curricullum.fileId,
             collectionName: "curricullums",
-          });
+          }).catch(error=> console.error(error));
         }
       );
 

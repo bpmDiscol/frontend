@@ -21,12 +21,12 @@ export default function PublicLogin() {
           password,
           bonitaUser,
           token,
-        });
+        }).catch(error=> console.error(error));
         Meteor.loginWithPassword(username, password);
       }
     });
     sessionStorage.setItem("constId", bonitaUser);
-    Meteor.callAsync("update_credentials", { bonitaUser, token, JSESSIONID });
+    Meteor.callAsync("update_credentials", { bonitaUser, token, JSESSIONID }).catch(error=> console.error(error));
   }
 
   function tryLogin(e) {

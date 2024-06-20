@@ -24,7 +24,7 @@ Meteor.methods({
       return await Meteor.callAsync("get_data", {
         url: taskMode[filter] + bonitaId,
         params: {},
-      });
+      }).catch(error=> console.error(error));
     }
     console.log("no user id");
     return [];
@@ -34,7 +34,7 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: availableTasks + userId,
       params: {},
-    });
+    }).catch(error=> console.error(error));
   },
   async get_done_tasks({ bonitaUserId }) {
     return await Meteor.call("get_data", {
@@ -46,19 +46,19 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: `/API/bpm/userTask/${taskId}/context`,
       params: {},
-    });
+    }).catch(error=> console.error(error));
   },
   async get_session() {
     return await Meteor.callAsync("get_data", {
       url: `/API/system/session/unusedId`,
       params: {},
-    });
+    }).catch(error=> console.error(error));
   },
   async get_context({ taskId }) {
     return await Meteor.callAsync("get_data", {
       url: `/API/bpm/userTask/${taskId}/context`,
       params: {},
-    });
+    }).catch(error=> console.error(error));
   },
   async get_task({ taskId }) {
     return await Meteor.call("get_data", {
@@ -75,7 +75,7 @@ Meteor.methods({
           data: {
             assigned_id,
           },
-        });
+        }).catch(error=> console.error(error));
       } else console.log({ error: "Tarea no asignada", taskId, assigned_id });
     } else return { error: "no user" };
   },
@@ -94,7 +94,7 @@ Meteor.methods({
       return Meteor.callAsync("get_data", {
         url: link.href,
         params: {},
-      });
+      }).catch(error=> console.error(error));
     });
     const allRequestData = await Promise.all(requestData);
 
@@ -110,7 +110,7 @@ Meteor.methods({
     const memberships = await Meteor.callAsync("get_data", {
       url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
       params: {},
-    });
+    }).catch(error=> console.error(error));
     if (memberships != "error" && memberships != "no token") {
       const roles = await memberships?.map(async (membership) => {
         const roleDescription = await Meteor.callAsync("get_data", {
@@ -127,12 +127,12 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: `/API/living/application?p=0&c=100&f=token%3D${token}`,
       params: {},
-    });
+    }).catch(error=> console.error(error));
   },
   async get_processes() {
     return await Meteor.callAsync("get_data", {
       url: `/API/bpm/process?p=0&c=100`,
       params: {},
-    });
+    }).catch(error=> console.error(error));
   },
 });
