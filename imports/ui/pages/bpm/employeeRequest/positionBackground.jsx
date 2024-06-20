@@ -16,7 +16,6 @@ const googleDocsViewer = "http://docs.google.com/viewer?url=";
 const closed = { applicant: null, open: false, view: null };
 
 export default function PositionBackgroud({ curricullums, interviews }) {
-  
   const [drawerData, setDrawerData] = React.useState(closed);
 
   function newTab(url) {
@@ -47,7 +46,6 @@ export default function PositionBackgroud({ curricullums, interviews }) {
                   }`,
                   padding: "5px 10px",
                   boxShadow: "none",
-                  // background: !interviews[index].selected ? "#d9fcd9" : "#efd0d0",
                 }}
               >
                 <Flex

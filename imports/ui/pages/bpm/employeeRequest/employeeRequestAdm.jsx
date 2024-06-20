@@ -91,9 +91,11 @@ export default function EmployeeRequestAdm({ caseId }) {
         taskId: sessionStorage.getItem("constId"),
       },
       (error, response) => {
+        console.log("🚀 ~ request ~ response:", response)
         setWaitingToSend(false);
         if (response == "no token") safeLogOut();
         else {
+          
           if (!response?.error) {
             openNotification(
               response?.error ? "error" : "success",

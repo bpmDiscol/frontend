@@ -104,13 +104,15 @@ Meteor.methods({
   async post_data({ url, data }) {
     const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
     if (token) {
-      // console.log(data)
+       console.log(url)
       return await Axios.post(url, data, {
         headers: {
           "X-Bonita-API-Token": token,
         },
       })
         .then((response) => {
+          console.log("🚀 ~ .then ~ response:", response)
+          
           return {
             error: false,
             response: response.data,
@@ -118,10 +120,11 @@ Meteor.methods({
           };
         })
         .catch((error) => {
+          console.log("🚀 ~ post_data ~ error:", error)
           return {
             error: true,
             status: error.response.status,
-            message: error.reason,
+            message: error.response.data,
           };
         });
     } else return "no token";

@@ -202,6 +202,7 @@ export default function EmployeeRequestBackground({ caseId }) {
           cancelText="Déjame pensarlo"
         >
           <Button
+            loading={waitToSend}
             type="primary"
             danger
             icon={<SendOutlined />}

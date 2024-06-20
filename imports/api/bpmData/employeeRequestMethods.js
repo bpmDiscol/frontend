@@ -49,7 +49,6 @@ Meteor.methods({
     Meteor.callAsync("update_data", { field, value: concept }, caseId).catch(
       (error) => console.error(error)
     );
-
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
@@ -57,7 +56,7 @@ Meteor.methods({
         responsible: username,
         response,
       },
-    }).catch((error) => console.error(error));
+    })
   },
 
   async start_employee_request({ request, processId }) {
