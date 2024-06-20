@@ -12,6 +12,7 @@ import PositionCurricullums from "./positionCurricullums";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
+import SpinningLoader from "../../../components/spinningLoader";
 
 export default function EmployeeRequestCurricullums({ caseId }) {
   const { Text, Title } = Typography;
@@ -114,9 +115,7 @@ export default function EmployeeRequestCurricullums({ caseId }) {
             setTabView(<LoadPage Component={tabContents[value]} />)
           }
         />
-        <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployeeData && tabView}
-        </Flex>
+        <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

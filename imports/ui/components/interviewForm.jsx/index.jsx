@@ -81,7 +81,6 @@ export default function InterviewForm({ onClose, fileId }) {
   }
 
   React.useEffect(() => {
-    if (!err) {
       const taskId = "employeeInterview-" + sessionStorage.getItem("constId");
       setTaskId(taskId);
       Meteor.call("get_task_data", taskId, (err, resp) => {
@@ -90,7 +89,7 @@ export default function InterviewForm({ onClose, fileId }) {
           setCurrentForm(resp[0][`interview-${fileId}`]?.currentForm || 0);
         }
       });
-    }
+    
   }, []);
 
   const changedFields = {};

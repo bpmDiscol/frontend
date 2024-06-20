@@ -18,9 +18,9 @@ import {
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
+import SpinningLoader from "../../../components/spinningLoader";
 
 export default function EmployeeRequestHR({ caseId }) {
-  
   const { Text, Title } = Typography;
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
@@ -88,7 +88,7 @@ export default function EmployeeRequestHR({ caseId }) {
         response,
         concept,
         caseId,
-        taskId: sessionStorage.getItem('constId')
+        taskId: sessionStorage.getItem("constId"),
       },
       (error, response) => {
         setWaitingToSend(false);
@@ -123,9 +123,7 @@ export default function EmployeeRequestHR({ caseId }) {
           }}
           defaultValue={tabContents.length - 1}
         />
-        <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployeeData && tabView}
-        </Flex>
+        <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

@@ -79,7 +79,7 @@ export default function EmployeeRequestBackground({ caseId }) {
           //establecer primera vista
           setTabView(
             <LoadPage
-              Component={tabContents[0]}
+              Component={tabContents[tabContents.length - 1]}
               curricullums={curricullums}
               interviews={requestEmployeeData.interviewInput}
             />
@@ -173,7 +173,7 @@ export default function EmployeeRequestBackground({ caseId }) {
         <Flex style={{ overflow: "auto" }} id="segmented">
           <Segmented
             options={tabTitles}
-            defaultValue={0}
+            defaultValue={tabContents.length - 1}
             onChange={(value) =>
               setTabView(
                 <LoadPage

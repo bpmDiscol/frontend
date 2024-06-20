@@ -21,7 +21,7 @@ Meteor.methods({
     if (userId) {
       const bonitaId = Meteor.users.findOne(Meteor.userId({})).profile
         .bonitaUser;
-      return await Meteor.call("get_data", {
+      return await Meteor.callAsync("get_data", {
         url: taskMode[filter] + bonitaId,
         params: {},
       });
@@ -31,7 +31,7 @@ Meteor.methods({
   },
   async get_available_tasks() {
     const userId = Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser;
-    return await Meteor.call("get_data", {
+    return await Meteor.callAsync("get_data", {
       url: availableTasks + userId,
       params: {},
     });
@@ -43,19 +43,19 @@ Meteor.methods({
     });
   },
   async get_context(taskId) {
-    return await Meteor.call("get_data", {
+    return await Meteor.callAsync("get_data", {
       url: `/API/bpm/userTask/${taskId}/context`,
       params: {},
     });
   },
   async get_session() {
-    return await Meteor.call("get_data", {
+    return await Meteor.callAsync("get_data", {
       url: `/API/system/session/unusedId`,
       params: {},
     });
   },
   async get_context({ taskId }) {
-    return await Meteor.call("get_data", {
+    return await Meteor.callAsync("get_data", {
       url: `/API/bpm/userTask/${taskId}/context`,
       params: {},
     });
@@ -68,9 +68,9 @@ Meteor.methods({
   },
   async assign_task_to({ user, currentUser, taskId }) {
     if (currentUser) {
-      const assigned_id = user == "me" ? currentUser: user;
+      const assigned_id = user == "me" ? currentUser: user||"";
       if (taskId) {
-        Meteor.call("put_data", {
+        Meteor.callAsync("put_data", {
           url: `/API/bpm/userTask/${taskId}`,
           data: {
             assigned_id,

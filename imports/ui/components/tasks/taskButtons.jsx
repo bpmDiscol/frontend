@@ -18,6 +18,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
   }
 
   function assignTask(button) {
+    console.log("🚀 ~ assignTask ~ button:", button)
     Meteor.call(
       "assign_task_to",
       {
