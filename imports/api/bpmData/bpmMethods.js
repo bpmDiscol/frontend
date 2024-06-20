@@ -66,10 +66,9 @@ Meteor.methods({
       params: {},
     });
   },
-  async assign_task_to({ user, currentUser }) {
+  async assign_task_to({ user, currentUser, taskId }) {
     if (currentUser) {
-      const taskId = currentUser.taskId;
-      const assigned_id = user == "me" ? currentUser.profile.bonitaUser : user;
+      const assigned_id = user == "me" ? currentUser: user;
       if (taskId) {
         Meteor.call("put_data", {
           url: `/API/bpm/userTask/${taskId}`,
@@ -82,9 +81,6 @@ Meteor.methods({
   },
   set_task_id({ taskId }) {
     Meteor.users.update({ _id: Meteor.userId() }, { $set: { taskId } });
-  },
-  get_task_id() {
-    return Meteor.users.findOne(Meteor.userId({})).taskId;
   },
   assign_me_task() {
     Meteor.call("assing_task_to", { userId: -1 });

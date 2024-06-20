@@ -14,18 +14,14 @@ export default function PositionCurricullums() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [taskId, setTaskId] = React.useState();
   React.useEffect(() => {
-    Meteor.call("get_task_id", (err, currentTask) => {
-      if (!err) {
-        setTaskId("employeeCurriculllums-" + currentTask);
-        Meteor.call(
-          "get_task_data",
-          "employeeCurriculllums-" + currentTask,
-          (err, resp) => {
-            if (!err && resp) setCurricullums(resp[0].curricullums || []);
-          }
-        );
-      }
-    });
+    if (!err) {
+      const taskId =
+        "employeeCurriculllums-" + sessionStorage.getItem("constId");
+      setTaskId(taskId);
+      Meteor.call("get_task_data", taskId, (err, resp) => {
+        if (!err && resp) setCurricullums(resp[0].curricullums || []);
+      });
+    }
   }, []);
 
   function updateData(field, value) {

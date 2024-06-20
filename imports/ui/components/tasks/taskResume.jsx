@@ -4,7 +4,7 @@ export default function TaskResume() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
 
   React.useEffect(() => {
-    Meteor.callAsync("get_employee_request").then((response) => {
+    Meteor.call("get_employee_request", sessionStorage.getItem('constId'),(response) => {
       if (response) setRequestEmployeeData(response);
     });
   }, []);

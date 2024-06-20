@@ -67,30 +67,35 @@ export default function EmployeeRequestCurricullums({ caseId }) {
 
   function request() {
     setWaitingToSend(true);
-    Meteor.call("send_curricullums", caseId, (error, response) => {
-      setWaitingToSend(false);
-      if (error) {
-        console.log(error);
-        return;
-      }
-      if (response == "no token") {
-        openNotification(
-          "Error",
-          "Algo ha salido mal",
-          "Un error del servidor obliga a que ingreses nuevamente"
-        );
-        safeLogOut();
-      } else {
-        if (!response?.error) {
+    Meteor.call(
+      "send_curricullums",
+      caseId,
+      sessionStorage.getItem("constId"),
+      (error, response) => {
+        setWaitingToSend(false);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        if (response == "no token") {
           openNotification(
-            "success",
-            "¡Buen trabajo!",
-            "Los archivos se han enviado satisfactoriamente"
+            "Error",
+            "Algo ha salido mal",
+            "Un error del servidor obliga a que ingreses nuevamente"
           );
-          setView("tasks");
+          safeLogOut();
+        } else {
+          if (!response?.error) {
+            openNotification(
+              "success",
+              "¡Buen trabajo!",
+              "Los archivos se han enviado satisfactoriamente"
+            );
+            setView("tasks");
+          }
         }
       }
-    });
+    );
   }
 
   return (

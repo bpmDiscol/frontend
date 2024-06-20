@@ -88,6 +88,7 @@ export default function EmployeeRequestHR({ caseId }) {
         response,
         concept,
         caseId,
+        taskId: sessionStorage.getItem('constId')
       },
       (error, response) => {
         setWaitingToSend(false);

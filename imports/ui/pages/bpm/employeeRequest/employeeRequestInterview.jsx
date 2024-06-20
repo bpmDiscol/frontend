@@ -107,7 +107,7 @@ export default function EmployeeRequestInterview({ caseId }) {
 
   async function request() {
     setWaitingToSend(true);
-    const currentTask = await Meteor.callAsync("get_task_id");
+    const currentTask = sessionStorage.getItem('constId');
     Meteor.call(
       "get_task_data",
       "employeeInterview-" + currentTask,

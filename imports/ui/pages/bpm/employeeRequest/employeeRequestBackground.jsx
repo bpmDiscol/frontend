@@ -132,7 +132,7 @@ export default function EmployeeRequestBackground({ caseId }) {
           };
         });
 
-        Meteor.call("send_interviews", req, (error, response) => {
+        Meteor.call("send_interviews", req, sessionStorage.getItem('constId'), (error, response) => {
           if (error) {
             console.log(error);
             return;

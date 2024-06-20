@@ -18,6 +18,7 @@ import {
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
+import SpinningLoader from "../../../components/spinningLoader";
 
 export default function EmployeeRequestAdm({ caseId }) {
   const { Text, Title } = Typography;
@@ -29,7 +30,9 @@ export default function EmployeeRequestAdm({ caseId }) {
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
-    const req = requestEmployeeCollection.find({caseId:parseInt(caseId)}).fetch();
+    const req = requestEmployeeCollection
+      .find({ caseId: parseInt(caseId) })
+      .fetch();
 
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
@@ -85,6 +88,7 @@ export default function EmployeeRequestAdm({ caseId }) {
         response,
         concept,
         caseId,
+        taskId: sessionStorage.getItem("constId"),
       },
       (error, response) => {
         setWaitingToSend(false);
@@ -119,9 +123,7 @@ export default function EmployeeRequestAdm({ caseId }) {
           }}
           defaultValue={tabContents.length - 1}
         />
-        <Flex vertical style={{ height: "50lvh", overflowY: "auto" }}>
-          {requestEmployeeData && tabView}
-        </Flex>
+        <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

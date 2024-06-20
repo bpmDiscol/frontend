@@ -7,9 +7,6 @@ const { Text } = Typography;
 
 export default function TaskCard({ task, buttons, updateList }) {
   
-  function setActiveTask() {
-    Meteor.call("set_task_id", { taskId: task.id });
-  }
 
   return (
     <Flex
@@ -21,7 +18,6 @@ export default function TaskCard({ task, buttons, updateList }) {
         padding: "5px 10px",
         borderRadius: "5px",
       }}
-      onMouseOver={setActiveTask}
     >
       <Flex justify="space-between" align="center">
         <Tooltip title={`Prioridad: ${task?.priority}`}>

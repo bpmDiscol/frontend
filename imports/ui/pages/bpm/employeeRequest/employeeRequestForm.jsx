@@ -16,6 +16,7 @@ import RequestGears from "./requestGears";
 import RequestObservations from "./requestObservations";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { safeLogOut } from "../../../misc/userStatus";
+import SpinningLoader from "../../../components/spinningLoader";
 
 const { Text, Title } = Typography;
 
@@ -179,9 +180,7 @@ export default function EmployeeRequestForm() {
           defaultValue={0}
           value={currentTab}
         />
-        <Flex vertical style={{ height: "60lvh", overflow: "hidden" }}>
-          {tabView}
-        </Flex>
+        <SpinningLoader condition={requestData} content={tabView} />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

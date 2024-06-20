@@ -4,11 +4,9 @@ import {
   validateEmployeeRequest,
   validateRequest,
 } from "../misc/validation";
-import { message } from "antd";
 
 Meteor.methods({
-  async get_employee_request() {
-    const taskId = await Meteor.callAsync("get_task_id");
+  async get_employee_request(taskId) {
     const context = await Meteor.callAsync("get_context", { taskId });
 
     if (context)
@@ -29,8 +27,6 @@ Meteor.methods({
 
   async get_request_process({ currentTask }) {
     const taskId = currentTask
-      ? currentTask
-      : await Meteor.callAsync("get_task_id");
     const context = await Meteor.callAsync("get_context", { taskId });
 
     if (context)
@@ -45,8 +41,9 @@ Meteor.methods({
     response,
     concept,
     caseId,
+    taskId
   }) {
-    const { username, taskId } = Meteor.users.findOne(Meteor.userId());
+    const { username } = Meteor.users.findOne(Meteor.userId());
     const field = ["requestEmployeeDataInput", "observations"];
     Meteor.callAsync("update_data", { field, value: concept }, caseId);
 
@@ -78,8 +75,8 @@ Meteor.methods({
     return response;
   },
 
-  async send_curricullums(caseId) {
-    const { username, taskId } = Meteor.users.findOne(Meteor.userId());
+  async send_curricullums(caseId, taskId) {
+    const { username } = Meteor.users.findOne(Meteor.userId());
     const curricullumTask = "employeeCurriculllums-" + taskId;
     const taskData = await Meteor.callAsync("get_task_data", curricullumTask);
     const curricullumsInput = taskData[0].curricullums;
@@ -97,8 +94,7 @@ Meteor.methods({
       },
     });
   },
-  async get_curricullums() {
-    const { taskId } = Meteor.users.findOne(Meteor.userId());
+  async get_curricullums(taskId) {
     const context = await Meteor.callAsync("get_context", { taskId });
 
     if (context)
@@ -108,8 +104,8 @@ Meteor.methods({
       });
   },
 
-  async send_interviews(iData, caseId) {
-    const { username, taskId } = Meteor.users.findOne(Meteor.userId());
+  async send_interviews(iData, caseId, taskId) {
+    const { username } = Meteor.users.findOne(Meteor.userId());
     const interviewInput = processInterviews(iData);
     const field = ["interviewInput"];
     Meteor.callAsync("set_data", { field, value: interviewInput }, caseId);
@@ -122,8 +118,7 @@ Meteor.methods({
       },
     });
   },
-  async get_interviews() {
-    const { taskId } = Meteor.users.findOne(Meteor.userId());
+  async get_interviews(taskId) {
     const context = await Meteor.callAsync("get_context", { taskId });
 
     if (context)

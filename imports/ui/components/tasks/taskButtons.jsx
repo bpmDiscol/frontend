@@ -23,6 +23,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       {
         user: buttonData[button].user,
         currentUser: sessionStorage.getItem("constId"),
+        taskId:task.id
       },
       (error, resp) => {
         if (error) console.log(error);

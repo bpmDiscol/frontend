@@ -32,9 +32,7 @@ export default function TaskItem({
       }
     );
   }, []);
-  function setActiveTask() {
-    Meteor.call("set_task_id", { taskId: task.id });
-  }
+
 
   function detectActiveCollapse(e) {
     if (e.length > 0) {
@@ -47,7 +45,6 @@ export default function TaskItem({
       hoverable
       style={{ border: "1px solid black" }}
       draggable
-      onMouseOver={setActiveTask}
     >
       <Meta
         avatar={
