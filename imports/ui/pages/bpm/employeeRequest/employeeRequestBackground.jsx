@@ -19,10 +19,8 @@ import {
 import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
-import PositionInterviews from "./positionInterviews";
 import PositionBackgroud from "./positionBackground";
 import SpinningLoader from "../../../components/spinningLoader";
-import { get_file_link } from "../../../misc/filemanagement";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";

@@ -1,5 +1,6 @@
 import { Badge, Col, Descriptions, Flex, Form, Row, Space, Tag } from "antd";
 import React from "react";
+import ReactQuill, { Quill } from "react-quill";
 
 function gimmeThaLinks(datastream, callback) {
   if (Object.keys(datastream).includes("links")) {
@@ -14,6 +15,11 @@ function gimmeThaLinks(datastream, callback) {
 
 export default function InterviewView({ onClose, fileId, interviewForm }) {
   console.log("🚀 ~ InterviewView ~ laboralExperience:", interviewForm);
+
+  React.useEffect(() => {
+    const quill = new Quill(".personal-annotations");
+    quill.disable();
+  }, []);
 
   const generalities = [
     {
@@ -108,14 +114,22 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
   const family = [
     {
       key: "1",
-      label: "Parentezco",
-      children: interviewForm.kinship,
+      label: "Familiar",
+      children: interviewForm.kinName,
       span: 2,
     },
     {
       key: "2",
-      label: "Familiar",
-      children: interviewForm.kinName,
+      label: "Parentezco",
+      children: interviewForm.kinship,
+      span: 2,
+    },
+  ];
+  const personalInfo = [
+    {
+      key: "1",
+      label: "Información personal/familiar",
+      children: interviewForm.personalAnnotation,
       span: 3,
     },
   ];
@@ -127,23 +141,41 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
         bordered
         size="small"
       />
-      <Row style={{padding: '16px', background:'#aed4e8'}} gutter={['10px', '10px']}>
+      <Row
+        style={{ padding: "16px", margin: 10, background: "#aed4e8" }}
+        gutter={["10px", "10px"]}
+      >
         {!interviewForm.previousEmployee && (
-          <Col xs={24} sm={12} md={8} style={{display:'flex',justifyContent:'center'}}>
+          <Col
+            xs={24}
+            sm={12}
+            md={8}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <Tag color="success">
               <h4>No ha laborado en Discol anteriormente</h4>
             </Tag>
           </Col>
         )}
         {!interviewForm.aboutBusiness && (
-          <Col xs={24} sm={12} md={8} style={{display:'flex',justifyContent:'center'}}>
+          <Col
+            xs={24}
+            sm={12}
+            md={8}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <Tag color="success">
               <h4>No ha trabajado en empresas asociadas</h4>
             </Tag>
           </Col>
         )}
         {!interviewForm.isAboutFamily && (
-          <Col xs={24} sm={12} md={8} style={{display:'flex',justifyContent:'center'}}>
+          <Col
+            xs={24}
+            sm={12}
+            md={8}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <Tag color="success">
               <h4>No tiene familiares en discol</h4>
             </Tag>
@@ -174,6 +206,14 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
           size="small"
         />
       )}
+      <ReactQuill
+        value={interviewForm.personalAnnotation}
+        style={{
+          height: "14lh",
+          width: "100%",
+        }}
+        id="personal-annotations"
+      />
     </Flex>
   );
 }

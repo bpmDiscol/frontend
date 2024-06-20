@@ -63,10 +63,12 @@ Meteor.methods({
   async start_employee_request({ request, processId }) {
     const validRequest = validateRequest(request);
     const errorValidation = validateEmployeeRequest(validRequest);
-
+    
     if (errorValidation) {
       return { error: true, issues: errorValidation.issues };
     }
+    
+    console.log("🚀 ~ start_employee_request ~ validRequest:", validRequest)
 
     const response = await Meteor.callAsync("post_data", {
       url: `/API/bpm/process/${processId}/instantiation`,
@@ -78,7 +80,7 @@ Meteor.methods({
         "add_request",
         validRequest,
         response.response.caseId
-      ).catch((error) => console.error(error));
+      ).catch((error) => console.error("Error instanciando el proceso: "+ error));
     return response;
   },
 
