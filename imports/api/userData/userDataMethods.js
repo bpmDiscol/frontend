@@ -44,16 +44,23 @@ Meteor.methods({
     if (Object.keys(userData).includes("tasks")) {
       const myTasks = userData.tasks.filter((task) => task.taskId == taskId);
       if (myTasks.length) return myTasks;
-      else {  
+      else {
         Meteor.call("add_task", { taskId });
       }
-    }else return Meteor.call('start_task_repository')
+    } else return Meteor.call("start_task_repository");
   },
   update_task({ taskId, field, value }) {
     const datafield = `tasks.$.${field}`;
     Meteor.users.update(
       { _id: Meteor.userId(), "tasks.taskId": taskId },
       { $set: { [`${datafield}`]: value } }
+    );
+  },
+  update_backgrounds({ taskId, id, backgroundFiles }) {
+    const datafield = `tasks.$.backgrounds`;
+    Meteor.users.update(
+      { _id: Meteor.userId(), "tasks.taskId": taskId },
+      { $set: { [`${datafield}`]: { [`${id}`]: backgroundFiles} } }
     );
   },
   delete_task(taskId) {

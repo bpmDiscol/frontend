@@ -97,7 +97,7 @@ export default function PositionBackgroud({ curricullums, interviews }) {
                       setDrawerData({
                         applicant: interview,
                         open: true,
-                        view: <BackgroundForm />,
+                        view: <BackgroundForm id={interview.fileId} />,
                       });
                     }}
                     type="primary"

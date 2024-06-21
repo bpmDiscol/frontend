@@ -31,7 +31,7 @@ export default function PositionCurricullums() {
   async function saveFile(fileData, index) {
     const currentFile = curricullums[index].fileId;
     if (currentFile) deleteFile("curricullums", currentFile);
-    uploadFile("curricullums", fileData, index, (fileId) => {
+    uploadFile("curricullums", fileData, (fileId) => {
       if (fileId) setAttribute("fileId", fileId, index);
       else message.error("No fue posible cargar el archivo");
     });

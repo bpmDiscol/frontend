@@ -9,6 +9,7 @@ import Icon, {
 import { NotificationsContext } from "../../context/notificationsProvider";
 import { safeLogOut } from "../../misc/userStatus";
 import { saveCase, saveTask, saveTaskName } from "../../config/taskManagement";
+import { deleteFile } from "../../misc/filemanagement";
 export default function TaskButtons({ buttons = [], updateList, task }) {
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
@@ -19,6 +20,16 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
     saveTask(task.id);
     saveCase(task.caseId);
     saveTaskName(task.name);
+  }
+
+  async function deleteCurricullumFromTask(taskId) {
+    const data = await Meteor.callAsync("get_task_data", taskId);
+    if (data?.length) {
+      const curricullums = data[0].curricullums||[];
+      curricullums.forEach((curr) => {
+        deleteFile("curricullums", curr.fileId);
+      });
+    }
   }
 
   function assignTask(button) {
@@ -43,10 +54,15 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
           safeLogOut();
           return;
         }
-        if (resp)
+        if (resp) {
+          if (buttonData[button].user == "") {
+            deleteCurricullumFromTask(task.name + task.id);
+            //TODO: borrar background
+          }
           Meteor.call("delete_task", task.name + task.id, (err) => {
             if (!err) sessionStorage.removeItem("albous");
           });
+        }
         updateList(buttonData[button].filters);
       }
     );
