@@ -1,0 +1,7 @@
+{
+    "server":{
+        "development":"http://localhost:8080/bonita",
+        "production": "http://35.202.4.246/bonita"
+    },
+    "secret": "testID001"
+}

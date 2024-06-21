@@ -29,7 +29,7 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
   const learningAdaptation = React.useRef();
   const tecnicalEvaluation = React.useRef();
   const finalConcept = React.useRef();
-
+//TODO: imprimir PDF
   const [laboralExperience, setLaboralExperience] = React.useState([]);
 
   function BooleanTag({ tagValue }) {
