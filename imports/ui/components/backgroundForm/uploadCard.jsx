@@ -1,6 +1,7 @@
 import React from "react";
 import { deleteFile, uploadFile } from "../../misc/filemanagement";
-import { Flex, Typography } from "antd";
+import { Upload, Typography, Flex } from "antd";
+
 
 export default function UploadFile({ title, targetField }) {
   const { Title } = Typography;
@@ -10,8 +11,8 @@ export default function UploadFile({ title, targetField }) {
     console.log({ fieldId, fileId, index });
   }
   return (
-    <Flex>
-      <Title>{title}</Title>
+    <Flex vertical>
+      <Title level={3}>{title}</Title>
       <Upload
         maxCount={1}
         beforeUpload={(file) => {

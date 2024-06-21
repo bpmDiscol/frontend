@@ -29,7 +29,7 @@ export default function Tasks() {
       gap={16}
     >
       <TaskList
-        title={"Pendientes"}
+        title={"Por Hacer"}
         filter={"available"}
         buttons={["accept"]}
         resume
@@ -37,7 +37,7 @@ export default function Tasks() {
         updateList={updateList}
       />
       <TaskList
-        title={"Por hacer"}
+        title={"En proceso"}
         filter={"assigned"}
         buttons={["dismiss", "do"]}
         resume
@@ -45,7 +45,7 @@ export default function Tasks() {
         updateList={updateList}
       />
       <TaskList
-        title={"Terminadas"}
+        title={"Completado"}
         filter={"doneTasks"}
         buttons={[]}
         key={doneKey}
