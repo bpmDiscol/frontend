@@ -1,10 +1,11 @@
 import React from "react";
+import { getTask } from "../../config/taskManagement";
 
 export default function TaskResume() {
   const [requestEmployeeData, setRequestEmployeeData] = React.useState();
 
   React.useEffect(() => {
-    Meteor.call("get_employee_request", sessionStorage.getItem('constId'),(response) => {
+    Meteor.call("get_employee_request", getTask(),(response) => {
       if (response) setRequestEmployeeData(response);
     });
   }, []);

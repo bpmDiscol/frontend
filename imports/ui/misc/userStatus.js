@@ -20,8 +20,12 @@ export function goUserOffline() {
 }
 export function safeLogOut() {
   offlineTime.reset();
-  sessionStorage.removeItem('currentView')
-  sessionStorage.removeItem('constId')
+  sessionStorage.removeItem("currentView");
+  sessionStorage.removeItem("constId");
+  sessionStorage.removeItem("currentTick");
+  sessionStorage.removeItem("currentMove");
+  sessionStorage.removeItem('albous')
+
   Meteor.call("go_offline");
   Meteor.logout();
 }

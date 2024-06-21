@@ -55,6 +55,7 @@ mongo-dev-server@1.1.0
 mongo-id@1.0.8
 npm-mongo@4.17.2
 ordered-dict@1.1.0
+ostrio:aes-crypto@1.1.1
 ostrio:cookies@2.7.2
 ostrio:files@2.3.3
 promise@0.12.2

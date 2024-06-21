@@ -12,14 +12,14 @@ Meteor.methods({
   update_data(data, caseId) {
     const field = data?.field?.join(".");
     requestEmployeeCollection.update(
-      { caseId: parseInt(caseId) },
+      { caseId: caseId},
       { $addToSet: { [`${field}`]: data.value } }
     );
   },
   set_data(data, caseId){
     const field = data?.field?.join(".");
     requestEmployeeCollection.update(
-      { caseId: parseInt(caseId) },
+      { caseId: caseId },
       { $set: { [`${field}`]: data.value } }
     );
   }

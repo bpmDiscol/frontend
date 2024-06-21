@@ -13,19 +13,18 @@ import { NotificationsContext } from "../../../context/notificationsProvider";
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
+import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 
-export default function EmployeeRequestCurricullums({ caseId }) {
+export default function EmployeeRequestCurricullums() {
   const { Text, Title } = Typography;
-  const { setView } = React.useContext(MainViewContext);
+  const { setView, userName } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [waitToSend, setWaitingToSend] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
-    const req = requestEmployeeCollection
-      .find({ caseId: parseInt(caseId) })
-      .fetch();
+    const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
 
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
@@ -70,8 +69,10 @@ export default function EmployeeRequestCurricullums({ caseId }) {
     setWaitingToSend(true);
     Meteor.call(
       "send_curricullums",
-      caseId,
-      sessionStorage.getItem("constId"),
+      getCase(),
+      getTask(),
+      userName,
+      getTaskName(),
       (error, response) => {
         setWaitingToSend(false);
         if (error) {
@@ -87,12 +88,15 @@ export default function EmployeeRequestCurricullums({ caseId }) {
           safeLogOut();
         } else {
           if (!response?.error) {
+            Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
+              if (!err) sessionStorage.removeItem("albous");
+            });
+            setView("tasks");
             openNotification(
               "success",
               "¡Buen trabajo!",
               "Los archivos se han enviado satisfactoriamente"
             );
-            setView("tasks");
           }
         }
       }

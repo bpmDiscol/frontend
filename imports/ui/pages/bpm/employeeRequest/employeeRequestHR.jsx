@@ -19,10 +19,11 @@ import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
+import { getCase, getTask } from "../../../config/taskManagement";
 
-export default function EmployeeRequestHR({ caseId }) {
+export default function EmployeeRequestHR() {
   const { Text, Title } = Typography;
-  const { setView } = React.useContext(MainViewContext);
+  const { setView, userName } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [concept, setConcept] = React.useState("");
   const [waitToSend, setWaitingToSend] = React.useState(false);
@@ -31,7 +32,7 @@ export default function EmployeeRequestHR({ caseId }) {
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection
-      .find({ caseId: parseInt(caseId) })
+      .find({ caseId: getCase() })
       .fetch();
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
@@ -85,10 +86,11 @@ export default function EmployeeRequestHR({ caseId }) {
     Meteor.call(
       "send_employee_request",
       {
+        userName,
         response,
         concept,
-        caseId,
-        taskId: sessionStorage.getItem("constId"),
+        caseId: getCase(),
+        taskId: getTask(),
       },
       (error, response) => {
         setWaitingToSend(false);

@@ -1,4 +1,4 @@
-import { Button, Flex, Tooltip, notification } from "antd";
+import { Button, Flex, Tooltip } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 import Icon, {
@@ -8,13 +8,17 @@ import Icon, {
 } from "@ant-design/icons";
 import { NotificationsContext } from "../../context/notificationsProvider";
 import { safeLogOut } from "../../misc/userStatus";
+import { saveCase, saveTask, saveTaskName } from "../../config/taskManagement";
 export default function TaskButtons({ buttons = [], updateList, task }) {
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
 
   function doTask() {
-    setView(task.name, { caseId: task.caseId });
+    setView(task.name);
+    saveTask(task.id);
+    saveCase(task.caseId);
+    saveTaskName(task.name);
   }
 
   function assignTask(button) {
@@ -23,10 +27,13 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       {
         user: buttonData[button].user,
         currentUser: sessionStorage.getItem("constId"),
-        taskId:task.id
+        taskId: task.id,
       },
       (error, resp) => {
-        if (error) console.log(error);
+        if (error) {
+          console.log(error);
+          return;
+        }
         if (resp?.error == "no user") {
           openNotification(
             "error",
@@ -34,8 +41,12 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
             "Revisa tus credenciales nuevamente"
           );
           safeLogOut();
+          return;
         }
-        if (resp) console.log(resp);
+        if (resp)
+          Meteor.call("delete_task", task.name + task.id, (err) => {
+            if (!err) sessionStorage.removeItem("albous");
+          });
         updateList(buttonData[button].filters);
       }
     );

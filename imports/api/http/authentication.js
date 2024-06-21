@@ -4,17 +4,16 @@ import Axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-// import config from "../../private/config.json";
+import configData from "../../../data.json";
 
 wrapper(Axios);
 
 const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
-//TODO: change to .env
-
-if(process.env.ROOT_URL == "http://localhost:3000/") Axios.defaults.baseURL = "http://localhost:8080/bonita";
-else Axios.defaults.baseURL = "http://35.202.4.246/bonita";
+if (process.env.ROOT_URL == "http://localhost:3000/")
+  Axios.defaults.baseURL = configData.server.development;
+else Axios.defaults.baseURL = configData.server.production;
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
 
@@ -85,7 +84,9 @@ Meteor.methods({
     return response;
   },
   async get_data({ url, params }) {
-    const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
+    const token = await Meteor.callAsync("get_token").catch((error) =>
+      console.error(error)
+    );
     if (token)
       return await Axios.get(url, params, {
         headers: {
@@ -102,17 +103,16 @@ Meteor.methods({
     else return "no token";
   },
   async post_data({ url, data }) {
-    const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
+    const token = await Meteor.callAsync("get_token").catch((error) =>
+      console.error(error)
+    );
     if (token) {
-       console.log(url)
       return await Axios.post(url, data, {
         headers: {
           "X-Bonita-API-Token": token,
         },
       })
         .then((response) => {
-          console.log("🚀 ~ .then ~ response:", response)
-          
           return {
             error: false,
             response: response.data,
@@ -120,7 +120,6 @@ Meteor.methods({
           };
         })
         .catch((error) => {
-          console.log("🚀 ~ post_data ~ error:", error)
           return {
             error: true,
             status: error.response.status,
@@ -130,7 +129,9 @@ Meteor.methods({
     } else return "no token";
   },
   async put_data({ url, data }) {
-    const token = await Meteor.callAsync("get_token").catch(error=> console.error(error));
+    const token = await Meteor.callAsync("get_token").catch((error) =>
+      console.error(error)
+    );
     if (token) {
       return await Axios.put(url, data, {
         headers: {

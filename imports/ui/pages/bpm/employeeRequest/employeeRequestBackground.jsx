@@ -24,10 +24,11 @@ import SpinningLoader from "../../../components/spinningLoader";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
+import { getCase, getTask } from "../../../config/taskManagement";
 
-export default function EmployeeRequestBackground({ caseId }) {
+export default function EmployeeRequestBackground() {
   const { Text, Title } = Typography;
-  const { setView } = React.useContext(MainViewContext);
+  const { setView, userName } = React.useContext(MainViewContext);
   const { openNotification } = React.useContext(NotificationsContext);
   const [tabView, setTabView] = React.useState();
 
@@ -39,7 +40,7 @@ export default function EmployeeRequestBackground({ caseId }) {
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection
-      .find({ caseId: parseInt(caseId) })
+      .find({ caseId: getCase() })
       .fetch();
 
     if (req.length) {
@@ -60,7 +61,7 @@ export default function EmployeeRequestBackground({ caseId }) {
           return Meteor.callAsync("getFileLink", {
             id: curricullum.fileId,
             collectionName: "curricullums",
-          }).catch(error=> console.error(error));
+          }).catch((error) => console.error(error));
         }
       );
 
@@ -120,7 +121,8 @@ export default function EmployeeRequestBackground({ caseId }) {
   }
 
   function request() {
-    Meteor.call("get_task_data", myTaskId, (err, resp) => {
+    //TODO: reemplazar pot "id de proceso + taskId"
+    Meteor.call("get_task_data", getTask(), (err, resp) => {
       if (!err && resp.length) {
         const savedData = resp[0];
         const req = interviews.map((interview) => {
@@ -129,32 +131,38 @@ export default function EmployeeRequestBackground({ caseId }) {
             interviewId: interview.fileId,
           };
         });
-
-        Meteor.call("send_interviews", req, sessionStorage.getItem('constId'), (error, response) => {
-          if (error) {
-            console.log(error);
-            return;
-          }
-          console.log(response);
-          if (response == "no token") {
-            openNotification(
-              "Error",
-              "Algo ha salido mal",
-              "Hubo error del servidor, por favor ingresa nuevamente"
-            );
-            safeLogOut();
-          } else {
-            if (!response.error) {
-              Meteor.call("delete_task", myTaskId);
-              setView("tasks");
+        Meteor.call(
+          "send_interviews",
+          req,
+          getCase(),
+          getTask(),
+          userName,
+          (error, response) => {
+            if (error) {
+              console.log(error);
+              return;
+            }
+            console.log(response);
+            if (response == "no token") {
               openNotification(
-                "success",
-                "¡Buen trabajo!",
-                "Los archivos se han enviado satisfactoriamente"
+                "Error",
+                "Algo ha salido mal",
+                "Hubo error del servidor, por favor ingresa nuevamente"
               );
+              safeLogOut();
+            } else {
+              if (!response.error) {
+                Meteor.call("delete_task", myTaskId);
+                setView("tasks");
+                openNotification(
+                  "success",
+                  "¡Buen trabajo!",
+                  "Los archivos se han enviado satisfactoriamente"
+                );
+              }
             }
           }
-        });
+        );
       }
     });
   }

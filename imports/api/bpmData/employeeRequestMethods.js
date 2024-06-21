@@ -43,8 +43,7 @@ Meteor.methods({
     return {};
   },
 
-  async send_employee_request({ response, concept, caseId, taskId }) {
-    const { username } = Meteor.users.findOne(Meteor.userId());
+  async send_employee_request({userName, response, concept, caseId, taskId }) {
     const field = ["requestEmployeeDataInput", "observations"];
     Meteor.callAsync("update_data", { field, value: concept }, caseId).catch(
       (error) => console.error(error)
@@ -53,21 +52,19 @@ Meteor.methods({
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
         concept,
-        responsible: username,
+        responsible: userName,
         response,
       },
-    })
+    });
   },
 
   async start_employee_request({ request, processId }) {
     const validRequest = validateRequest(request);
     const errorValidation = validateEmployeeRequest(validRequest);
-    
+
     if (errorValidation) {
       return { error: true, issues: errorValidation.issues };
     }
-    
-    console.log("🚀 ~ start_employee_request ~ validRequest:", validRequest)
 
     const response = await Meteor.callAsync("post_data", {
       url: `/API/bpm/process/${processId}/instantiation`,
@@ -79,13 +76,14 @@ Meteor.methods({
         "add_request",
         validRequest,
         response.response.caseId
-      ).catch((error) => console.error("Error instanciando el proceso: "+ error));
+      ).catch((error) =>
+        console.error("Error instanciando el proceso: " + error)
+      );
     return response;
   },
 
-  async send_curricullums(caseId, taskId) {
-    const { username } = Meteor.users.findOne(Meteor.userId());
-    const curricullumTask = "employeeCurriculllums-" + taskId;
+  async send_curricullums(caseId, taskId, userName, taskName) {
+    const curricullumTask = taskName + taskId;
     const taskData = await Meteor.callAsync(
       "get_task_data",
       curricullumTask
@@ -106,54 +104,61 @@ Meteor.methods({
         url: `/API/bpm/userTask/${taskId}/execution`,
         data: {
           curricullumsInput,
-          responsible: username,
+          responsible: userName,
         },
       }).catch((error) => console.error(error));
     }
   },
   async get_curricullums(taskId) {
-    const context = await Meteor.callAsync("get_context", { taskId }).catch(error=> console.error(error));
+    const context = await Meteor.callAsync("get_context", { taskId }).catch(
+      (error) => console.error(error)
+    );
 
     if (context)
       return await Meteor.callAsync("get_data", {
         url: context?.curricullums_ref?.link,
         params: {},
-      }).catch(error=> console.error(error));
+      }).catch((error) => console.error(error));
   },
 
-  async send_interviews(iData, caseId, taskId) {
-    const { username } = Meteor.users.findOne(Meteor.userId());
+  async send_interviews(iData, caseId, taskId, userName) {
     const interviewInput = processInterviews(iData);
     const field = ["interviewInput"];
-    Meteor.callAsync("set_data", { field, value: interviewInput }, caseId).catch(error=> console.error(error));
+    Meteor.callAsync(
+      "set_data",
+      { field, value: interviewInput },
+      caseId
+    ).catch((error) => console.error(error));
 
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
         interviewInput,
-        responsible: username,
+        responsible: userName,
       },
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_interviews(taskId) {
-    const context = await Meteor.callAsync("get_context", { taskId }).catch(error=> console.error(error));
+    const context = await Meteor.callAsync("get_context", { taskId }).catch(
+      (error) => console.error(error)
+    );
 
     if (context)
       return await Meteor.callAsync("get_data", {
         url: context?.interview_ref?.link,
         params: {},
-      }).catch(error=> console.error(error));
+      }).catch((error) => console.error(error));
   },
   async get_laboralExperience({ href }) {
     return await Meteor.callAsync("get_data", {
       url: href,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_link_data({ href }) {
     return await Meteor.callAsync("get_data", {
       url: href,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
 });

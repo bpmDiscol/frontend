@@ -19,10 +19,10 @@ import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
-
-export default function EmployeeRequestAdm({ caseId }) {
+import { getCase, getTask } from "../../../config/taskManagement";
+export default function EmployeeRequestAdm() {
   const { Text, Title } = Typography;
-  const { setView } = React.useContext(MainViewContext);
+  const { setView, userName } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [concept, setConcept] = React.useState("");
   const [waitToSend, setWaitingToSend] = React.useState(false);
@@ -31,7 +31,7 @@ export default function EmployeeRequestAdm({ caseId }) {
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection
-      .find({ caseId: parseInt(caseId) })
+      .find({ caseId: getCase() })
       .fetch();
 
     if (req.length) {
@@ -43,7 +43,6 @@ export default function EmployeeRequestAdm({ caseId }) {
       return requestEmployee;
     }
   });
-
   React.useEffect(() => {
     setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
   }, []);
@@ -85,13 +84,13 @@ export default function EmployeeRequestAdm({ caseId }) {
     Meteor.call(
       "send_employee_request",
       {
+        userName,
         response,
         concept,
-        caseId,
-        taskId: sessionStorage.getItem("constId"),
+        caseId: getCase(),
+        taskId: getTask()
       },
       (error, response) => {
-        console.log("🚀 ~ request ~ response:", response)
         setWaitingToSend(false);
         if (response == "no token") safeLogOut();
         else {

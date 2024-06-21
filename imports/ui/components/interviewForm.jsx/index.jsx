@@ -10,6 +10,7 @@ import MovilityStep from "./movilityStep";
 import CompetencesStep from "./competencesStep";
 import LeaderStep from "./leaderStep";
 import FinalConceptStep from "./finalConceptStep";
+import { getTask, getTaskName } from "../../config/taskManagement";
 
 const menuList = [
   {
@@ -81,10 +82,10 @@ export default function InterviewForm({ onClose, fileId }) {
   }
 
   React.useEffect(() => {
-      const taskId = "employeeInterview-" + sessionStorage.getItem("constId");
+      const taskId = getTaskName() + getTask();
       setTaskId(taskId);
       Meteor.call("get_task_data", taskId, (err, resp) => {
-        if (!err) {
+        if (!err && resp?.length) {
           form.setFieldsValue(resp[0][`interview-${fileId}`]);
           setCurrentForm(resp[0][`interview-${fileId}`]?.currentForm || 0);
         }

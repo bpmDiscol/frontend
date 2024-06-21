@@ -16,10 +16,11 @@ import PositionInterviews from "./positionInterviews";
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
+import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 
-export default function EmployeeRequestInterview({ caseId }) {
+export default function EmployeeRequestInterview() {
   const { Text, Title } = Typography;
-  const { setView } = React.useContext(MainViewContext);
+  const { setView, userName } = React.useContext(MainViewContext);
   const { openNotification } = React.useContext(NotificationsContext);
 
   const [tabView, setTabView] = React.useState();
@@ -30,7 +31,7 @@ export default function EmployeeRequestInterview({ caseId }) {
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection
-      .find({ caseId: parseInt(caseId) })
+      .find({ caseId: getCase() })
       .fetch();
 
     if (req.length) {
@@ -107,10 +108,9 @@ export default function EmployeeRequestInterview({ caseId }) {
 
   async function request() {
     setWaitingToSend(true);
-    const currentTask = sessionStorage.getItem('constId');
     Meteor.call(
       "get_task_data",
-      "employeeInterview-" + currentTask,
+      getTaskName() + getTask(),
       (err, resp) => {
         if (!err && resp.length) {
           const savedData = resp[0];
@@ -121,7 +121,7 @@ export default function EmployeeRequestInterview({ caseId }) {
             };
           });
 
-          Meteor.call("send_interviews", req, caseId, (error, response) => {
+          Meteor.call("send_interviews", req, getCase(), getTask(), userName, (error, response) => {
             setWaitingToSend(false);
 
             if (error) {
@@ -137,7 +137,9 @@ export default function EmployeeRequestInterview({ caseId }) {
               safeLogOut();
             } else {
               if (!response.error) {
-                Meteor.call("delete_task", "employeeInterview-" + currentTask);
+                Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
+                  if (!err) sessionStorage.removeItem("albous");
+                });
                 setView("tasks");
                 openNotification(
                   "success",

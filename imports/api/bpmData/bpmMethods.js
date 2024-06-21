@@ -70,13 +70,13 @@ Meteor.methods({
     if (currentUser) {
       const assigned_id = user == "me" ? currentUser: user||"";
       if (taskId) {
-        Meteor.callAsync("put_data", {
+        return Meteor.callAsync("put_data", {
           url: `/API/bpm/userTask/${taskId}`,
           data: {
             assigned_id,
           },
         }).catch(error=> console.error(error));
-      } else console.log({ error: "Tarea no asignada", taskId, assigned_id });
+      } else return({ error: "Tarea no asignada", taskId, assigned_id });
     } else return { error: "no user" };
   },
   set_task_id({ taskId }) {

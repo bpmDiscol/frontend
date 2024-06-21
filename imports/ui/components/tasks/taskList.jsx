@@ -5,8 +5,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { checkPartialWordsInObjects } from "../../misc/checkWordsInObject";
 
 import { Meteor } from "meteor/meteor";
-import { useTracker } from "meteor/react-meteor-data";
-import { requestEmployeeCollection } from "../../../api/requestEmployeData/requestEmployeeDataPublication";
 
 export default function TaskList({
   filter,

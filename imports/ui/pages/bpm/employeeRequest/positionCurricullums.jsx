@@ -9,13 +9,14 @@ import {
   FolderAddOutlined,
 } from "@ant-design/icons";
 import { deleteFile, uploadFile } from "../../../misc/filemanagement";
+import { getTask, getTaskName } from "../../../config/taskManagement";
 
 export default function PositionCurricullums() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [taskId, setTaskId] = React.useState();
   React.useEffect(() => {
       const taskId =
-        "employeeCurriculllums-" + sessionStorage.getItem("constId");
+        getTaskName() + getTask();
       setTaskId(taskId);
       Meteor.call("get_task_data", taskId, (err, resp) => {
         if (!err && resp) setCurricullums(resp[0].curricullums || []);
