@@ -27,6 +27,7 @@ import SpinningLoader from "../../../components/spinningLoader";
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
+import { sonIguales } from "../../../misc/sonIguales";
 
 export default function EmployeeRequestBackground() {
   const { Text, Title } = Typography;
@@ -37,9 +38,7 @@ export default function EmployeeRequestBackground() {
   const [waitToSend, setWaitingToSend] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [curricullums, setCurricullums] = React.useState([]);
-  const [interviews, setInterviews] = React.useState([]);
   const [warningUsers, setWarningUsers] = React.useState([]);
-  const [mainKey, setMainKey] = React.useState(0);
   const [warningMessage, setWarningMessage] = React.useState(false);
 
   const requestEmployeeData = useTracker(() => {
@@ -56,7 +55,6 @@ export default function EmployeeRequestBackground() {
     }
   });
   function reloadPage(index) {
-    setMainKey(Math.random());
     setTabView(
       <LoadPage
         Component={tabContents[index]}
@@ -99,10 +97,10 @@ export default function EmployeeRequestBackground() {
   }, [requestEmployeeData]);
 
   React.useEffect(() => {
-    if (curricullums && interviews) {
+    if (curricullums) {
       reloadPage(tabContents.length - 1);
     }
-  }, [curricullums, interviews, warningUsers]);
+  }, [curricullums, warningUsers]);
 
   function LoadPage({
     Component,
@@ -143,15 +141,7 @@ export default function EmployeeRequestBackground() {
     if (buttonResponse == "send") return handleBeforeSend();
   }
 
-  function sonIguales(a, b) {
-    if (!Array.isArray(a) || !Array.isArray(b)) return false;
-    let sorted_a = [...a].sort();
-    let sorted_b = [...b].sort();
-    return (
-      sorted_a.length === sorted_b.length &&
-      sorted_a.every((element, index) => element === sorted_b[index])
-    );
-  }
+ 
 
   function handleBeforeSend() {
     const taskId = getTaskName() + getTask();
@@ -166,7 +156,23 @@ export default function EmployeeRequestBackground() {
           );
           return;
         }
-        const warningUsers = Object.keys(resp[0].backgrounds)
+        const bg = Object.keys(resp[0].backgrounds);
+        const interviewIds = requestEmployeeData.curricullumsInput.map(
+          (data) => data.fileId
+        );
+        if (!sonIguales(bg, interviewIds)) {
+          const diference = interviewIds.filter((x) => !bg.includes(x));
+          
+          setWarningUsers(diference);
+          openNotification(
+            "warning",
+            "No has terminado aún!!",
+            "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
+          );
+          return;
+        }
+
+        const warningUsers = bg
           .map((bgId) => {
             const bgKeys = Object.keys(resp[0].backgrounds[bgId]);
             if (!sonIguales(bgKeys, fields)) return bgId;
@@ -185,6 +191,7 @@ export default function EmployeeRequestBackground() {
   }
 
   function request() {
+    setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
     Meteor.call("get_task_data", taskId, (err, resp) => {
       if (!err && resp?.length) {
@@ -219,6 +226,7 @@ export default function EmployeeRequestBackground() {
                 );
               }
             }
+            setWaitingToSend(false);
           }
         );
       }

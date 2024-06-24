@@ -4,12 +4,14 @@ import {
   DownloadOutlined,
   EditFilled,
   FileTextFilled,
+  WarningOutlined,
 } from "@ant-design/icons";
 import InterviewForm from "../../../components/interviewForm.jsx";
+import Transition from "../../../components/transition/index.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
-export default function PositionInterviews({ update, interviews }) {
+export default function PositionInterviews({ update, interviews, warningUsers }) {
   const [drawerData, setDrawerData] = React.useState({
     open: false,
     applicant: null,
@@ -78,6 +80,15 @@ export default function PositionInterviews({ update, interviews }) {
                     shape="circle"
                     icon={<EditFilled />}
                   />
+                </Flex>
+                <Flex style={{ position: "absolute", right: "10%" }}>
+                  {warningUsers.includes(interview.fileId) && (
+                    <Transition effect={"zoom-in"}>
+                      <WarningOutlined
+                        style={{ color: "orange", fontSize: "2rem" }}
+                      />
+                    </Transition>
+                  )}
                 </Flex>
               </Flex>
             );

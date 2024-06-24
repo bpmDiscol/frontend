@@ -17,6 +17,7 @@ import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
+import { sonIguales } from "../../../misc/sonIguales";
 
 export default function EmployeeRequestInterview() {
   const { Text, Title } = Typography;
@@ -27,12 +28,11 @@ export default function EmployeeRequestInterview() {
   const [interviews, setInterviews] = React.useState([]);
   const [reload, setReload] = React.useState(false);
   const [waitToSend, setWaitingToSend] = React.useState(false);
+  const [warningUsers, setWarningUsers] = React.useState([]);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
-    const req = requestEmployeeCollection
-      .find({ caseId: getCase() })
-      .fetch();
+    const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
 
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
@@ -44,6 +44,16 @@ export default function EmployeeRequestInterview() {
     }
   });
 
+  function reloadPage(index) {
+    setTabView(
+      <LoadPage
+        Component={tabContents[index]}
+        data={interviews}
+        warningUsers={warningUsers}
+      />
+    );
+  }
+
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
       setReload(true);
@@ -52,10 +62,9 @@ export default function EmployeeRequestInterview() {
           return Meteor.callAsync("getFileLink", {
             id: curricullum.fileId,
             collectionName: "curricullums",
-          }).catch(error=> console.error(error));
+          });
         }
       );
-
       Promise.all(interviewsPromises)
         .then((values) =>
           values.map((value, index) => {
@@ -67,20 +76,25 @@ export default function EmployeeRequestInterview() {
           //Guardar data de entrevistas
           setInterviews(interviews);
           //establecer primera vista
-          setTabView(
-            <LoadPage
-              Component={tabContents[tabContents.length - 1]}
-              data={interviews}
-            />
-          );
           document.getElementById("segmented").scrollTo(1000, 0);
-        });
+        })
+        .catch((e) => console.log(e));
     }
   }, [requestEmployeeData]);
 
-  function LoadPage({ Component, data }) {
+  React.useEffect(() => {
+    if (interviews) {
+      reloadPage(tabContents.length - 1);
+    }
+  }, [interviews, warningUsers]);
+
+  function LoadPage({ Component, data, warningUsers }) {
     return (
-      <Component requestEmployee={requestEmployeeData} interviews={data} />
+      <Component
+        requestEmployee={requestEmployeeData}
+        interviews={data}
+        warningUsers={warningUsers}
+      />
     );
   }
 
@@ -108,20 +122,48 @@ export default function EmployeeRequestInterview() {
 
   async function request() {
     setWaitingToSend(true);
-    Meteor.call(
-      "get_task_data",
-      getTaskName() + getTask(),
-      (err, resp) => {
-        if (!err && resp.length) {
-          const savedData = resp[0];
-          const req = interviews.map((interview) => {
-            return {
-              ...savedData[`interview-${interview.fileId}`],
-              interviewId: interview.fileId,
-            };
-          });
+    Meteor.call("get_task_data", getTaskName() + getTask(), (err, resp) => {
+      const iv = Object.keys(resp[0]).filter((x) => x != "taskId");
+      if (!err) {
+        if (!iv?.length) {
+          openNotification(
+            "error",
+            "No se ha cargado nada 😒",
+            "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
+          );
+          setWaitingToSend(false);
+          return;
+        }
+        const interviewIds = requestEmployeeData.curricullumsInput.map(
+          (data) => data.fileId
+        );
+        if (!sonIguales(iv, interviewIds)) {
+          const diference = interviewIds.filter((x) => !iv.includes(x));
+          setWarningUsers(diference);
+          openNotification(
+            "warning",
+            "No has terminado aún!!",
+            "No has visto algunos candidatos. Recuerda que debes llenar todos los campos"
+          );
+          setWaitingToSend(false);
+          return;
+        }
 
-          Meteor.call("send_interviews", req, getCase(), getTask(), userName, (error, response) => {
+        const savedData = resp[0];
+        const req = interviews.map((interview) => {
+          return {
+            ...savedData[`interview-${interview.fileId}`],
+            interviewId: interview.fileId,
+          };
+        });
+
+        Meteor.call(
+          "send_interviews",
+          req,
+          getCase(),
+          getTask(),
+          userName,
+          (error, response) => {
             setWaitingToSend(false);
 
             if (error) {
@@ -148,10 +190,10 @@ export default function EmployeeRequestInterview() {
                 );
               }
             }
-          });
-        }
+          }
+        );
       }
-    );
+    });
   }
 
   return (
@@ -167,11 +209,7 @@ export default function EmployeeRequestInterview() {
           <Segmented
             options={tabTitles}
             defaultValue={tabContents.length - 1}
-            onChange={(value) =>
-              setTabView(
-                <LoadPage Component={tabContents[value]} data={interviews} />
-              )
-            }
+            onChange={(value) => reloadPage(value)}
           />
         </Flex>
         <SpinningLoader condition={requestEmployeeData} content={tabView} />
