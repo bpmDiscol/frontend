@@ -5,17 +5,23 @@ import Icon, {
   CloseCircleOutlined,
   EditFilled,
   FileTextFilled,
+  WarningOutlined,
   WechatFilled,
 } from "@ant-design/icons";
 
 import BackgroundForm from "../../../components/backgroundForm/index.jsx";
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
+import Transition from "../../../components/transition/index.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
 
-export default function PositionBackgroud({ curricullums, interviews }) {
+export default function PositionBackgroud({
+  curricullums,
+  interviews,
+  warningUsers,
+}) {
   const [drawerData, setDrawerData] = React.useState(closed);
 
   function newTab(url) {
@@ -42,10 +48,16 @@ export default function PositionBackgroud({ curricullums, interviews }) {
                 style={{
                   borderRadius: "5px",
                   border: `2px solid ${
-                    interviews[index].selected ? "green" : "red"
+                    interviews[index].selected
+                      ? warningUsers.includes(interview.fileId)
+                        ? "orange"
+                        : "green"
+                      : "red"
                   }`,
                   padding: "5px 10px",
-                  boxShadow: "none",
+                  boxShadow: `2px 2px 15px ${
+                    interviews[index].selected ? "green" : "red"
+                  }`,
                 }}
               >
                 <Flex
@@ -104,6 +116,15 @@ export default function PositionBackgroud({ curricullums, interviews }) {
                     shape="circle"
                     icon={<EditFilled />}
                   />
+                </Flex>
+                <Flex style={{ position: "absolute", right: "10%" }}>
+                  {warningUsers.includes(interview.fileId) && (
+                    <Transition effect={"zoom-in"}>
+                      <WarningOutlined
+                        style={{ color: "orange", fontSize: "2rem" }}
+                      />
+                    </Transition>
+                  )}
                 </Flex>
               </Flex>
             );

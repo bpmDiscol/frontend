@@ -13,6 +13,7 @@ export default function PublicLogin() {
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
 
+  //TODO: cerrar sesion activa cuando el usuario se logea nuevamente
   function meteorLogin({ bonitaUser, token, username, password, JSESSIONID }) {
     Meteor.loginWithPassword(username, password, async (error) => {
       if (error && error.reason == "User not found") {

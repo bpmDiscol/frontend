@@ -1,9 +1,11 @@
 import { Meteor } from "meteor/meteor";
+import { Random } from "meteor/random";
 import {
   processInterviews,
   validateEmployeeRequest,
   validateRequest,
 } from "../misc/validation";
+import { requestEmployeeCollection } from "../requestEmployeData/requestEmployeeDataPublication";
 
 Meteor.methods({
   async get_employee_request(taskId) {
@@ -43,7 +45,7 @@ Meteor.methods({
     return {};
   },
 
-  async send_employee_request({userName, response, concept, caseId, taskId }) {
+  async send_employee_request({ userName, response, concept, caseId, taskId }) {
     const field = ["requestEmployeeDataInput", "observations"];
     Meteor.callAsync("update_data", { field, value: concept }, caseId).catch(
       (error) => console.error(error)
@@ -159,6 +161,31 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: href,
       params: {},
+    }).catch((error) => console.error(error));
+  },
+  async reject_profiles(rejectedList, caseId, taskId, userName) {
+    try {
+      requestEmployeeCollection.update(
+        { caseId },
+        { $set: { "interviewInput.$[pos].selected": false } },
+        {
+          arrayFilters: [
+            {
+              "pos.interviewId": { $in: rejectedList },
+            },
+          ],
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
+    return await Meteor.callAsync("post_data", {
+      url: `/API/bpm/userTask/${taskId}/execution`,
+      data: {
+        rejectedList,
+        responsible: userName,
+      },
     }).catch((error) => console.error(error));
   },
 });

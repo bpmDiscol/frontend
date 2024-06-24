@@ -12,15 +12,15 @@ Meteor.methods({
   update_data(data, caseId) {
     const field = data?.field?.join(".");
     requestEmployeeCollection.update(
-      { caseId: caseId},
+      { caseId: caseId },
       { $addToSet: { [`${field}`]: data.value } }
     );
   },
-  set_data(data, caseId){
+  set_data(data, caseId) {
     const field = data?.field?.join(".");
     requestEmployeeCollection.update(
-      { caseId: caseId },
+      { caseId },
       { $set: { [`${field}`]: data.value } }
     );
-  }
+  },
 });

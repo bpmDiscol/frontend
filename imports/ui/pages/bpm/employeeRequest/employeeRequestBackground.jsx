@@ -11,7 +11,9 @@ import {
   Button,
   Empty,
   Flex,
+  Modal,
   Popconfirm,
+  Result,
   Segmented,
   Spin,
   Typography,
@@ -24,7 +26,7 @@ import SpinningLoader from "../../../components/spinningLoader";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
-import { getCase, getTask } from "../../../config/taskManagement";
+import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 
 export default function EmployeeRequestBackground() {
   const { Text, Title } = Typography;
@@ -36,12 +38,13 @@ export default function EmployeeRequestBackground() {
   const [reload, setReload] = React.useState(false);
   const [curricullums, setCurricullums] = React.useState([]);
   const [interviews, setInterviews] = React.useState([]);
+  const [warningUsers, setWarningUsers] = React.useState([]);
+  const [mainKey, setMainKey] = React.useState(0);
+  const [warningMessage, setWarningMessage] = React.useState(false);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
-    const req = requestEmployeeCollection
-      .find({ caseId: getCase() })
-      .fetch();
+    const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
 
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
@@ -52,16 +55,30 @@ export default function EmployeeRequestBackground() {
       return requestEmployee;
     }
   });
-
+  function reloadPage(index) {
+    setMainKey(Math.random());
+    setTabView(
+      <LoadPage
+        Component={tabContents[index]}
+        curricullums={curricullums}
+        interviews={requestEmployeeData?.interviewInput}
+        warningUsers={warningUsers}
+      />
+    );
+  }
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
       setReload(true);
       const curricullums = requestEmployeeData?.curricullumsInput?.map(
-        (curricullum) => {
-          return Meteor.callAsync("getFileLink", {
-            id: curricullum.fileId,
-            collectionName: "curricullums",
-          }).catch((error) => console.error(error));
+        async (curricullum) => {
+          try {
+            return await Meteor.callAsync("getFileLink", {
+              id: curricullum.fileId,
+              collectionName: "curricullums",
+            });
+          } catch (error) {
+            return console.error(error);
+          }
         }
       );
 
@@ -76,24 +93,30 @@ export default function EmployeeRequestBackground() {
           //Guardar data de entrevistas
           setCurricullums(curricullums);
           //establecer primera vista
-          setTabView(
-            <LoadPage
-              Component={tabContents[tabContents.length - 1]}
-              curricullums={curricullums}
-              interviews={requestEmployeeData.interviewInput}
-            />
-          );
           document.getElementById("segmented").scrollTo(1000, 0);
         });
     }
   }, [requestEmployeeData]);
 
-  function LoadPage({ Component, curricullums, interviews }) {
+  React.useEffect(() => {
+    if (curricullums && interviews) {
+      reloadPage(tabContents.length - 1);
+    }
+  }, [curricullums, interviews, warningUsers]);
+
+  function LoadPage({
+    Component,
+    curricullums,
+    interviews,
+    warningUsers,
+    userId,
+  }) {
     return (
       <Component
         requestEmployee={requestEmployeeData}
         curricullums={curricullums}
         interviews={interviews}
+        warningUsers={warningUsers}
       />
     );
   }
@@ -117,33 +140,68 @@ export default function EmployeeRequestBackground() {
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return request();
+    if (buttonResponse == "send") return handleBeforeSend();
+  }
+
+  function sonIguales(a, b) {
+    if (!Array.isArray(a) || !Array.isArray(b)) return false;
+    let sorted_a = [...a].sort();
+    let sorted_b = [...b].sort();
+    return (
+      sorted_a.length === sorted_b.length &&
+      sorted_a.every((element, index) => element === sorted_b[index])
+    );
+  }
+
+  function handleBeforeSend() {
+    const taskId = getTaskName() + getTask();
+    const fields = ["policia", "contraloria", "procuraduria"];
+    Meteor.call("get_task_data", taskId, (err, resp) => {
+      if (!err && resp?.length) {
+        if (!resp[0].backgrounds) {
+          openNotification(
+            "error",
+            "No se ha cargado nada 😒",
+            "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
+          );
+          return;
+        }
+        const warningUsers = Object.keys(resp[0].backgrounds)
+          .map((bgId) => {
+            const bgKeys = Object.keys(resp[0].backgrounds[bgId]);
+            if (!sonIguales(bgKeys, fields)) return bgId;
+            else {
+              const values = bgKeys
+                .map((bgKey) => resp[0].backgrounds[bgId][bgKey] == null)
+                .filter((result) => result);
+              if (values.some((value) => value == true)) return bgId;
+            }
+          })
+          .filter((val) => val);
+        setWarningUsers(warningUsers);
+        setWarningMessage(true);
+      }
+    });
   }
 
   function request() {
-    //TODO: reemplazar pot "id de proceso + taskId"
-    Meteor.call("get_task_data", getTask(), (err, resp) => {
-      if (!err && resp.length) {
-        const savedData = resp[0];
-        const req = interviews.map((interview) => {
-          return {
-            ...savedData[`interview-${interview.fileId}`],
-            interviewId: interview.fileId,
-          };
-        });
+    const taskId = getTaskName() + getTask();
+    Meteor.call("get_task_data", taskId, (err, resp) => {
+      if (!err && resp?.length) {
+        const bgs = resp[0].backgrounds;
+        const rejecteds = Object.keys(bgs).filter(
+          (key) => bgs[key].status == "rejected"
+        );
+
         Meteor.call(
-          "send_interviews",
-          req,
+          "reject_profiles",
+          rejecteds,
           getCase(),
           getTask(),
-          userName,
-          (error, response) => {
-            if (error) {
-              console.log(error);
-              return;
-            }
-            console.log(response);
-            if (response == "no token") {
+          "",
+          (err, res) => {
+            if (err) console.log(err);
+            if (res == "no token") {
               openNotification(
                 "Error",
                 "Algo ha salido mal",
@@ -151,8 +209,8 @@ export default function EmployeeRequestBackground() {
               );
               safeLogOut();
             } else {
-              if (!response.error) {
-                Meteor.call("delete_task", myTaskId);
+              if (!res.error) {
+                Meteor.call("delete_task", taskId);
                 setView("tasks");
                 openNotification(
                   "success",
@@ -180,15 +238,7 @@ export default function EmployeeRequestBackground() {
           <Segmented
             options={tabTitles}
             defaultValue={tabContents.length - 1}
-            onChange={(value) =>
-              setTabView(
-                <LoadPage
-                  Component={tabContents[value]}
-                  curricullums={curricullums}
-                  interviews={requestEmployeeData.interviewInput}
-                />
-              )
-            }
+            onChange={(value) => reloadPage(value)}
           />
         </Flex>
         <SpinningLoader condition={requestEmployeeData} content={tabView} />
@@ -221,6 +271,32 @@ export default function EmployeeRequestBackground() {
           </Button>
         </Popconfirm>
       </Flex>
+      <Modal
+        title="🟡Espera un momento..."
+        closable={true}
+        onCancel={() => setWarningMessage(false)}
+        open={warningMessage}
+        onOk={() => setWarningMessage(false)}
+        // confirmLoading={confirmLoading}
+        footer={[
+          <Button onClick={() => request()} key="send">
+            Enviar de todas formas
+          </Button>,
+          <Button
+            type="primary"
+            style={{ marginTop: "1rem" }}
+            onClick={() => setWarningMessage(false)}
+            key="wait"
+          >
+            Revisar antes de proceder
+          </Button>,
+        ]}
+      >
+        <Result
+          status="warning"
+          title="Algunos archivos no han sido cargados"
+        />
+      </Modal>
     </Flex>
   );
 }
