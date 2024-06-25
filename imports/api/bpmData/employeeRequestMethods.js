@@ -188,4 +188,29 @@ Meteor.methods({
       },
     }).catch((error) => console.error(error));
   },
+  async check_profiles(checkeds, caseId, taskId, userName) {
+    try {
+      requestEmployeeCollection.update(
+        { caseId },
+        { $set: { "interviewInput.$[pos].selected": false } },
+        {
+          arrayFilters: [
+            {
+              "pos.interviewId": { $nin: checkeds },
+            },
+          ],
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
+    return await Meteor.callAsync("post_data", {
+      url: `/API/bpm/userTask/${taskId}/execution`,
+      data: {
+        checkeds,
+        responsible: userName,
+      },
+    }).catch((error) => console.error(error));
+  },
 });

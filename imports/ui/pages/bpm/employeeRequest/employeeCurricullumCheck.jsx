@@ -19,13 +19,12 @@ import {
 import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
 import { NotificationsContext } from "../../../context/notificationsProvider";
-import PositionBackgroud from "./positionBackground";
 import SpinningLoader from "../../../components/spinningLoader";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
-import { sonIguales } from "../../../misc/sonIguales";
+import PositionCurricullumCheck from "./positioncurricullumCheck";
 
 export default function EmployeeCurricullumCheck() {
   const { Text, Title } = Typography;
@@ -36,9 +35,7 @@ export default function EmployeeCurricullumCheck() {
   const [waitToSend, setWaitingToSend] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [curricullums, setCurricullums] = React.useState([]);
-  const [warningUsers, setWarningUsers] = React.useState([]);
-  const [warningMessage, setWarningMessage] = React.useState(false);
-
+  const [checkeds, setCheckeds] = React.useState([])
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
@@ -52,14 +49,15 @@ export default function EmployeeCurricullumCheck() {
       return requestEmployee;
     }
   });
-  
+
   function reloadPage(index) {
     setTabView(
       <LoadPage
         Component={tabContents[index]}
         curricullums={curricullums}
         interviews={requestEmployeeData?.interviewInput}
-        warningUsers={warningUsers}
+        checkeds={checkeds}
+        setCheckeds={setCheckeds}
       />
     );
   }
@@ -99,21 +97,22 @@ export default function EmployeeCurricullumCheck() {
     if (curricullums) {
       reloadPage(tabContents.length - 1);
     }
-  }, [curricullums, warningUsers]);
+  }, [curricullums, checkeds]);
 
   function LoadPage({
     Component,
     curricullums,
     interviews,
-    warningUsers,
-    userId,
+    checkeds,
+    setCheckeds
   }) {
     return (
       <Component
         requestEmployee={requestEmployeeData}
         curricullums={curricullums}
         interviews={interviews}
-        warningUsers={warningUsers}
+        checkeds={checkeds}
+        setCheckeds={setCheckeds}
       />
     );
   }
@@ -124,7 +123,7 @@ export default function EmployeeCurricullumCheck() {
     { label: "Requerimientos", value: 2 },
     { label: "Equipo necesario", value: 3 },
     { label: "Observaciones", value: 4 },
-    { label: "Antecedentes", value: 5 },
+    { label: "Candidatos", value: 5 },
   ];
   const tabContents = [
     PositionGereralities,
@@ -132,59 +131,12 @@ export default function EmployeeCurricullumCheck() {
     PositionRequirements,
     PositionGears,
     PositionObservations,
-    PositionBackgroud,
+    PositionCurricullumCheck,
   ];
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return handleBeforeSend();
-  }
-
-  function handleBeforeSend() {
-    const taskId = getTaskName() + getTask();
-    const fields = ["policia", "contraloria", "procuraduria"];
-    Meteor.call("get_task_data", taskId, (err, resp) => {
-      if (!err && resp?.length) {
-        if (!resp[0].backgrounds) {
-          openNotification(
-            "error",
-            "No se ha cargado nada 😒",
-            "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
-          );
-          return;
-        }
-        const bg = Object.keys(resp[0].backgrounds);
-        const interviewIds = requestEmployeeData.curricullumsInput.map(
-          (data) => data.fileId
-        );
-        if (!sonIguales(bg, interviewIds)) {
-          const diference = interviewIds.filter((x) => !bg.includes(x));
-
-          setWarningUsers(diference);
-          openNotification(
-            "warning",
-            "No has terminado aún!!",
-            "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
-          );
-          return;
-        }
-
-        const warningUsers = bg
-          .map((bgId) => {
-            const bgKeys = Object.keys(resp[0].backgrounds[bgId]);
-            if (!sonIguales(bgKeys, fields)) return bgId;
-            else {
-              const values = bgKeys
-                .map((bgKey) => resp[0].backgrounds[bgId][bgKey] == null)
-                .filter((result) => result);
-              if (values.some((value) => value == true)) return bgId;
-            }
-          })
-          .filter((val) => val);
-        setWarningUsers(warningUsers);
-        setWarningMessage(true);
-      }
-    });
+    if (buttonResponse == "send") return request();
   }
 
   function request() {
@@ -198,11 +150,11 @@ export default function EmployeeCurricullumCheck() {
         );
 
         Meteor.call(
-          "reject_profiles",
-          rejecteds,
+          "check_profiles",
+          checkeds,
           getCase(),
           getTask(),
-          "",
+          userName,
           (err, res) => {
             if (err) console.log(err);
             if (res == "no token") {
@@ -234,7 +186,7 @@ export default function EmployeeCurricullumCheck() {
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Requisición de personal<Text strong>(Antecedentes)</Text>
+          Requisición de personal<Text strong>(Selección final de candidatos)</Text>
         </Title>
       </Flex>
 
@@ -276,32 +228,7 @@ export default function EmployeeCurricullumCheck() {
           </Button>
         </Popconfirm>
       </Flex>
-      <Modal
-        title="🟡Espera un momento..."
-        closable={true}
-        onCancel={() => setWarningMessage(false)}
-        open={warningMessage}
-        onOk={() => setWarningMessage(false)}
-        // confirmLoading={confirmLoading}
-        footer={[
-          <Button onClick={() => request()} key="send">
-            Enviar de todas formas
-          </Button>,
-          <Button
-            type="primary"
-            style={{ marginTop: "1rem" }}
-            onClick={() => setWarningMessage(false)}
-            key="wait"
-          >
-            Revisar antes de proceder
-          </Button>,
-        ]}
-      >
-        <Result
-          status="warning"
-          title="Algunos archivos no han sido cargados"
-        />
-      </Modal>
+     
     </Flex>
   );
 }
