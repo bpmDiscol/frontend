@@ -57,10 +57,10 @@ Meteor.methods({
     );
   },
   update_backgrounds({ taskId, id, backgroundFiles }) {
-    const datafield = `tasks.$.backgrounds`;
+    const datafield = `tasks.$.backgrounds.${id}`;
     Meteor.users.update(
       { _id: Meteor.userId(), "tasks.taskId": taskId },
-      { $set: { [`${datafield}`]: { [`${id}`]: backgroundFiles} } }
+      { $set: { [`${datafield}`]: backgroundFiles } }
     );
   },
   delete_task(taskId) {

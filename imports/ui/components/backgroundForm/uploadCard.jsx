@@ -1,36 +1,18 @@
 import React from "react";
 import { deleteFile, uploadFile } from "../../misc/filemanagement";
 import { Upload, Typography, Flex, Button, Row, Col } from "antd";
-import {
-  CheckCircleOutlined,
-  CheckOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { CheckOutlined, UploadOutlined } from "@ant-design/icons";
 
 export default function UploadFile({
   title,
-  id,
   targetField,
   currentBackground,
   setCurrentBackground,
-  taskId,
 }) {
   const { Title } = Typography;
   const currentFile = Object.keys(currentBackground).includes(targetField)
-  ? currentBackground[`${targetField}`]
-  : null;
-  
-  function setNewBackground(value) {
-    const newBg = Object.assign(currentBackground, {
-      [`${targetField}`]: value,
-    });
-    setCurrentBackground(newBg);
-    Meteor.callAsync("update_backgrounds", {
-      taskId,
-      id,
-      backgroundFiles: newBg,
-    }).catch((error) => console.log(error));
-  }
+    ? currentBackground[`${targetField}`]
+    : null;
 
   function remove(file) {
     deleteFile("background", file.uid);
@@ -40,8 +22,8 @@ export default function UploadFile({
   function upload(file) {
     if (currentFile) deleteFile("background", currentFile._id);
     uploadFile("background", file, ({ _id, name }) => {
-      setNewBackground({ _id, name });
-      console.log('uploading...')
+      setCurrentBackground({ _id, name }, targetField);
+      console.log("uploading...");
     });
 
     return false;
@@ -60,7 +42,7 @@ export default function UploadFile({
   }
 
   return (
-    <Flex justify="center" style={{ width: "340px", height:'6rem' }}>
+    <Flex justify="center" style={{ width: "340px", height: "6rem" }}>
       <Row
         gutter={["10px", "10px"]}
         style={{
@@ -71,7 +53,9 @@ export default function UploadFile({
         }}
       >
         <Col span={12}>
-          <Title level={4} style={{margin:0}}>{title}</Title>
+          <Title level={4} style={{ margin: 0 }}>
+            {title}
+          </Title>
         </Col>
         <Col span={12} style={{ display: "flex", alignItems: "center" }}>
           <Upload
