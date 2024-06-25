@@ -10,6 +10,7 @@ import EmployeeRequestCurricullums from "../pages/bpm/employeeRequest/employeeRe
 
 import EmployeeRequestInterview from "../pages/bpm/employeeRequest/employeeRequestInterview";
 import EmployeeRequestBackground from "../pages/bpm/employeeRequest/employeeRequestBackground";
+import EmployeeCurricullumCheck from "../pages/bpm/employeeRequest/employeeCurricullumCheck";
 
 export function getView(view) {
   const views = {
@@ -22,6 +23,7 @@ export function getView(view) {
     load_curricullum: <EmployeeRequestCurricullums />,
     interview: <EmployeeRequestInterview />,
     legal_background: <EmployeeRequestBackground />,
+    curricullum_check: <EmployeeCurricullumCheck />
   };
 
   if (view in views) return views[view];
