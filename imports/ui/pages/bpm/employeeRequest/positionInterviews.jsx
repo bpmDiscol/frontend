@@ -11,7 +11,7 @@ import Transition from "../../../components/transition/index.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
-export default function PositionInterviews({ update, interviews, warningUsers }) {
+export default function PositionInterviews({ update, interviews, warningUsers, requestEmployee }) {
   const [drawerData, setDrawerData] = React.useState({
     open: false,
     applicant: null,
@@ -111,6 +111,7 @@ export default function PositionInterviews({ update, interviews, warningUsers })
             update={update}
             onClose={handleClose}
             fileId={drawerData.applicant?.fileId}
+            requestEmployee={requestEmployee}
           />
         )}
       </Drawer>

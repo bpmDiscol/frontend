@@ -63,6 +63,20 @@ Meteor.methods({
       { $set: { [`${datafield}`]: backgroundFiles } }
     );
   },
+  update_cv_files({ taskId, id, cvFiles }) {
+    const datafield = `tasks.$.cvFiles.${id}`;
+    Meteor.users.update(
+      { _id: Meteor.userId(), "tasks.taskId": taskId },
+      { $set: { [`${datafield}`]: cvFiles } }
+    );
+  },
+  update_Health_service_files({ taskId, id, HSFiles }) {
+    const datafield = `tasks.$.healthResponse.${id}`;
+    Meteor.users.update(
+      { _id: Meteor.userId(), "tasks.taskId": taskId },
+      { $set: { [`${datafield}`]: HSFiles } }
+    );
+  },
   delete_task(taskId) {
     Meteor.users.update(
       { _id: Meteor.userId() },

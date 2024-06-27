@@ -9,15 +9,15 @@ import Icon, {
   WechatFilled,
 } from "@ant-design/icons";
 
-import BackgroundForm from "../../../components/backgroundForm/index.jsx";
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 import Transition from "../../../components/transition/index.jsx";
+import CVFilesForm from "../../../components/CVFilesForm/index.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
 
-export default function PositionBackgroud({
+export default function PositionUploadCVFiles({
   curricullums,
   interviews,
   warningUsers,
@@ -109,7 +109,7 @@ export default function PositionBackgroud({
                       setDrawerData({
                         applicant: interview,
                         open: true,
-                        view: <BackgroundForm id={interview.fileId} />,
+                        view: <CVFilesForm id={interview.fileId} />,
                       });
                     }}
                     type="primary"

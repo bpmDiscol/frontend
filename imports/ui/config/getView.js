@@ -11,6 +11,9 @@ import EmployeeRequestCurricullums from "../pages/bpm/employeeRequest/employeeRe
 import EmployeeRequestInterview from "../pages/bpm/employeeRequest/employeeRequestInterview";
 import EmployeeRequestBackground from "../pages/bpm/employeeRequest/employeeRequestBackground";
 import EmployeeCurricullumCheck from "../pages/bpm/employeeRequest/employeeCurricullumCheck";
+import EmployeeUploadCVFiles from "../pages/bpm/employeeRequest/employeeUploadCVFiles";
+import EmployeeHealthServiceResponse from "../pages/bpm/employeeRequest/employeeHealthServiceResponse";
+import EmployeeHSEApprovation from "../pages/bpm/employeeRequest/employeeHSEApprovation";
 
 export function getView(view) {
   const views = {
@@ -23,7 +26,10 @@ export function getView(view) {
     load_curricullum: <EmployeeRequestCurricullums />,
     interview: <EmployeeRequestInterview />,
     legal_background: <EmployeeRequestBackground />,
-    curricullum_check: <EmployeeCurricullumCheck />
+    curricullum_check: <EmployeeCurricullumCheck />,
+    upload_cv_files: <EmployeeUploadCVFiles />,
+    healt_service_response: <EmployeeHealthServiceResponse />,
+    hse_approvation: <EmployeeHSEApprovation />
   };
 
   if (view in views) return views[view];

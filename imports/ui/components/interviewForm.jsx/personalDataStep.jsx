@@ -17,15 +17,15 @@ import statusOptions from "../../pages/bpm/data/personalStatus.json";
 
 const { Text } = Typography;
 
-export default function PersonalDataStep({ form, update }) {
+export default function PersonalDataStep({ form, update, requestEmployee }) {
   const [isPreviusEmployee, setIsPreviusEmployee] = React.useState();
   const [isAboutBussiness, setIsAboutBussiness] = React.useState();
   const [isAboutFamily, setIsAboutFamily] = React.useState();
 
   React.useEffect(() => {
-    setIsPreviusEmployee(form.getFieldValue('isPreviusEmployee'));
-    setIsAboutBussiness(form.getFieldValue('isAboutBussiness'));
-    setIsAboutFamily(form.getFieldValue('isAboutFamily'));
+    setIsPreviusEmployee(form.getFieldValue("isPreviusEmployee"));
+    setIsAboutBussiness(form.getFieldValue("isAboutBussiness"));
+    setIsAboutFamily(form.getFieldValue("isAboutFamily"));
   }, []);
 
   return (
@@ -115,7 +115,7 @@ export default function PersonalDataStep({ form, update }) {
             ]}
             hasFeedback
           >
-            <Input placeholder="inserta una edad" type="number"/>
+            <Input placeholder="inserta una edad" type="number" />
           </Form.Item>
           <Form.Item
             name={"status"}
@@ -157,7 +157,9 @@ export default function PersonalDataStep({ form, update }) {
             ]}
             hasFeedback
           >
-            <Input placeholder="inserta un cargo" />
+            <Input
+              placeholder={"Sugerido: " + requestEmployee.companyPosition}
+            />
           </Form.Item>
 
           <Form.Item
@@ -171,68 +173,71 @@ export default function PersonalDataStep({ form, update }) {
             ]}
             hasFeedback
           >
-            <Input placeholder="inserta una cifra" type="number" />
+            <Input
+              placeholder={"Propuesto: " + requestEmployee.salary}
+              type="number"
+            />
           </Form.Item>
         </Col>
       </Row>
       <Row>
         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-        <Flex vertical>
-          <Space>
-            <Text>¿Ha trabajado antes en discol?</Text>
-          
-            <Form.Item
-              name={"isPreviusEmployee"}
-              valuePropName="checked"
-              rules={[
-                {
-                  transform: (value) => {
-                    if (!value)
-                      update({ field: `isPreviusEmployee`, value: false });
-                  },
-                },
-              ]}
-            >
-              <Switch
-                id={"isPreviusEmployee"}
-                value={isPreviusEmployee}
-                onChange={() => setIsPreviusEmployee(!isPreviusEmployee)}
-                checkedChildren="Si"
-                unCheckedChildren="No"
-              />
-            </Form.Item>
-          </Space>
-          {isPreviusEmployee && (
-            <Flex vertical gap={8}>
+          <Flex vertical>
+            <Space>
+              <Text>¿Ha trabajado antes en discol?</Text>
+
               <Form.Item
-                name={"retirementMotive"}
-                label="Motivo de retiro"
+                name={"isPreviusEmployee"}
+                valuePropName="checked"
                 rules={[
                   {
-                    required: true,
-                    message: "Por favor, introduce un motivo",
+                    transform: (value) => {
+                      if (!value)
+                        update({ field: `isPreviusEmployee`, value: false });
+                    },
                   },
                 ]}
-                hasFeedback
               >
-                <Input placeholder="Motivo de retiro" />
+                <Switch
+                  id={"isPreviusEmployee"}
+                  value={isPreviusEmployee}
+                  onChange={() => setIsPreviusEmployee(!isPreviusEmployee)}
+                  checkedChildren="Si"
+                  unCheckedChildren="No"
+                />
               </Form.Item>
-              <Form.Item
-                name={"retirementDate"}
-                label="Fecha de retiro"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor, introduce una fecha",
-                  },
-                ]}
-                hasFeedback
-              >
-                <Input placeholder="Motivo  de retiro" />
-              </Form.Item>
-            </Flex>
-          )}
-        </Flex>
+            </Space>
+            {isPreviusEmployee && (
+              <Flex vertical gap={8}>
+                <Form.Item
+                  name={"retirementMotive"}
+                  label="Motivo de retiro"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor, introduce un motivo",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input placeholder="Motivo de retiro" />
+                </Form.Item>
+                <Form.Item
+                  name={"retirementDate"}
+                  label="Fecha de retiro"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor, introduce una fecha",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input placeholder="Motivo  de retiro" />
+                </Form.Item>
+              </Flex>
+            )}
+          </Flex>
 
           <Space>
             <Text>¿Tiene familiares trabajando en DISCOL?</Text>

@@ -14,7 +14,6 @@ Meteor.methods({
   },
   
   get_file_link({ id }) {
-    console.log(curricullumCollection)
     return curricullumCollection.collection
       .find({})
       .map(function (fileRef) {

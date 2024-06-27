@@ -71,7 +71,7 @@ const menuList = [
   },
 ];
 
-export default function InterviewForm({ onClose, fileId }) {
+export default function InterviewForm({ onClose, fileId, requestEmployee }) {
   const [currentForm, setCurrentForm] = React.useState(0);
   const [formAttempt, setFormAttempt] = React.useState();
   const [taskId, setTaskId] = React.useState();
@@ -107,7 +107,7 @@ export default function InterviewForm({ onClose, fileId }) {
   }
 
   const FormElement = (Component) => {
-    return <Component update={updateFields} form={form} />;
+    return <Component update={updateFields} form={form} requestEmployee={requestEmployee} />;
   };
 
   return (

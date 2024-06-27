@@ -6,6 +6,7 @@ import {
   validateRequest,
 } from "../misc/validation";
 import { requestEmployeeCollection } from "../requestEmployeData/requestEmployeeDataPublication";
+import { deleteFile } from "../../ui/misc/filemanagement";
 
 Meteor.methods({
   async get_employee_request(taskId) {
@@ -163,6 +164,12 @@ Meteor.methods({
       params: {},
     }).catch((error) => console.error(error));
   },
+  async send_backgrounds(caseId, backgrounds) {
+    const field = ["backgoundsInput"];
+    Meteor.callAsync("set_data", { field, value: backgrounds }, caseId).catch(
+      (error) => console.error(error)
+    );
+  },
   async reject_profiles(rejectedList, caseId, taskId, userName) {
     try {
       requestEmployeeCollection.update(
@@ -211,6 +218,55 @@ Meteor.methods({
         checkeds,
         responsible: userName,
       },
+    }).catch((error) => console.error(error));
+  },
+  async clean_unselecteds(caseId) {
+    try {
+      const caseData = requestEmployeeCollection.findOne({ caseId });
+      const rejecteds = caseData.interviewInput
+        .filter((element) => !element.selected)
+        .map((case_) => case_.interviewId);
+
+      console.log("🚀 ~ clean_unselecteds ~ rejecteds:", rejecteds);
+
+      requestEmployeeCollection.update(
+        { caseId },
+        { $pull: { curricullumsInput: { fileId: { $in: rejecteds } } } }
+      );
+      rejecteds.forEach((id) => {
+        deleteFile("curricullums", id);
+      });
+
+      requestEmployeeCollection.update(
+        { caseId },
+        { $pull: { interviewInput: { selected: false } } }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  async uploadCVfiles(cvFiles, healthRequests, caseId, taskId) {
+    const field = ["cvFilesInput"];
+    Meteor.callAsync("set_data", { field, value: cvFiles }, caseId).catch(
+      (error) => console.error(error)
+    );
+
+    return await Meteor.callAsync("post_data", {
+      url: `/API/bpm/userTask/${taskId}/execution`,
+      data: {
+        health_responseInput: healthRequests,
+      },
+    }).catch((error) => console.error(error));
+  },
+  async uploadHRFiles(hrFiles, userName, caseId, taskId) {
+    const field = ["healthResponseInput"];
+    Meteor.callAsync("set_data", { field, value: hrFiles }, caseId).catch(
+      (error) => console.error(error)
+    );
+
+    return await Meteor.callAsync("post_data", {
+      url: `/API/bpm/userTask/${taskId}/execution`,
+      data: { userName },
     }).catch((error) => console.error(error));
   },
 });

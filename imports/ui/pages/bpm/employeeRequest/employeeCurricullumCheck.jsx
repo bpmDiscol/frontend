@@ -35,7 +35,7 @@ export default function EmployeeCurricullumCheck() {
   const [waitToSend, setWaitingToSend] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [curricullums, setCurricullums] = React.useState([]);
-  const [checkeds, setCheckeds] = React.useState([])
+  const [checkeds, setCheckeds] = React.useState([]);
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
@@ -104,7 +104,7 @@ export default function EmployeeCurricullumCheck() {
     curricullums,
     interviews,
     checkeds,
-    setCheckeds
+    setCheckeds,
   }) {
     return (
       <Component
@@ -125,12 +125,15 @@ export default function EmployeeCurricullumCheck() {
     { label: "Observaciones", value: 4 },
     { label: "Candidatos", value: 5 },
   ];
+
+  //TODO: agregar paguina que visualice los archivos cargados y las notas
   const tabContents = [
     PositionGereralities,
     PositionVehicle,
     PositionRequirements,
     PositionGears,
     PositionObservations,
+    //PositionCVFiles
     PositionCurricullumCheck,
   ];
 
@@ -142,51 +145,43 @@ export default function EmployeeCurricullumCheck() {
   function request() {
     setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
-    Meteor.call("get_task_data", taskId, (err, resp) => {
-      if (!err && resp?.length) {
-        const bgs = resp[0].backgrounds;
-        const rejecteds = Object.keys(bgs).filter(
-          (key) => bgs[key].status == "rejected"
-        );
-
-        Meteor.call(
-          "check_profiles",
-          checkeds,
-          getCase(),
-          getTask(),
-          userName,
-          (err, res) => {
-            if (err) console.log(err);
-            if (res == "no token") {
-              openNotification(
-                "Error",
-                "Algo ha salido mal",
-                "Hubo error del servidor, por favor ingresa nuevamente"
-              );
-              safeLogOut();
-            } else {
-              if (!res.error) {
-                Meteor.call("delete_task", taskId);
-                setView("tasks");
-                openNotification(
-                  "success",
-                  "¡Buen trabajo!",
-                  "Los archivos se han enviado satisfactoriamente"
-                );
-              }
-            }
-            setWaitingToSend(false);
+    Meteor.call(
+      "check_profiles",
+      checkeds,
+      getCase(),
+      getTask(),
+      userName,
+      (err, res) => {
+        if (err) console.log(err);
+        if (res == "no token") {
+          openNotification(
+            "Error",
+            "Algo ha salido mal",
+            "Hubo error del servidor, por favor ingresa nuevamente"
+          );
+          safeLogOut();
+        } else {
+          if (!res.error) {
+            Meteor.call("delete_task", taskId);
+            setView("tasks");
+            openNotification(
+              "success",
+              "¡Buen trabajo!",
+              "Los archivos se han enviado satisfactoriamente"
+            );
           }
-        );
+        }
+        setWaitingToSend(false);
       }
-    });
+    );
   }
 
   return (
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Requisición de personal<Text strong>(Selección final de candidatos)</Text>
+          Requisición de personal
+          <Text strong>(Selección final de candidatos)</Text>
         </Title>
       </Flex>
 
@@ -228,7 +223,6 @@ export default function EmployeeCurricullumCheck() {
           </Button>
         </Popconfirm>
       </Flex>
-     
     </Flex>
   );
 }

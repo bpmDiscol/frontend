@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Copia de cédula ampliada",
+    "field": "cedula"
+  },
+  {
+    "title": "Diploma/Acta de grado bachiller",
+    "field": "certificado_basica_secundaria"
+  },
+  {
+    "title": "Diploma/Acta de grado bachiller",
+    "field": "estudios_superiores"
+  },
+  {
+    "title": "Diploma estudios superiores",
+    "field": "certificado_basica_secundaria"
+  },
+  {
+    "title": "Tarjeta profesional",
+    "field": "tarjeta_profesional"
+  },
+  {
+    "title": "Documentación vehículo",
+    "field": "documentación_vehiculo"
+  },
+  {
+    "title": "Certificación EPS",
+    "field": "certificado_eps"
+  },
+  {
+    "title": "Certificado de fondo de pensiones",
+    "field": "certificado_pensiones"
+  },
+  {
+    "title": "Certificado de fondo de cesantias",
+    "field": "certificado_cesantias"
+  },
+  {
+    "title": "Beneficiarios a SGSS",
+    "field": "documentos_beneficiarios"
+  },
+  {
+    "title": "Soporte Afiliacion ARL",
+    "field": "certificado_arl"
+  },
+  {
+    "title": "Soporte Afiliacion caja de compensación",
+    "field": "certificado_caja_de_compensacion"
+  },
+  {
+    "title": "Soporte afiliacion AFP",
+    "field": "certificado_afp"
+  },
+  {
+    "title": "Soporte afiliacion  Cesantias",
+    "field": "certificado_cesantias"
+  },
+  {
+    "title": "Copia de Registro unico tributario RUT ",
+    "field": "certificado_rut"
+  }
+]

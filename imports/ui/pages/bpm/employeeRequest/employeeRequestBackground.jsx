@@ -102,13 +102,7 @@ export default function EmployeeRequestBackground() {
     }
   }, [curricullums, warningUsers]);
 
-  function LoadPage({
-    Component,
-    curricullums,
-    interviews,
-    warningUsers,
-    userId,
-  }) {
+  function LoadPage({ Component, curricullums, interviews, warningUsers }) {
     return (
       <Component
         requestEmployee={requestEmployeeData}
@@ -141,11 +135,15 @@ export default function EmployeeRequestBackground() {
     if (buttonResponse == "send") return handleBeforeSend();
   }
 
- 
-
   function handleBeforeSend() {
     const taskId = getTaskName() + getTask();
-    const fields = ["policia", "contraloria", "procuraduria"];
+    const fields = [
+      "policia",
+      "contraloria",
+      "procuraduria",
+      "status",
+      "notes",
+    ];
     Meteor.call("get_task_data", taskId, (err, resp) => {
       if (!err && resp?.length) {
         if (!resp[0].backgrounds) {
@@ -157,12 +155,12 @@ export default function EmployeeRequestBackground() {
           return;
         }
         const bg = Object.keys(resp[0].backgrounds);
-        const interviewIds = requestEmployeeData.curricullumsInput.map(
-          (data) => data.fileId
-        );
+        const interviewIds = requestEmployeeData.interviewInput
+          .filter((data) => data.selected)
+          .map((data) => data.interviewId);
+
         if (!sonIguales(bg, interviewIds)) {
           const diference = interviewIds.filter((x) => !bg.includes(x));
-          
           setWarningUsers(diference);
           openNotification(
             "warning",
@@ -175,7 +173,7 @@ export default function EmployeeRequestBackground() {
         const warningUsers = bg
           .map((bgId) => {
             const bgKeys = Object.keys(resp[0].backgrounds[bgId]);
-            if (!sonIguales(bgKeys, fields)) return bgId;
+            if (!sonIguales([...bgKeys, "notes"], fields)) return bgId;
             else {
               const values = bgKeys
                 .map((bgKey) => resp[0].backgrounds[bgId][bgKey] == null)
@@ -184,8 +182,10 @@ export default function EmployeeRequestBackground() {
             }
           })
           .filter((val) => val);
-        setWarningUsers(warningUsers);
-        setWarningMessage(true);
+        if (warningUsers.length) {
+          setWarningUsers(warningUsers);
+          setWarningMessage(true);
+        } else request();
       }
     });
   }
@@ -198,6 +198,10 @@ export default function EmployeeRequestBackground() {
         const bgs = resp[0].backgrounds;
         const rejecteds = Object.keys(bgs).filter(
           (key) => bgs[key].status == "rejected"
+        );
+
+        Meteor.callAsync("send_backgrounds", getCase(), bgs).catch((err) =>
+          console.log(err)
         );
 
         Meteor.call(
@@ -217,7 +221,13 @@ export default function EmployeeRequestBackground() {
               safeLogOut();
             } else {
               if (!res.error) {
-                Meteor.call("delete_task", taskId);
+                Meteor.callAsync("delete_task", taskId).catch((err) =>
+                  console.log(err)
+                );
+                // Meteor.callAsync("clean_unselecteds", getCase()).catch((err) =>
+                //   console.log(err)
+                // );
+
                 setView("tasks");
                 openNotification(
                   "success",
@@ -285,7 +295,6 @@ export default function EmployeeRequestBackground() {
         onCancel={() => setWarningMessage(false)}
         open={warningMessage}
         onOk={() => setWarningMessage(false)}
-        // confirmLoading={confirmLoading}
         footer={[
           <Button onClick={() => request()} key="send">
             Enviar de todas formas
