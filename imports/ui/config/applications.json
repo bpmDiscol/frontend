@@ -5,5 +5,12 @@
     "page": "employee_request_form",
     "displayName": "Requisición de personal",
     "description": "Solicitud oficial de talento humano"
+  },
+  {
+    "processName": "credentials",
+    "restrictions": ["digitador"],
+    "page": "credentials",
+    "displayName": "Lista negra",
+    "description": "Cedulas de trabajadores no gratos"
   }
 ]

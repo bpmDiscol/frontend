@@ -1,6 +1,7 @@
 import { Button, Flex, Input, Select, Space, message } from "antd";
 import React from "react";
 import { Meteor } from "meteor/meteor";
+import { useTracker } from "meteor/react-meteor-data";
 import { emptySpace } from "../../../misc/emptySpace";
 import { fontList } from "../../../misc/fontList";
 import {
@@ -10,18 +11,23 @@ import {
 } from "@ant-design/icons";
 import { deleteFile, uploadFile } from "../../../misc/filemanagement";
 import { getTask, getTaskName } from "../../../config/taskManagement";
+import { BlackListCollection } from "../../../../api/blackList/blackListCollection";
 
 export default function PositionCurricullums() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [taskId, setTaskId] = React.useState();
+  const [blackListeds, setBlackListeds] = React.useState([]);
+
+  const blackList = useTracker(() => {
+    Meteor.subscribe("blackList");
+    return BlackListCollection.find({}).fetch();
+  });
   React.useEffect(() => {
-      const taskId =
-        getTaskName() + getTask();
-      setTaskId(taskId);
-      Meteor.call("get_task_data", taskId, (err, resp) => {
-        if (!err && resp) setCurricullums(resp[0].curricullums || []);
-      });
-    
+    const taskId = getTaskName() + getTask();
+    setTaskId(taskId);
+    Meteor.call("get_task_data", taskId, (err, resp) => {
+      if (!err && resp) setCurricullums(resp[0].curricullums || []);
+    });
   }, []);
 
   function updateData(field, value) {
@@ -61,6 +67,19 @@ export default function PositionCurricullums() {
     updateData("curricullums", currentCurricullums);
   }
 
+  function addToBlackList(index) {
+    setBlackListeds([...blackListeds, index]);
+  }
+  function removeFromBlacklist(index) {
+    setBlackListeds(blackListeds.filter((bl) => !bl == index));
+  }
+
+  function isBlackListed(id) {
+    if (id) {
+      return blackList.filter((bl) => bl.member == id).length;
+    }
+  }
+
   return (
     <Flex
       vertical
@@ -72,8 +91,30 @@ export default function PositionCurricullums() {
       {curricullums &&
         curricullums.map((curricullum, index) => {
           return (
-            <Flex key={index} justify="space-between" align="center" gap={16}>
+            <Flex
+              key={index}
+              justify="space-between"
+              align="center"
+              gap={16}
+              style={{
+                backgroundColor: blackListeds.includes(index)
+                  ? "red"
+                  : "transparent",
+                padding:'5px',
+                borderRadius:'10px'
+              }}
+            >
               <Space.Compact style={{ minWidth: "50vw" }}>
+                <Input
+                  id="applicantName"
+                  type="text"
+                  placeholder="Cedula"
+                  onChange={(e) => {
+                    const value = e.currentTarget.value;
+                    if (isBlackListed(value)) addToBlackList(index);
+                    else removeFromBlacklist(index);
+                  }}
+                />
                 <Input
                   id="applicantName"
                   type="text"

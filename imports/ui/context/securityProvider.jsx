@@ -7,6 +7,7 @@ import {
   isDelayedUser,
   safeLogOut,
 } from "../misc/userStatus";
+import No2fa from "../components/publicLogin/no2fa";
 
 export const SecurityContext = React.createContext();
 
@@ -14,7 +15,7 @@ export default function SecurityProvider({ children, publicPage }) {
   const [token, setToken] = React.useState();
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
   const [delayedUser, setDelayedUser] = React.useState(false);
-
+  const [enable2fa, setEnable2fa] = React.useState(false);
   React.useEffect(() => {
     function detectVisibility() {
       if (document.visibilityState == "hidden") {
@@ -32,15 +33,26 @@ export default function SecurityProvider({ children, publicPage }) {
         }
       }
     }
+    if (!loggedUser) setEnable2fa(false);
     if (loggedUser) {
+      Meteor.call("has2fa", (_, resp) => setEnable2fa(resp));
+
       document.addEventListener("visibilitychange", detectVisibility);
     } else document.removeEventListener("visibilitychange", detectVisibility);
   }, [loggedUser]);
 
   if (isLoadingLoggedUser) return <Loader />;
   return (
-    <SecurityContext.Provider value={{ token, setToken }}>
-      {loggedUser && !delayedUser ? children : publicPage}
+    <SecurityContext.Provider value={{ token, setToken, setEnable2fa }}>
+      {loggedUser && !delayedUser ? (
+        enable2fa ? (
+          children
+        ) : (
+          <No2fa />
+        )
+      ) : (
+        publicPage
+      )}
     </SecurityContext.Provider>
   );
 }

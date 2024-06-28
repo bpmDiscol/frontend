@@ -1,10 +1,13 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
 import { NotificationsContext } from "../../context/notificationsProvider";
-import { Flex } from "antd";
+import { Button, Flex, Modal } from "antd";
 import Transition from "../transition";
+import { Buffer } from "buffer";
+import { Accounts } from "meteor/accounts-base";
 
 import "./login.css";
+import OTP from "./OTP";
 
 export default function PublicLogin() {
   const { openNotification } = React.useContext(NotificationsContext);
@@ -12,25 +15,34 @@ export default function PublicLogin() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+  const [modalOTP, openOTPModal] = React.useState(false);
+  const [bonitaData, setBonitaData] = React.useState();
 
   //TODO: cerrar sesion activa cuando el usuario se logea nuevamente
-  function meteorLogin({ bonitaUser, token, username, password, JSESSIONID }) {
+  async function meteorLogin({
+    bonitaUser,
+    token,
+    username,
+    password,
+    JSESSIONID,
+  }) {
     Meteor.loginWithPassword(username, password, async (error) => {
-      if (error && error.reason == "User not found") {
+      if (error?.reason == "User not found") {
         await Meteor.callAsync("new_user", {
           username,
           password,
           bonitaUser,
           token,
-        }).catch(error=> console.error(error));
+        }).catch((error) => console.error(error));
         Meteor.loginWithPassword(username, password);
       }
+      if (error?.error === "no-2fa-code") openOTPModal(true);
     });
+    setBonitaData({bonitaUser, token, JSESSIONID});
     sessionStorage.setItem("constId", bonitaUser);
-    Meteor.callAsync("update_credentials", { bonitaUser, token, JSESSIONID }).catch(error=> console.error(error));
   }
 
-  function tryLogin(e) {
+  async function tryLogin(e) {
     e.preventDefault();
     if (username && password) {
       setIsLoading(true);
@@ -41,15 +53,15 @@ export default function PublicLogin() {
           if (error) console.log(error.reason);
           else {
             if (result.variant == "success")
-              meteorLogin({
+              await meteorLogin({
                 bonitaUser: result.bonitaUser,
                 token: result.token,
                 JSESSIONID: result.JSESSIONID,
                 username,
                 password,
               });
-
-            openNotification(result.variant, result?.message, "");
+            if (result.variant == "error")
+              openNotification(result.variant, result?.message, "");
           }
           setIsLoading(false);
         }
@@ -100,6 +112,24 @@ export default function PublicLogin() {
           </form>
         </article>
       </Transition>
+      <Modal
+        centered
+        closable={false}
+        open={modalOTP}
+        onCancel={() => openOTPModal(false)}
+        footer={
+          <Flex justify="center">
+            <Button onClick={() => openOTPModal(false)}>Cancelar</Button>
+          </Flex>
+        }
+      >
+       {bonitaData && <OTP
+          username={username}
+          password={password}
+          bonitaData={bonitaData}
+          logged
+        />}
+      </Modal>
     </Flex>
   );
 }

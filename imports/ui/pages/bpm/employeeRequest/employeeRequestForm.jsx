@@ -103,6 +103,8 @@ export default function EmployeeRequestForm() {
       (error, response) => {
         setWaitingToSend(false);
         if (response?.error) {
+          console.log("🚀 ~ startRequest ~ error:", response)
+          
           if (response?.status >= 500) {
             openNotification(
               "error",

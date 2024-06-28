@@ -83,4 +83,11 @@ Meteor.methods({
       { $pull: { tasks: { taskId } } }
     );
   },
+  has2fa() {
+    const user = Meteor.users.findOne(Meteor.userId());
+    const res = Object.keys(user.services.twoFactorAuthentication).includes(
+      "type"
+    );
+    return res;
+  },
 });
