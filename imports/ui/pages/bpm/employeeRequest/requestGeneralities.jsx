@@ -1,5 +1,14 @@
 import React from "react";
-import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from "antd";
+import {
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Space,
+  Switch,
+} from "antd";
 
 import siteOptions from "../data/sites.json";
 import areaProyectOptions from "../data/area.json";
@@ -29,13 +38,16 @@ export default function RequestGeneralities({
       <Row gutter={32} style={{ padding: "10px 20px", width: "90%" }}>
         <Col span={12}>
           <Form.Item label="Vacantes" hasFeedback>
-            <Input
-            inputMode="numeric"
-            type="number"
+            <InputNumber
+              stringMode
+              inputMode="numeric"
+              type="number"
               id="vacancies"
               status={fiterErrors("vacancies")}
-              defaultValue={requestData?.vacancies}
-              onChange={(e) => update("vacancies", e.target.value)}
+              defaultValue={parseInt(requestData?.vacancies)}
+              onChange={(value) => update("vacancies", value)}
+              min={0}
+              max={100}
             />
           </Form.Item>
           <Form.Item label="Puesto solicitado" hasFeedback>
@@ -94,14 +106,16 @@ export default function RequestGeneralities({
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Salario">
-            <Input
+          <Form.Item label="Salario" name={"salary"}>
+            <InputNumber
+              stringMode
+              type="number" 
+              min={1}
               id="salary"
               status={fiterErrors("salary")}
-              defaultValue={requestData?.salary || 0}
+              defaultValue={parseInt(requestData?.salary) || 0}
               addonBefore="$"
-              type="number"
-              onChange={(e) => update("salary", e.target.value)}
+              onChange={(value) => update("salary", value)}
             />
           </Form.Item>
           <Form.Item label="Jornada laboral">

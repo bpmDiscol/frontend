@@ -34,6 +34,7 @@ export default function OTP({ username, password, bonitaData, logged = false }) 
               ""
             );
             Meteor.callAsync("update_credentials", bonitaData).catch((error) => console.error(error));
+            Meteor.logoutOtherClients()
           }
         );
       } else {

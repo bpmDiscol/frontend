@@ -80,7 +80,7 @@ export default function LaboralDataStep() {
                     ]}
                     hasFeedback
                   >
-                    <InputNumber style={{ width: "10rem" }} type="number" />
+                    <InputNumber min={1} style={{ width: "10rem" }} type="number" />
                   </Form.Item>
                   <Form.Item
                     name={[field.name, "companyTime", "timePart"]}

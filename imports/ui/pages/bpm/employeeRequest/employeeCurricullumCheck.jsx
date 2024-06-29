@@ -126,7 +126,6 @@ export default function EmployeeCurricullumCheck() {
     { label: "Candidatos", value: 5 },
   ];
 
-  //TODO: agregar paguina que visualice los archivos cargados y las notas
   const tabContents = [
     PositionGereralities,
     PositionVehicle,

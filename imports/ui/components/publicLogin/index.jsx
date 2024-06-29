@@ -3,8 +3,6 @@ import { Meteor } from "meteor/meteor";
 import { NotificationsContext } from "../../context/notificationsProvider";
 import { Button, Flex, Modal } from "antd";
 import Transition from "../transition";
-import { Buffer } from "buffer";
-import { Accounts } from "meteor/accounts-base";
 
 import "./login.css";
 import OTP from "./OTP";
@@ -18,7 +16,6 @@ export default function PublicLogin() {
   const [modalOTP, openOTPModal] = React.useState(false);
   const [bonitaData, setBonitaData] = React.useState();
 
-  //TODO: cerrar sesion activa cuando el usuario se logea nuevamente
   async function meteorLogin({
     bonitaUser,
     token,

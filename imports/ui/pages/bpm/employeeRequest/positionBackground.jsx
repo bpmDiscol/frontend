@@ -3,6 +3,7 @@ import { Button, Drawer, Empty, Flex } from "antd";
 import Icon, {
   CheckCircleOutlined,
   CloseCircleOutlined,
+  DownloadOutlined,
   EditFilled,
   FileTextFilled,
   WarningOutlined,
@@ -24,10 +25,11 @@ export default function PositionBackgroud({
 }) {
   const [drawerData, setDrawerData] = React.useState(closed);
 
-  function newTab(url) {
-    let newTab = document.createElement("a");
+  function newTab(url, download = false) {
+    const newTab = document.createElement("a");
     newTab.href = url;
     newTab.target = "_blank";
+    newTab.download = download;
     newTab.click();
   }
 
@@ -39,96 +41,111 @@ export default function PositionBackgroud({
     <Flex gap={16} style={{ flex: 1 }}>
       <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
         {curricullums &&
-          curricullums.map((interview, index) => {
-            return (
-              <Flex
-                key={index}
-                justify="space-between"
-                align="center"
-                style={{
-                  borderRadius: "5px",
-                  border: `2px solid ${
-                    interviews[index].selected
-                      ? warningUsers.includes(interview.fileId)
-                        ? "orange"
-                        : "green"
-                      : "red"
-                  }`,
-                  padding: "5px 10px",
-                  boxShadow: `2px 2px 15px ${
-                    interviews[index].selected ? "green" : "red"
-                  }`,
-                }}
-              >
+          curricullums
+            .map((interview, index) => {
+              return (
                 <Flex
-                  gap={10}
+                  key={index}
+                  justify="space-between"
+                  align="center"
                   style={{
-                    color: interviews[index].selected ? "green" : "red",
+                    borderRadius: "5px",
+                    border: `2px solid ${
+                      interviews[index].selected
+                        ? warningUsers.includes(interview.fileId)
+                          ? "orange"
+                          : "green"
+                        : "red"
+                    }`,
+                    padding: "5px 10px",
+                    boxShadow: `2px 2px 15px ${
+                      interviews[index].selected ? "green" : "red"
+                    }`,
                   }}
                 >
-                  <Icon
-                    component={
-                      interviews[index].selected
-                        ? CheckCircleOutlined
-                        : CloseCircleOutlined
-                    }
-                    style={{ fontSize: 20 }}
-                  />
-                  {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
-                </Flex>
-                <Flex gap={16}>
-                  <Button
-                    title="Ver curricullum"
-                    onClick={() => newTab(googleDocsViewer + interview.link)}
-                    type="primary"
-                    shape="circle"
-                    icon={<FileTextFilled />}
-                  />
-                  <Button
-                    title="Ver entrevista"
-                    onClick={() => {
-                      setDrawerData({
-                        applicant: interview,
-                        open: true,
-                        view: (
-                          <InterviewView
-                            fileId={interview.fileId}
-                            onClose={handleClose}
-                            interviewForm={interviews[index]}
-                          />
-                        ),
-                      });
+                  <Flex
+                    gap={10}
+                    style={{
+                      color: interviews[index].selected ? "green" : "red",
                     }}
-                    type="primary"
-                    shape="circle"
-                    icon={<WechatFilled style={{ fontSize: "20px" }} />}
-                  />
-                  <Button
-                    title="Llenar antecedentes"
-                    onClick={() => {
-                      setDrawerData({
-                        applicant: interview,
-                        open: true,
-                        view: <BackgroundForm id={interview.fileId} />,
-                      });
-                    }}
-                    type="primary"
-                    shape="circle"
-                    icon={<EditFilled />}
-                  />
+                  >
+                    <Icon
+                      component={
+                        interviews[index].selected
+                          ? CheckCircleOutlined
+                          : CloseCircleOutlined
+                      }
+                      style={{ fontSize: 20 }}
+                    />
+                    {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
+                  </Flex>
+                  <Flex gap={16}>
+                    <Button
+                      onClick={() => newTab(interview.link, true)}
+                      title="Descargar curricullum"
+                      type="primary"
+                      shape="circle"
+                      icon={<DownloadOutlined />}
+                      id="download-cv"
+                    />
+                    <Button
+                      title="Ver curricullum"
+                      onClick={() => newTab(googleDocsViewer + interview.link)}
+                      type="primary"
+                      shape="circle"
+                      icon={<FileTextFilled />}
+                    />
+                    <Button
+                      title="Ver entrevista"
+                      onClick={() => {
+                        setDrawerData({
+                          applicant: interview,
+                          open: true,
+                          view: (
+                            <InterviewView
+                              fileId={interview.fileId}
+                              onClose={handleClose}
+                              interviewForm={interviews[index]}
+                            />
+                          ),
+                        });
+                      }}
+                      type="primary"
+                      shape="circle"
+                      icon={
+                        <img
+                          src="/icons/speaking.svg"
+                          style={{ width: "1.5rem" }}
+                        />
+                      }
+                    />
+                    <Button
+                      title="Llenar antecedentes"
+                      onClick={() => {
+                        setDrawerData({
+                          applicant: interview,
+                          open: true,
+                          view: <BackgroundForm id={interview.fileId} />,
+                        });
+                      }}
+                      type="primary"
+                      shape="circle"
+                      icon={<img src="/icons/checkboxList.svg" />}
+                    />
+                  </Flex>
+                  <Flex style={{ position: "absolute", right: "10%" }}>
+                    {warningUsers.includes(interview.fileId) && (
+                      <Transition effect={"zoom-in"}>
+                        <WarningOutlined
+                          style={{ color: "orange", fontSize: "2rem" }}
+                        />
+                      </Transition>
+                    )}
+                  </Flex>
                 </Flex>
-                <Flex style={{ position: "absolute", right: "10%" }}>
-                  {warningUsers.includes(interview.fileId) && (
-                    <Transition effect={"zoom-in"}>
-                      <WarningOutlined
-                        style={{ color: "orange", fontSize: "2rem" }}
-                      />
-                    </Transition>
-                  )}
-                </Flex>
-              </Flex>
-            );
-          }).filter((_, i) => interviews[i].selected)}
+              );
+            })
+            .filter((_, i) => interviews[i].selected)}
       </Flex>
 
       <Drawer

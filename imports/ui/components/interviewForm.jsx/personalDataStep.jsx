@@ -55,7 +55,8 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
             rules={[
               {
                 required: true,
-                message: "Por favor, introduce un correo electrónico",
+                message: "Por favor, introduce un correo electrónico válido",
+                type: "email",
               },
             ]}
             hasFeedback
@@ -73,6 +74,7 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
               },
             ]}
             hasFeedback
+            normalize={(value) => value.replace(/[^\w\s\-]/, "")}
           >
             <Input placeholder="inserta una identificación" />
           </Form.Item>
@@ -99,6 +101,7 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
               },
             ]}
             hasFeedback
+            normalize={(value) => value.replace(/[^\d+() ]/, "")}
           >
             <Input placeholder="inserta un teléfono" />
           </Form.Item>
@@ -113,9 +116,10 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
                 message: "Por favor, introduce una edad",
               },
             ]}
+            normalize={(value) => value.replace(/[^\d]/, "")}
             hasFeedback
           >
-            <Input placeholder="inserta una edad" type="number" />
+            <Input min={10} max={99} placeholder="inserta una edad" />
           </Form.Item>
           <Form.Item
             name={"status"}
@@ -171,12 +175,18 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
                 message: "Por favor, introduce una aspiración salarial",
               },
             ]}
+            help={"Propuesto: " + requestEmployee.salary} 
             hasFeedback
+            normalize={(value) => {
+              return new Intl.NumberFormat("es-CO", {
+                style: "currency",
+                currency: "COP",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }).format(parseInt(value.replace(/\$\s?|(,*)\./g, "")) || 0);
+            }}
           >
-            <Input
-              placeholder={"Propuesto: " + requestEmployee.salary}
-              type="number"
-            />
+            <Input placeholder={"Propuesto: " + requestEmployee.salary} />
           </Form.Item>
         </Col>
       </Row>

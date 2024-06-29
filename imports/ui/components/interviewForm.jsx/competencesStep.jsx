@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Flex, Form, Input, Row, Select } from "antd";
+import { Col, Flex, Form, Input, InputNumber, Row, Select } from "antd";
 import evaluationOptions from "../../pages/bpm/data/evaluation.json";
 import competenceGradesConfig from "./competencesGradesConfig.json";
 import competencesProfileAdj from "./competencesProfileAdj.json";
@@ -33,16 +33,16 @@ export default function CompetencesStep() {
 
   function handleChangeRequirement(index, value) {
     const currentAspects = [...competenceAspects];
-    currentAspects[index].value = parseInt(value);
+    currentAspects[index].value = value;
     setCompetenceAspects(currentAspects);
   }
 
   function mediaValues() {
     let total = 0;
     competenceAspects.forEach((aspect) => {
-      total += parseInt(document.getElementById(aspect.id)?.value)
-    })
-      // (total = total + aspect.value));
+      total += parseInt(document.getElementById(aspect.id)?.value);
+    });
+    // (total = total + aspect.value));
     return (total / competenceAspects.length).toFixed(1);
   }
 
@@ -111,19 +111,21 @@ export default function CompetencesStep() {
                   },
                 ]}
               >
-                <Input
+                <InputNumber
                   placeholder="Inserta una calificación"
                   type="number"
+                  min={1}
+                  max={100}
                   id={aspect.id}
-                  onChange={(e) =>
-                    handleChangeRequirement(index, e.currentTarget.value)
-                  }
+                  onChange={(value) => handleChangeRequirement(index, value)}
                   value={competenceAspects[index].value}
                 />
               </Form.Item>
             );
           })}
-          <h3 style={{color: isEspectedTotal()? "green":"red"}}>NIVEL TOTAL AJUSTE AL PERFIL: {mediaGrade}</h3>
+          <h3 style={{ color: isEspectedTotal() ? "green" : "red" }}>
+            NIVEL TOTAL AJUSTE AL PERFIL: {mediaGrade}
+          </h3>
         </Col>
       </Row>
     </Flex>

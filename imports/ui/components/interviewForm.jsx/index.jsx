@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Flex, Form, Row, Spin } from "antd";
+import { Button, Col, Divider, Flex, Form, Image, Row, Spin } from "antd";
 import React from "react";
 
 import Icon, { SafetyCertificateFilled, UserOutlined } from "@ant-design/icons";
@@ -12,61 +12,64 @@ import LeaderStep from "./leaderStep";
 import FinalConceptStep from "./finalConceptStep";
 import { getTask, getTaskName } from "../../config/taskManagement";
 
+//icons
+// import annotations from "./icons/annotations.svg"
+
 const menuList = [
   {
     label: "Personal",
     id: "personal",
     title: "Información Personal",
-    icon: UserOutlined,
+    icon: "generalUser",
     form: PersonalDataStep,
   },
   {
     label: "Anotación",
     id: "anotation",
     title: "Anotaciones Personal/Familiar",
-    icon: UserOutlined,
+    icon: "annotations",
     form: PersonalAnotationsStep,
   },
   {
     label: "Académico",
     id: "academic",
     title: "Formación Académica",
-    icon: UserOutlined,
+    icon: "academic",
     form: AcademicDataStep,
   },
   {
     label: "Laboral",
     id: "laboral",
     title: "Experiencia laboral",
-    icon: UserOutlined,
+    icon: "workHistory",
     form: LaboralDataStep,
   },
   {
     label: "Movilidad",
     id: "movility",
     title: "Movilidad",
-    icon: UserOutlined,
+    icon: "transportation",
     form: MovilityStep,
   },
   {
     label: "Competencias",
     id: "competences",
     title: "Evaluación de competencias",
-    icon: UserOutlined,
+    icon: "personalAptitudes",
     form: CompetencesStep,
   },
   {
     label: "Lider",
     id: "leader",
     title: "Evaluación del lider de area/proyecto",
-    icon: UserOutlined,
+    icon: "admin",
     form: LeaderStep,
   },
   {
     label: "Concepto",
     id: "final-concept",
     title: "Concepto final",
-    icon: UserOutlined,
+    icon: "selection",
     form: FinalConceptStep,
   },
 ];
@@ -78,19 +81,20 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
   const [form] = Form.useForm();
 
   async function update(field, value) {
-    await Meteor.callAsync("update_task", { taskId, field, value }).catch(error=> console.error(error));
+    await Meteor.callAsync("update_task", { taskId, field, value }).catch(
+      (error) => console.error(error)
+    );
   }
 
   React.useEffect(() => {
-      const taskId = getTaskName() + getTask();
-      setTaskId(taskId);
-      Meteor.call("get_task_data", taskId, (err, resp) => {
-        if (!err && resp?.length) {
-          form.setFieldsValue(resp[0][`${fileId}`]);
-          setCurrentForm(resp[0][`${fileId}`]?.currentForm || 0);
-        }
-      });
-    
+    const taskId = getTaskName() + getTask();
+    setTaskId(taskId);
+    Meteor.call("get_task_data", taskId, (err, resp) => {
+      if (!err && resp?.length) {
+        form.setFieldsValue(resp[0][`${fileId}`]);
+        setCurrentForm(resp[0][`${fileId}`]?.currentForm || 0);
+      }
+    });
   }, []);
 
   const changedFields = {};
@@ -107,7 +111,13 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
   }
 
   const FormElement = (Component) => {
-    return <Component update={updateFields} form={form} requestEmployee={requestEmployee} />;
+    return (
+      <Component
+        update={updateFields}
+        form={form}
+        requestEmployee={requestEmployee}
+      />
+    );
   };
 
   return (
@@ -151,11 +161,11 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
                     id={menuItem.id}
                     shape="circle"
                     icon={
-                      <Icon
-                        component={menuItem.icon}
+                      <img
+                        src={`/icons/${menuItem.icon}.svg`}
                         style={{
-                          color: currentForm == index ? "white" : "#2271b1",
-                          fontSize: "20px",
+                          width: "25px",
+                          aspectRatio: "1/1",
                         }}
                       />
                     }
@@ -164,7 +174,7 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
                     onClick={() => setFormAttempt(index)}
                     size="large"
                     style={{
-                      background: currentForm == index ? "#2271b1" : "white",
+                      background: currentForm == index ? "#ffd149" : "white",
                     }}
                   />
                   <Col

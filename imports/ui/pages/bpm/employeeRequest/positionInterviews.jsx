@@ -53,6 +53,7 @@ export default function PositionInterviews({ update, interviews, warningUsers, r
                 <Flex gap={16}>
                   <Button
                     onClick={() => newTab(interview.link, true)}
+                    title="Descargar curricullum"
                     type="primary"
                     shape="circle"
                     icon={<DownloadOutlined />}
@@ -78,7 +79,7 @@ export default function PositionInterviews({ update, interviews, warningUsers, r
                     }}
                     type="primary"
                     shape="circle"
-                    icon={<EditFilled />}
+                    icon={<img src="/icons/checkboxList.svg" />}
                   />
                 </Flex>
                 <Flex style={{ position: "absolute", right: "10%" }}>

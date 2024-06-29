@@ -28,7 +28,11 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       const curricullums = data[0].curricullums||[];
       curricullums.forEach((curr) => {
         deleteFile("curricullums", curr.fileId);
+
       });
+      //TODO: borrar backgrounds
+      //const backgrounds = data[0].backgrounds ||[]
+      //backgrounds.forEach(bg => deleteFile('backgrounds', bg._id))
     }
   }
 
@@ -56,8 +60,8 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
         }
         if (resp) {
           if (buttonData[button].user == "") {
+            // TODO: cambiar nombre a deleteTemporaryFiles
             deleteCurricullumFromTask(task.name + task.id);
-            //TODO: borrar background
           }
           Meteor.call("delete_task", task.name + task.id, (err) => {
             if (!err) sessionStorage.removeItem("albous");
@@ -74,7 +78,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       filters: ["available", "assigned"],
       user: "me",
       execute: assignTask,
-      icon: FileAddFilled,
+      icon: 'transferRight',
       id: "take-task_button",
     },
     dismiss: {
@@ -82,13 +86,13 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       filters: ["available", "assigned"],
       user: "",
       execute: assignTask,
-      icon: CloseCircleFilled,
+      icon: 'transferLeft',
       id: "undone-task-button",
     },
     do: {
       label: "Realizar tarea",
       execute: doTask,
-      icon: EditFilled,
+      icon: 'playActivity',
       id: "do-task",
     },
   };
@@ -105,9 +109,9 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
                 setLoading(true);
                 buttonData[button].execute(button);
               }}
-              type="primary"
+              type="default"
               shape="circle"
-              icon={<Icon component={buttonData[button].icon} />}
+              icon={<img src={`/icons/${buttonData[button].icon}.svg`} style={{width:'25px'}}/>}
             />
           </Tooltip>
         );

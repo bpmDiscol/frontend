@@ -84,10 +84,12 @@ Meteor.methods({
     );
   },
   has2fa() {
-    const user = Meteor.users.findOne(Meteor.userId());
-    const res = Object.keys(user.services.twoFactorAuthentication).includes(
-      "type"
-    );
-    return res;
+    const services = Meteor.user({ fields: { services: 1 } })?.services;
+    if (services)
+      if (Object.keys(services).includes("twoFactorAuthentication")) {
+        return Object.keys(services.twoFactorAuthentication).includes("type");
+      }
+
+    return false;
   },
 });

@@ -43,6 +43,7 @@ export default function RequestVehicle({ requestData, update }) {
               type="number"
               onChange={(e) => update("bearingValue", e.target.value)}
               addonBefore="$"
+              min={1}
             />
           </Form.Item>
         </Col>
