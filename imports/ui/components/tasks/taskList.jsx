@@ -29,31 +29,38 @@ export default function TaskList({
   }, []);
 
   React.useEffect(() => {
-    if (taskList?.length > 0 && taskList != "error")
-      taskList.forEach((task) => {
-        Meteor.call("get_employee_request_data", task.id, (err, data) => {
-          if (!err)
-            setTaskData([
-              ...taskData,
-              {
-                area_proyect: data.area_proyect,
-                observations: data.observations,
-                requirements: data.requirements,
-                salary_string: data.salary_string,
-                site: data.site,
-                vehicleType: data.vehicleType,
-                workPlace: data.workPlace,
-                taskId: task.id,
-                displayName: task.displayName,
-                description: task.displayDescription,
-              },
-            ]);
-        });
+    if (taskList?.length > 0 && taskList != "error") {
+      const taskDataPromises = taskList.map((task) => {
+        return Meteor.callAsync("get_employee_request_data", task.id);
       });
+
+      Promise.all(taskDataPromises)
+        .then((data) => {
+          const newData = data.map((innerInfo, index) => {
+            return {
+              area_proyect: innerInfo.area_proyect,
+              observations: innerInfo.observations,
+              requirements: innerInfo.requirements,
+              salary_string: innerInfo.salary_string,
+              site: innerInfo.site,
+              vehicleType: innerInfo.vehicleType,
+              workPlace: innerInfo.workPlace,
+              taskId: taskList[index].id,
+              displayName: taskList[index].displayName,
+              description: taskList[index].displayDescription,
+              subtitle: taskList[index].displayDescription,
+            };
+          });
+          setTaskData(newData);
+        })
+        .catch((err) => console.log(err));
+
+     
+    }
   }, [taskList]);
 
-
   React.useEffect(() => {
+    console.log(title);
     if (!searchTerm) setVisibleTasks(taskList);
     if (searchTerm) {
       const filteredIds = checkPartialWordsInObjects(
@@ -107,8 +114,6 @@ export default function TaskList({
         {visibleTasks &&
           visibleTasks != "error" &&
           visibleTasks?.map((task, index) => {
-            
-            
             return (
               <TaskCard
                 key={index}
