@@ -1,7 +1,4 @@
 import { Meteor } from "meteor/meteor";
-import { Picker } from "meteor/meteorhacks:picker";
-
-const humanTasks = "/API/bpm/humanTask?p=0&c=100&";
 
 const taskMode = {
   available:
@@ -10,10 +7,6 @@ const taskMode = {
   doneTasks:
     "/API/bpm/archivedHumanTask?p=0&c=100&&f=state%3Dcompleted&f=assigned_id%3D",
 };
-
-Picker.route("/post", function (params, req, res, next) {
-  res.end();
-});
 
 Meteor.methods({
   async get_task_list(filter) {
@@ -24,7 +17,7 @@ Meteor.methods({
       return await Meteor.callAsync("get_data", {
         url: taskMode[filter] + bonitaId,
         params: {},
-      }).catch(error=> console.error(error));
+      }).catch((error) => console.error(error));
     }
     console.log("no user id");
     return [];
@@ -34,7 +27,7 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: availableTasks + userId,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_done_tasks({ bonitaUserId }) {
     return await Meteor.call("get_data", {
@@ -46,19 +39,19 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: `/API/bpm/userTask/${taskId}/context`,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_session() {
     return await Meteor.callAsync("get_data", {
       url: `/API/system/session/unusedId`,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_context({ taskId }) {
     return await Meteor.callAsync("get_data", {
       url: `/API/bpm/userTask/${taskId}/context`,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_task({ taskId }) {
     return await Meteor.call("get_data", {
@@ -68,15 +61,15 @@ Meteor.methods({
   },
   async assign_task_to({ user, currentUser, taskId }) {
     if (currentUser) {
-      const assigned_id = user == "me" ? currentUser: user||"";
+      const assigned_id = user == "me" ? currentUser : user || "";
       if (taskId) {
         return Meteor.callAsync("put_data", {
           url: `/API/bpm/userTask/${taskId}`,
           data: {
             assigned_id,
           },
-        }).catch(error=> console.error(error));
-      } else return({ error: "Tarea no asignada", taskId, assigned_id });
+        }).catch((error) => console.error(error));
+      } else return { error: "Tarea no asignada", taskId, assigned_id };
     } else return { error: "no user" };
   },
   set_task_id({ taskId }) {
@@ -94,7 +87,7 @@ Meteor.methods({
       return Meteor.callAsync("get_data", {
         url: link.href,
         params: {},
-      }).catch(error=> console.error(error));
+      }).catch((error) => console.error(error));
     });
     const allRequestData = await Promise.all(requestData);
 
@@ -107,10 +100,12 @@ Meteor.methods({
   async is_proccess_auth(role) {
     const bonitaUserId = Meteor.users.findOne(Meteor.userId({}))?.profile
       ?.bonitaUser;
+
     const memberships = await Meteor.callAsync("get_data", {
       url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
+    
     if (memberships != "error" && memberships != "no token") {
       const roles = await memberships?.map(async (membership) => {
         const roleDescription = await Meteor.callAsync("get_data", {
@@ -127,12 +122,12 @@ Meteor.methods({
     return await Meteor.callAsync("get_data", {
       url: `/API/living/application?p=0&c=100&f=token%3D${token}`,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
   async get_processes() {
     return await Meteor.callAsync("get_data", {
       url: `/API/bpm/process?p=0&c=100`,
       params: {},
-    }).catch(error=> console.error(error));
+    }).catch((error) => console.error(error));
   },
 });

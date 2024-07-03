@@ -16,6 +16,7 @@ import EmployeeHealthServiceResponse from "../pages/bpm/employeeRequest/employee
 import EmployeeHSEApprovation from "../pages/bpm/employeeRequest/employeeHSEApprovation";
 import CredentialApp from "../pages/credentialApp";
 import OtpAdmin from "../pages/otpAdmin";
+import Notifications from "../pages/notifications";
 
 export function getView(view) {
   const views = {
@@ -33,7 +34,8 @@ export function getView(view) {
     healt_service_response: <EmployeeHealthServiceResponse />,
     hse_approvation: <EmployeeHSEApprovation />,
     credentials: <CredentialApp />,
-    otpAdmin: <OtpAdmin />
+    otpAdmin: <OtpAdmin />,
+    notifications: <Notifications />
   };
 
   if (view in views) return views[view];

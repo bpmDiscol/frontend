@@ -30,4 +30,10 @@ import "../imports/api/blackList/blackListCollection";
 import "../imports/api/blackList/blackListMethods";
 import "../imports/api/blackList/blackListPublications";
 
+//alerts
+import "../imports/api/alerts/alertMessages";
+import "../imports/api/alerts/alertsCollection";
+import "../imports/api/alerts/alertsMethods";
+import "../imports/api/alerts/alertsPublications";
+
 Meteor.startup(async () => {});

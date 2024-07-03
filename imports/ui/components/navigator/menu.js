@@ -20,4 +20,9 @@ export const menuItems = [
     label: "Procesos",
     icon: SettingOutlined,
   },
+  {
+    key: "notifications",
+    label: "Notificaciones",
+    icon: SettingOutlined,
+  },
 ];

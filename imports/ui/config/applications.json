@@ -15,7 +15,7 @@
   },
   {
     "processName": "otpAdmin",
-    "restrictions": ["Lider", "Sistemas"],
+    "restrictions": ["admin"],
     "page": "otpAdmin",
     "displayName": "OTP",
     "description": "Elimina OTP de usuarios"

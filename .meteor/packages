@@ -27,3 +27,7 @@ ostrio:files
 meteorhacks:picker
 ostrio:aes-crypto
 accounts-2fa
+meteorhacks:npm
+
+
+npm-container
