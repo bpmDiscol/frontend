@@ -4,6 +4,7 @@ import { Button, Flex, Input, Modal, Result } from "antd";
 import { NotificationsContext } from "../../context/notificationsProvider";
 import { safeLogOut } from "../../misc/userStatus";
 import OTP from "./OTP";
+import { Buffer } from 'node:buffer';
 
 export default function No2fa() {
   const { openNotification } = React.useContext(NotificationsContext);
