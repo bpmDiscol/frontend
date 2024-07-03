@@ -4,13 +4,17 @@ import Axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
+import configData from "../../../data.json";
+
 wrapper(Axios);
 
 const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
-Axios.defaults.baseURL = Meteor.absoluteUrl()
-console.log(Meteor.absoluteUrl("", {replaceLocalhost:true}))
+if (Meteor.isDevelopment)
+  Axios.defaults.baseURL = configData.server.development;
+else Axios.defaults.baseURL = configData.server.production;
+
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
 
