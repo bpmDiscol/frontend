@@ -60,7 +60,6 @@ export default function TaskList({
   }, [taskList]);
 
   React.useEffect(() => {
-    console.log(title);
     if (!searchTerm) setVisibleTasks(taskList);
     if (searchTerm) {
       const filteredIds = checkPartialWordsInObjects(

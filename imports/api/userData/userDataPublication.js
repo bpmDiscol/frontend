@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { userDataCollection } from "./userDataCollection";
 
 Meteor.publish("userData", function () {
-  return userDataCollection.find({});
+  return Meteor.users.find({}, {fields:{services:{twoFactorAuthentication:1}, username:1}});
 });

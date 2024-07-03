@@ -35,11 +35,13 @@ export default function Process() {
   return (
     <div style={{ padding: "20px", width: "100%" }}>
       <h2>Procesos disponibles</h2>
-      {apps.map((application, index) => {
-        return (
-          <AppCard key={Math.random() * 10000} application={application} />
-        );
-      })}
+      <Flex gap={'10px'}>
+        {apps.map((application, index) => {
+          return (
+            <AppCard key={Math.random() * 10000} application={application} />
+          );
+        })}
+      </Flex>
       {!apps?.length && !loading && (
         <Flex style={{ height: "60lvh" }} justify="center" align="center">
           <Empty
@@ -49,7 +51,7 @@ export default function Process() {
               background:
                 "radial-gradient(circle, rgba(9,9,121,1) 0%, rgba(245,245,245,0) 80%)",
               height: "99lvh",
-              backgroundOrigin:"border-box",
+              backgroundOrigin: "border-box",
               opacity: 0.3,
             }}
             description={

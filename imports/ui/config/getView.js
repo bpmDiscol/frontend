@@ -15,6 +15,7 @@ import EmployeeUploadCVFiles from "../pages/bpm/employeeRequest/employeeUploadCV
 import EmployeeHealthServiceResponse from "../pages/bpm/employeeRequest/employeeHealthServiceResponse";
 import EmployeeHSEApprovation from "../pages/bpm/employeeRequest/employeeHSEApprovation";
 import CredentialApp from "../pages/credentialApp";
+import OtpAdmin from "../pages/otpAdmin";
 
 export function getView(view) {
   const views = {
@@ -31,7 +32,8 @@ export function getView(view) {
     upload_cv_files: <EmployeeUploadCVFiles />,
     healt_service_response: <EmployeeHealthServiceResponse />,
     hse_approvation: <EmployeeHSEApprovation />,
-    credentials: <CredentialApp />
+    credentials: <CredentialApp />,
+    otpAdmin: <OtpAdmin />
   };
 
   if (view in views) return views[view];

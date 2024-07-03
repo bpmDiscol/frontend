@@ -92,4 +92,10 @@ Meteor.methods({
 
     return false;
   },
+  delete_otp(_id) {
+    Meteor.users.update(
+      { _id },
+      { $unset: { "services.twoFactorAuthentication": 1 } }
+    );
+  },
 });

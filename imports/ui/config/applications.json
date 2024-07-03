@@ -12,5 +12,13 @@
     "page": "credentials",
     "displayName": "Lista negra",
     "description": "Cedulas de trabajadores no gratos"
+  },
+  {
+    "processName": "otpAdmin",
+    "restrictions": ["Lider", "Sistemas"],
+    "page": "otpAdmin",
+    "displayName": "OTP",
+    "description": "Elimina OTP de usuarios"
   }
+
 ]
