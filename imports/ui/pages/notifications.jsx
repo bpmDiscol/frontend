@@ -1,28 +1,27 @@
 import React from "react";
-import { useTracker } from "meteor/react-meteor-data";
-import { AlertsCollection } from "../../api/alerts/alertsCollection";
+import { AlertNotificationsContext } from "../context/alertNotificationsProvider";
+import { Flex, List } from "antd";
+import { formatDate } from "../misc/formatDate";
 
 export default function Notifications() {
-  const [myMemberships, setMyMemberships] = React.useState();
+  const { alerts } = React.useContext(AlertNotificationsContext);
 
-  const alerts = useTracker(() => {
-    if (myMemberships) {
-      const query = {
-        $or: myMemberships.map((arr) => ({
-          user: { $all: arr },
-        })),
-      };
-      Meteor.subscribe("alerts");
-      return AlertsCollection.find(query).fetch();
-    }
-  });
-  console.log("🚀 ~ alerts ~ alerts:", alerts);
-
-  React.useEffect(() => {
-    Meteor.call("get_my_memberships", (err, resp) => {
-      if (err) console.log(err);
-      else setMyMemberships(resp);
-    });
-  }, []);
-  return <div>Notificarions</div>;
+  return (
+    <Flex vertical align="center" style={{ width: "100%" }}>
+      <List
+        itemLayout="vertical"
+        style={{ width: "100%" }}
+        bordered
+        dataSource={alerts}
+        renderItem={(alert) => (
+          <List.Item>
+            <List.Item.Meta
+              title={alert.message}
+              description={formatDate(alert.date)}
+            />
+          </List.Item>
+        )}
+      />
+    </Flex>
+  );
 }

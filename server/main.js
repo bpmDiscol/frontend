@@ -1,4 +1,6 @@
 import { Meteor } from "meteor/meteor";
+import { Accounts } from 'meteor/accounts-base'
+
 
 //auth
 import "../imports/api/http/authentication";
@@ -35,5 +37,9 @@ import "../imports/api/alerts/alertMessages";
 import "../imports/api/alerts/alertsCollection";
 import "../imports/api/alerts/alertsMethods";
 import "../imports/api/alerts/alertsPublications";
+
+Accounts.config({
+    loginExpirationInDays: 0.5
+})
 
 Meteor.startup(async () => {});

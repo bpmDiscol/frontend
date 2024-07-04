@@ -97,7 +97,7 @@ Meteor.methods({
     });
     return response;
   },
-  async is_proccess_auth(role) {
+  async get_my_memberships() {
     const bonitaUserId = Meteor.users.findOne(Meteor.userId({}))?.profile
       ?.bonitaUser;
 
@@ -105,18 +105,31 @@ Meteor.methods({
       url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
       params: {},
     }).catch((error) => console.error(error));
-    
+
     if (memberships != "error" && memberships != "no token") {
       const roles = await memberships?.map(async (membership) => {
         const roleDescription = await Meteor.callAsync("get_data", {
           url: `/API/identity/role/${membership.role_id}`,
           params: {},
         });
-        return roleDescription?.name;
+
+        const groupDescription = await Meteor.callAsync("get_data", {
+          url: `/API/identity/group/${membership.group_id}`,
+          params: {},
+        });
+
+        return [roleDescription?.name, groupDescription.name];
       });
-      const solvedRoles = await Promise.all(roles);
-      return solvedRoles.includes(role);
+      return await Promise.all(roles);
     }
+  },
+  async is_proccess_auth(role) {
+    const resp = await Meteor.callAsync("get_my_memberships").catch((e) => {
+      console.log(e);
+      return [];
+    });
+    rolesTags = resp.flat(1);
+    return rolesTags.includes(role);
   },
   async get_application(token) {
     return await Meteor.callAsync("get_data", {

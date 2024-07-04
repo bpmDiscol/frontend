@@ -11,6 +11,7 @@ import { safeLogOut } from "../../misc/userStatus";
 import { saveCase, saveTask, saveTaskName } from "../../config/taskManagement";
 import { deleteFile } from "../../misc/filemanagement";
 export default function TaskButtons({ buttons = [], updateList, task }) {
+  console.log("🚀 ~ TaskButtons ~ task:", task)
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);

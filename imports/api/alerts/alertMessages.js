@@ -10,10 +10,7 @@ const postRoutes = Picker.filter(function (req, res) {
   return req.method == "POST";
 });
 
-postRoutes.route("/post", function (params, req, res, next) {
-  console.log("Body: " + JSON.stringify(req.body));
-
-  const { user } = req.body;
-  Meteor.call("create_alert", { user });
+postRoutes.route("/alert", function (params, req, res, next) {
+  Meteor.call("create_alert", req.body);
   res.end();
 });

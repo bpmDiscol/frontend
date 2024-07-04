@@ -7,7 +7,6 @@ export default function Tasks() {
   const [assignedKey, setAssignedKey] = React.useState(Math.random());
   const [doneKey, setDoneKey] = React.useState(Math.random());
 
-  const { Title, Text } = Typography;
 
   const keyGenerators = {
     available: { run: setAvailableKey },

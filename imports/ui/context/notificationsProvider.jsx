@@ -5,16 +5,27 @@ export const NotificationsContext = React.createContext();
 
 export default function NotificationsProvider({ children }) {
   const [api, contextHolder] = notification.useNotification();
-  const openNotification = (type, message, description) => {
+  const openNotification = (
+    type,
+    message,
+    description,
+    btn = undefined,
+    key = undefined,
+    duration = 4
+  ) => {
     api[type]({
       message,
-      description,
+      description: description,
+      btn,
+      key,
       placement: "topRight",
+      showProgress: true,
+      duration,
     });
   };
 
   return (
-    <NotificationsContext.Provider value={{ openNotification }}>
+    <NotificationsContext.Provider value={{ openNotification, api }}>
       {contextHolder}
       {children}
     </NotificationsContext.Provider>
