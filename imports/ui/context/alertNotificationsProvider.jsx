@@ -13,6 +13,7 @@ export default function AlertNotificationsProvider({ children }) {
   const { setView } = React.useContext(MainViewContext);
 
   const [myMemberships, setMyMemberships] = React.useState();
+
   const alerts = useTracker(() => {
     if (myMemberships) {
       const query = {
@@ -21,7 +22,11 @@ export default function AlertNotificationsProvider({ children }) {
         })),
       };
       Meteor.subscribe("alerts");
-      return AlertsCollection.find(query).fetch();
+      const generalAlerts = AlertsCollection.find(query).fetch();
+      const directedAlerts = AlertsCollection.find({
+        directTo: parseInt(sessionStorage.getItem("constId")),
+      }).fetch();
+      return generalAlerts.concat(directedAlerts);
     }
   });
   function doTask(taskName, taskId, caseId) {
@@ -31,31 +36,23 @@ export default function AlertNotificationsProvider({ children }) {
     saveTaskName(taskName);
   }
 
-  function assignTask(taskId) {
-    Meteor.call(
-      "assign_task_to",
-      {
-        user: "me",
-        currentUser: sessionStorage.getItem("constId"),
-        taskId,
-      },
-      (error, resp) => {
-        if (error) {
-          console.log(error);
-          return;
-        }
-        if (resp?.error == "no user") {
-          openNotification(
-            "error",
-            "¡Algo esta mal!",
-            "Revisa tus credenciales nuevamente"
-          );
-          safeLogOut();
-          return;
-        }
-        if (sessionStorage.getItem("currentView") == "tasks") setView("tasks");
-      }
-    );
+  async function assignTask(taskId) {
+    const resp = await Meteor.callAsync("assign_task_to", {
+      user: "me",
+      currentUser: sessionStorage.getItem("constId"),
+      taskId,
+    }).catch((e) => console.log(e));
+
+    if (resp?.error == "no user") {
+      openNotification(
+        "error",
+        "¡Algo esta mal!",
+        "Revisa tus credenciales nuevamente"
+      );
+      safeLogOut();
+      return;
+    }
+    if (sessionStorage.getItem("currentView") == "tasks") setView("tasks");
   }
 
   function markAsViewed(id) {
@@ -73,7 +70,6 @@ export default function AlertNotificationsProvider({ children }) {
   React.useEffect(() => {
     Meteor.call("filter_watched_alerts", alerts, (err, resp) => {
       if (!err && resp?.length) {
-        const key = `open${Date.now()}`;
         resp.forEach((infoView) => {
           const btn = (
             <Space>
@@ -92,7 +88,7 @@ export default function AlertNotificationsProvider({ children }) {
                   size="small"
                   onClick={() => {
                     markAsViewed(infoView._id);
-                    assignTask(infoView.activityId);
+                    assignTask(infoView.taskId);
                   }}
                 >
                   Tomar tarea
@@ -103,8 +99,9 @@ export default function AlertNotificationsProvider({ children }) {
                 size="small"
                 onClick={() => {
                   markAsViewed(infoView._id);
-                  assignTask(infoView.activityId);
-                  doTask(infoView.process, infoView.taskId, infoView.caseId);
+                  assignTask(infoView.taskId).then(
+                    doTask(infoView.process, infoView.taskId, infoView.caseId)
+                  );
                 }}
               >
                 Realizar tarea
@@ -113,7 +110,7 @@ export default function AlertNotificationsProvider({ children }) {
           );
           openNotification(
             "info",
-            "Nueva tarea",
+            infoView.title,
             infoView.message,
             btn,
             infoView._id,
@@ -125,7 +122,7 @@ export default function AlertNotificationsProvider({ children }) {
   }, [alerts]);
 
   return (
-    <AlertNotificationsContext.Provider value={{alerts}}>
+    <AlertNotificationsContext.Provider value={{ alerts }}>
       {children}
     </AlertNotificationsContext.Provider>
   );

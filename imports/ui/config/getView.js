@@ -17,6 +17,9 @@ import EmployeeHSEApprovation from "../pages/bpm/employeeRequest/employeeHSEAppr
 import CredentialApp from "../pages/credentialApp";
 import OtpAdmin from "../pages/otpAdmin";
 import Notifications from "../pages/notifications";
+import EmployeeRequestResponse from "../pages/bpm/employeeRequest/employeeRequestResponse";
+
+import bankCertificate from "./bankCertificate"
 
 export function getView(view) {
   const views = {
@@ -35,9 +38,18 @@ export function getView(view) {
     hse_approvation: <EmployeeHSEApprovation />,
     credentials: <CredentialApp />,
     otpAdmin: <OtpAdmin />,
-    notifications: <Notifications />
-  };
+    notifications: <Notifications />,
+    generate_induction: <EmployeeRequestResponse {...bankCertificate} />,
+    activate_social_security: <EmployeeRequestResponse {...bankCertificate} />,
+    gears_auth: <EmployeeRequestResponse {...bankCertificate} />,
+    biometric_registry: <EmployeeRequestResponse {...bankCertificate} />,
+    RUT: <EmployeeRequestResponse {...bankCertificate} />,
+    bank_certificate: <EmployeeRequestResponse {...bankCertificate} />,
+    base: <EmployeeRequestResponse {...bankCertificate} />,
+    sign_contract: <EmployeeRequestResponse {...bankCertificate} />,
 
+  };
+  
   if (view in views) return views[view];
   return <Loader />;
 }

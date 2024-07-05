@@ -31,6 +31,7 @@ export default function EmployeeHSEApprovation() {
   const { setView, userName } = React.useContext(MainViewContext);
   const { openNotification } = React.useContext(NotificationsContext);
   const [tabView, setTabView] = React.useState();
+  const [warningMessage, setWarningMessage] = React.useState(false);
 
   const [waitToSend, setWaitingToSend] = React.useState(false);
   const [reload, setReload] = React.useState(false);
@@ -106,7 +107,7 @@ export default function EmployeeHSEApprovation() {
     interviews,
     checkeds,
     setCheckeds,
-    healthResponse
+    healthResponse,
   }) {
     return (
       <Component
@@ -140,7 +141,7 @@ export default function EmployeeHSEApprovation() {
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return request();
+    if (buttonResponse == "send") setWarningMessage(true);
   }
 
   function request() {
@@ -164,12 +165,14 @@ export default function EmployeeHSEApprovation() {
         } else {
           if (!res.error) {
             Meteor.call("delete_task", taskId);
-            setView("tasks");
             openNotification(
               "success",
               "¡Buen trabajo!",
               "Los archivos se han enviado satisfactoriamente"
             );
+            setTimeout(() => {
+              setView("tasks");
+            }, 1000);
           }
         }
         setWaitingToSend(false);
@@ -207,7 +210,7 @@ export default function EmployeeHSEApprovation() {
         </Button>
 
         <Popconfirm
-          title="¿Enviar entrevistas?"
+          title="¿Has verificado que estén seleccionados los candidatos?"
           onConfirm={() => handleButtonResponses("send")}
           okText="Por supuesto"
           cancelText="Déjame pensarlo"
@@ -224,6 +227,31 @@ export default function EmployeeHSEApprovation() {
           </Button>
         </Popconfirm>
       </Flex>
+      <Modal
+        title="Verifiquemos antes de enviar..."
+        closable={true}
+        onCancel={() => setWarningMessage(false)}
+        open={warningMessage}
+        onOk={() => setWarningMessage(false)}
+        footer={[
+          <Button onClick={() => request()} key="send">
+            Es correcto
+          </Button>,
+          <Button
+            type="primary"
+            style={{ marginTop: "1rem" }}
+            onClick={() => setWarningMessage(false)}
+            key="wait"
+          >
+            Debo revisar
+          </Button>,
+        ]}
+      >
+        <Result
+          status={checkeds.length == 0 ? "warning" : "info"}
+          title={"Número de seleccionados: " + checkeds.length}
+        />
+      </Modal>
     </Flex>
   );
 }

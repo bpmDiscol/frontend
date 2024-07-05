@@ -245,7 +245,7 @@ Meteor.methods({
       console.log(e);
     }
   },
-  async uploadCVfiles(cvFiles, healthRequests, caseId, taskId) {
+  async uploadCVfiles(cvFiles, healthRequests, caseId, taskId, responsible) {
     const field = ["cvFilesInput"];
     Meteor.callAsync("set_data", { field, value: cvFiles }, caseId).catch(
       (error) => console.error(error)
@@ -255,6 +255,7 @@ Meteor.methods({
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
         health_responseInput: healthRequests,
+        responsible
       },
     }).catch((error) => console.error(error));
   },
@@ -267,6 +268,17 @@ Meteor.methods({
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: { userName },
+    }).catch((error) => console.error(error));
+  },
+  async simpleAcceptResponse(taskName, responsible, caseId, taskId) {
+    const field = [taskName];
+    Meteor.callAsync("set_data", { field, value: "done" }, caseId).catch(
+      (error) => console.error(error)
+    );
+
+    return await Meteor.callAsync("post_data", {
+      url: `/API/bpm/userTask/${taskId}/execution`,
+      data: { response:'done', responsible },
     }).catch((error) => console.error(error));
   },
 });

@@ -182,12 +182,15 @@ export default function EmployeeRequestInterview() {
                 Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
                   if (!err) sessionStorage.removeItem("albous");
                 });
-                setView("tasks");
+
                 openNotification(
                   "success",
                   "¡Buen trabajo!",
                   "Los archivos se han enviado satisfactoriamente"
                 );
+                setTimeout(() => {
+                  setView("tasks");
+                }, 1000);
               }
             }
           }

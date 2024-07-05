@@ -162,12 +162,14 @@ export default function EmployeeCurricullumCheck() {
         } else {
           if (!res.error) {
             Meteor.call("delete_task", taskId);
-            setView("tasks");
             openNotification(
               "success",
               "¡Buen trabajo!",
               "Los archivos se han enviado satisfactoriamente"
             );
+            setTimeout(() => {
+              setView("tasks");
+            }, 1000);
           }
         }
         setWaitingToSend(false);

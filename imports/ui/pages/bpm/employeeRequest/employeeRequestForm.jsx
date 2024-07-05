@@ -130,7 +130,9 @@ export default function EmployeeRequestForm() {
           );
         } else {
           Meteor.call("delete_task", "employeeRequestForm");
-          setView("process");
+          setTimeout(() => {
+            setView("process");
+          }, 1000);
           openNotification(
             "success",
             "¡Buen trabajo!",

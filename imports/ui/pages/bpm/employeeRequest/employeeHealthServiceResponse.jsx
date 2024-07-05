@@ -206,12 +206,14 @@ export default function EmployeeHealthServiceResponse() {
             } else {
               if (!res.error) {
                 Meteor.call("delete_task", taskId);
-                setView("tasks");
                 openNotification(
                   "success",
                   "¡Buen trabajo!",
                   "Los archivos se han enviado satisfactoriamente"
                 );
+                setTimeout(() => {
+                  setView("tasks");
+                }, 1000);
               }
             }
           }
@@ -250,7 +252,7 @@ export default function EmployeeHealthServiceResponse() {
         </Button>
 
         <Popconfirm
-          title="¿Enviar entrevistas?"
+          title="¿Enviar estos resultados?"
           onConfirm={() => handleButtonResponses("send")}
           okText="Por supuesto"
           cancelText="Déjame pensarlo"

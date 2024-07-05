@@ -1,17 +1,11 @@
 import { Button, Flex, Tooltip } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
-import Icon, {
-  CloseCircleFilled,
-  EditFilled,
-  FileAddFilled,
-} from "@ant-design/icons";
 import { NotificationsContext } from "../../context/notificationsProvider";
 import { safeLogOut } from "../../misc/userStatus";
 import { saveCase, saveTask, saveTaskName } from "../../config/taskManagement";
 import { deleteFile } from "../../misc/filemanagement";
 export default function TaskButtons({ buttons = [], updateList, task }) {
-  console.log("🚀 ~ TaskButtons ~ task:", task)
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
@@ -26,10 +20,9 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
   async function deleteCurricullumFromTask(taskId) {
     const data = await Meteor.callAsync("get_task_data", taskId);
     if (data?.length) {
-      const curricullums = data[0].curricullums||[];
+      const curricullums = data[0].curricullums || [];
       curricullums.forEach((curr) => {
         deleteFile("curricullums", curr.fileId);
-
       });
       //TODO: borrar backgrounds
       //const backgrounds = data[0].backgrounds ||[]
@@ -79,7 +72,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       filters: ["available", "assigned"],
       user: "me",
       execute: assignTask,
-      icon: 'transferRight',
+      icon: "transferRight",
       id: "take-task_button",
     },
     dismiss: {
@@ -87,13 +80,13 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       filters: ["available", "assigned"],
       user: "",
       execute: assignTask,
-      icon: 'transferLeft',
+      icon: "transferLeft",
       id: "undone-task-button",
     },
     do: {
       label: "Realizar tarea",
       execute: doTask,
-      icon: 'playActivity',
+      icon: "playActivity",
       id: "do-task",
     },
   };
@@ -112,7 +105,12 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
               }}
               type="default"
               shape="circle"
-              icon={<img src={`/icons/${buttonData[button].icon}.svg`} style={{width:'25px'}}/>}
+              icon={
+                <img
+                  src={`/icons/${buttonData[button].icon}.svg`}
+                  style={{ width: "25px" }}
+                />
+              }
             />
           </Tooltip>
         );

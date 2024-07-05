@@ -228,12 +228,14 @@ export default function EmployeeRequestBackground() {
                 //   console.log(err)
                 // );
 
-                setView("tasks");
                 openNotification(
                   "success",
                   "¡Buen trabajo!",
                   "Los archivos se han enviado satisfactoriamente"
                 );
+                setTimeout(() => {
+                  setView("tasks");
+                }, 1000);
               }
             }
             setWaitingToSend(false);

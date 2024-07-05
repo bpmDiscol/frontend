@@ -224,6 +224,7 @@ export default function EmployeeUploadCVFiles() {
           healthRequests,
           getCase(),
           getTask(),
+          userName,
           (err, res) => {
             setWaitingToSend(false);
             if (err) console.log(err);
@@ -237,8 +238,9 @@ export default function EmployeeUploadCVFiles() {
             } else {
               if (!res.error) {
                 Meteor.call("delete_task", taskId);
-                setView("tasks");
-                openNotification(
+                setTimeout(() => {
+                  setView("tasks");
+                }, 1000);                openNotification(
                   "success",
                   "¡Buen trabajo!",
                   "Los archivos se han enviado satisfactoriamente"

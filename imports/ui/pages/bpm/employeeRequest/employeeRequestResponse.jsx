@@ -15,7 +15,11 @@ import { requestEmployeeCollection } from "../../../../api/requestEmployeData/re
 import SpinningLoader from "../../../components/spinningLoader";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 
-export default function EmployeeRequestCurricullums() {
+export default function EmployeeRequestResponse({
+  tabTitles,
+  tabContents,
+  request,
+}) {
   const { Text, Title } = Typography;
   const { setView, userName } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
@@ -43,66 +47,38 @@ export default function EmployeeRequestCurricullums() {
   function LoadPage({ Component }) {
     return <Component requestEmployee={requestEmployeeData} />;
   }
-  const tabTitles = [
-    { label: "Datos del cargo", value: 0 },
-    { label: "Vehiculo", value: 1 },
-    { label: "Requerimientos", value: 2 },
-    { label: "Equipo necesario", value: 3 },
-    { label: "Observaciones", value: 4 },
-    { label: "Curricullums", value: 5 },
-  ];
-  const tabContents = [
-    PositionGereralities,
-    PositionVehicle,
-    PositionRequirements,
-    PositionGears,
-    PositionObservations,
-    PositionCurricullums,
-  ];
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return request();
+    if (buttonResponse == "send") return callToAction();
   }
 
-  function request() {
-    setWaitingToSend(true);
-    Meteor.call(
-      "send_curricullums",
-      getCase(),
-      getTask(),
-      userName,
-      getTaskName(),
-      (error, response) => {
-        setWaitingToSend(false);
-        if (error) {
-          console.log(error);
-          return;
-        }
-        if (response == "no token") {
-          openNotification(
-            "Error",
-            "Algo ha salido mal",
-            "Un error del servidor obliga a que ingreses nuevamente"
-          );
-          safeLogOut();
-        } else {
-          if (!response?.error) {
-            Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
-              if (!err) sessionStorage.removeItem("albous");
-            });
-            openNotification(
-              "success",
-              "¡Buen trabajo!",
-              "Los archivos se han enviado satisfactoriamente"
-            );
-            setTimeout(() => {
-              setView("tasks");
-            }, 1000);
-          }
-        }
-      }
-    );
+  async function callToAction() {
+    setWaitingToSend(true)
+    const response = await request({userName});
+    setWaitingToSend(false)
+    if (response == "no token") {
+      openNotification(
+        "Error",
+        "Algo ha salido mal",
+        "Un error del servidor obliga a que ingreses nuevamente"
+      );
+      safeLogOut();
+      return;
+    }
+    if (!response?.error) {
+      Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
+        if (!err) sessionStorage.removeItem("albous");
+      });
+      openNotification(
+        "success",
+        "¡Buen trabajo!",
+        "Los archivos se han enviado satisfactoriamente"
+      );
+      setTimeout(() => {
+        setView("tasks");
+      }, 1000);
+    }
   }
 
   return (

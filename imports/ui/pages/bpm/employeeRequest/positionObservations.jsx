@@ -38,7 +38,7 @@ export default function PositionObservations({ requestEmployee }) {
 
   return (
     <Flex style={{ width: "100%" }} justify="center">
-      {accordeonData.length > 0 ? (
+      {accordeonData?.length > 0 ? (
         <Collapse
           accordion
           style={{ width: "100%" }}

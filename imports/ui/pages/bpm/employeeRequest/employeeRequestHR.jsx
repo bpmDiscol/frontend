@@ -102,8 +102,9 @@ export default function EmployeeRequestHR() {
               response?.error ? "Ha ocurrido un error" : "¡Buenas noticias!",
               response?.message
             );
-            setView("tasks");
-          }
+            setTimeout(() => {
+              setView("tasks");
+            }, 1000);          }
         }
       }
     );
