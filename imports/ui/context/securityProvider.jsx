@@ -8,6 +8,7 @@ import {
   safeLogOut,
 } from "../misc/userStatus";
 import No2fa from "../components/publicLogin/no2fa";
+import { NotificationsContext } from "./notificationsProvider";
 
 export const SecurityContext = React.createContext();
 
@@ -16,6 +17,8 @@ export default function SecurityProvider({ children, publicPage }) {
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
   const [delayedUser, setDelayedUser] = React.useState(false);
   const [enable2fa, setEnable2fa] = React.useState(false);
+  const { openNotification } = React.useContext(NotificationsContext);
+
   React.useEffect(() => {
     function detectVisibility() {
       if (document.visibilityState == "hidden") {
@@ -36,10 +39,36 @@ export default function SecurityProvider({ children, publicPage }) {
     if (!loggedUser) setEnable2fa(false);
     if (loggedUser) {
       Meteor.call("has2fa", (_, resp) => setEnable2fa(resp));
-
       document.addEventListener("visibilitychange", detectVisibility);
+      window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+        safeLogOut();
+      });
+      
     } else document.removeEventListener("visibilitychange", detectVisibility);
+
+   
+
   }, [loggedUser]);
+
+  React.useEffect(()=>{
+    window.addEventListener("offline", () => {
+      openNotification(
+        "error",
+        "Sin conexión a internet",
+        "Esperando estar nuevamente en línea"
+      );
+      safeLogOut();
+    });
+
+    window.addEventListener("online", () => {
+      openNotification(
+        "success",
+        "Sistemas en linea",
+      );
+    });
+
+  },[])
 
   if (isLoadingLoggedUser) return <Loader />;
   return (

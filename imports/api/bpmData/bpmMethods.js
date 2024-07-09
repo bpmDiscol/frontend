@@ -117,7 +117,6 @@ Meteor.methods({
           url: `/API/identity/group/${membership.group_id}`,
           params: {},
         });
-
         return [roleDescription?.name, groupDescription.name];
       });
       return await Promise.all(roles);
@@ -143,4 +142,5 @@ Meteor.methods({
       params: {},
     }).catch((error) => console.error(error));
   },
+
 });

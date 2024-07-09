@@ -1,30 +1,28 @@
 import React from "react";
-import PositionGereralities from "./positionGereralities";
-import PositionVehicle from "./positionVehicle";
-import PositionRequirements from "./positionRequirements";
-import PositionGears from "./positionGears";
-import PositionObservations from "./positionObservations";
 import { MainViewContext } from "../../../context/mainViewProvider";
 import { Button, Flex, Popconfirm, Segmented, Typography } from "antd";
 import { RotateLeftOutlined, SendOutlined } from "@ant-design/icons";
 import { safeLogOut } from "../../../misc/userStatus";
-import PositionCurricullums from "./positionCurricullums";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
+import { request } from "../configPages/simpleRequest";
 
 export default function EmployeeRequestResponse({
   tabTitles,
   tabContents,
-  request,
+  subtitle,
+  tabNumber,
+  buttons,
 }) {
   const { Text, Title } = Typography;
+  const { openNotification } = React.useContext(NotificationsContext);
   const { setView, userName } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [waitToSend, setWaitingToSend] = React.useState(false);
-  const { openNotification } = React.useContext(NotificationsContext);
+  const [reload, setReload] = React.useState(false);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
@@ -39,14 +37,36 @@ export default function EmployeeRequestResponse({
       return requestEmployee;
     }
   });
+  console.log(
+    "🚀 ~ requestEmployeeData ~ requestEmployeeData:",
+    requestEmployeeData
+  );
+
+  function reloadPage(index) {
+    const key = Math.random();
+    setTabView(
+      <LoadPage newKey={key} Component={tabContents[index]} buttons={buttons} />
+    );
+  }
+
+  function LoadPage({ Component, newKey }) {
+    return (
+      requestEmployeeData && (
+        <Component
+          key={newKey}
+          requestEmployee={requestEmployeeData}
+          buttons={buttons}
+        />
+      )
+    );
+  }
 
   React.useEffect(() => {
-    setTabView(<LoadPage Component={tabContents[tabContents.length - 1]} />);
-  }, []);
-
-  function LoadPage({ Component }) {
-    return <Component requestEmployee={requestEmployeeData} />;
-  }
+    if (!reload && requestEmployeeData) {
+      setReload(true);
+      reloadPage(tabNumber);
+    }
+  }, [requestEmployeeData]);
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
@@ -54,9 +74,9 @@ export default function EmployeeRequestResponse({
   }
 
   async function callToAction() {
-    setWaitingToSend(true)
-    const response = await request({userName});
-    setWaitingToSend(false)
+    setWaitingToSend(true);
+    const response = await request({ userName });
+    setWaitingToSend(false);
     if (response == "no token") {
       openNotification(
         "Error",
@@ -85,17 +105,15 @@ export default function EmployeeRequestResponse({
     <Flex id="employee-request-container" vertical gap={"10px"}>
       <Flex vertical wrap>
         <Title level={1}>
-          Requisición de personal<Text strong>(Cargar curricullums)</Text>
+          Requisición de personal<Text strong>({subtitle})</Text>
         </Title>
       </Flex>
 
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
-          defaultValue={tabContents.length - 1}
-          onChange={(value) =>
-            setTabView(<LoadPage Component={tabContents[value]} />)
-          }
+          defaultValue={tabNumber}
+          onChange={(value) => reloadPage(value)}
         />
         <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>
@@ -110,10 +128,10 @@ export default function EmployeeRequestResponse({
         </Button>
 
         <Popconfirm
-          title="¿Enviar los Curricullums?"
+          title="¿La tarea ha sido completada?"
           onConfirm={() => handleButtonResponses("send")}
           okText="Por supuesto"
-          cancelText="Déjame pensarlo"
+          cancelText="Espera, aun no"
         >
           <Button
             loading={waitToSend}
@@ -123,7 +141,7 @@ export default function EmployeeRequestResponse({
             iconPosition="end"
             id="approve-button"
           >
-            Enviar
+            Realizado
           </Button>
         </Popconfirm>
       </Flex>

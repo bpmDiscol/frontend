@@ -13,6 +13,7 @@
     "certificado_caja_de_compensacion",
     "certificado_afp",
     "certificado_cesantias",
-    "certificado_rut"
+    "certificado_rut",
+    "certificado_banco"
   ]
   

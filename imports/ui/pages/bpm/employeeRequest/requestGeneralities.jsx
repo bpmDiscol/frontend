@@ -25,6 +25,7 @@ export default function RequestGeneralities({
 }) {
   const [isBonus, setIsBonus] = React.useState();
   const [isUndefinedTermContract, setUndefinedTerm] = React.useState(false);
+  const [area, setArea] = React.useState();
 
   React.useEffect(() => {
     if (requestData) {
@@ -32,6 +33,29 @@ export default function RequestGeneralities({
       setIsBonus(requestData?.isBonus);
     }
   }, [requestData]);
+
+  async function getMyAreaOptions() {
+    const memberships = await Meteor.callAsync("get_my_memberships")
+      .then((resp) => resp)
+      .catch(() => []);
+    if (memberships?.length) {
+      if (memberships.flat(1).includes("director")) return areaProyectOptions;
+      const flatMemberships = memberships.flat(1);
+      return flatMemberships
+        .filter((item, index) => flatMemberships.indexOf(item) === index)
+        .filter((item) => !["Lider", "member", "digitador"].includes(item))
+        .map((group) => {
+          return {
+            label: group.replace(/_/g, " "),
+            value: group.replace(/_/g, " "),
+          };
+        });
+    }
+  }
+
+  React.useEffect(() => {
+    getMyAreaOptions().then((resp) => setArea(resp));
+  }, []);
 
   return (
     <Form>
@@ -70,10 +94,10 @@ export default function RequestGeneralities({
           </Form.Item>
           <Form.Item label="Area/proyecto">
             <Select
+              loading={!area}
               id="area_proyect"
               status={fiterErrors("area_proyect")}
-              defaultValue={requestData?.area_proyect}
-              options={areaProyectOptions}
+              options={area}
               onChange={(value) => update("area_proyect", value)}
             />
           </Form.Item>
@@ -109,7 +133,7 @@ export default function RequestGeneralities({
           <Form.Item label="Salario" name={"salary"}>
             <InputNumber
               stringMode
-              type="number" 
+              type="number"
               min={1}
               id="salary"
               status={fiterErrors("salary")}
@@ -149,6 +173,7 @@ export default function RequestGeneralities({
                   type="number"
                   onChange={(e) => update("duration.cuantity", e.target.value)}
                 />
+                
                 <Select
                   options={timeOptions}
                   id="durationTimePart"

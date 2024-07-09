@@ -38,6 +38,9 @@ import "../imports/api/alerts/alertsCollection";
 import "../imports/api/alerts/alertsMethods";
 import "../imports/api/alerts/alertsPublications";
 
+//sql
+import "../imports/api/bdmData/bdmMethods"
+
 Accounts.config({
     loginExpirationInDays: 0.5
 })

@@ -19,7 +19,14 @@ import OtpAdmin from "../pages/otpAdmin";
 import Notifications from "../pages/notifications";
 import EmployeeRequestResponse from "../pages/bpm/employeeRequest/employeeRequestResponse";
 
-import bankCertificate from "./bankCertificate"
+import generateInduction from "../pages/bpm/configPages/generateInduction"
+import biometricRegistry from "../pages/bpm/configPages/biometricRegistry"
+import watchRut from "../pages/bpm/configPages/watchRUT"
+import socialSecurity from "../pages/bpm/configPages/socialSecurity"
+import bankCertificate from "../pages/bpm/configPages/bankCertificate"
+import nominaBase from "../pages/bpm/configPages/nominaBase"
+import gearsAuth from "../pages/bpm/configPages/gearsAuth"
+
 
 export function getView(view) {
   const views = {
@@ -39,14 +46,14 @@ export function getView(view) {
     credentials: <CredentialApp />,
     otpAdmin: <OtpAdmin />,
     notifications: <Notifications />,
-    generate_induction: <EmployeeRequestResponse {...bankCertificate} />,
-    activate_social_security: <EmployeeRequestResponse {...bankCertificate} />,
-    gears_auth: <EmployeeRequestResponse {...bankCertificate} />,
-    biometric_registry: <EmployeeRequestResponse {...bankCertificate} />,
-    RUT: <EmployeeRequestResponse {...bankCertificate} />,
-    bank_certificate: <EmployeeRequestResponse {...bankCertificate} />,
-    base: <EmployeeRequestResponse {...bankCertificate} />,
-    sign_contract: <EmployeeRequestResponse {...bankCertificate} />,
+    generate_induction: <EmployeeRequestResponse {...generateInduction} subtitle={"Generar inducciones"} />,
+    activate_social_security: <EmployeeRequestResponse {...socialSecurity} subtitle={"Activar seguridad social"}/>,
+    gears_auth: <EmployeeRequestResponse {...gearsAuth} subtitle={'Autorizar equipo necesario'}/>,
+    biometric_registry: <EmployeeRequestResponse {...biometricRegistry} subtitle={'Nuevos registros biométricos'} />,
+    RUT: <EmployeeRequestResponse {...watchRut} subtitle={"RUT nuevos empleados"} />,
+    bank_certificate: <EmployeeRequestResponse {...bankCertificate} subtitle={"Certificados cuenta bancaria"} />,
+    base: <EmployeeRequestResponse {...nominaBase} subtitle={"Nueva base de nómina"} />,
+    sign_contract: <EmployeeRequestResponse {...generateInduction} subtitle={"Firma de contratos"} />,
 
   };
   

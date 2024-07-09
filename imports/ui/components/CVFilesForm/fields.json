@@ -8,12 +8,12 @@
     "field": "certificado_basica_secundaria"
   },
   {
-    "title": "Diploma/Acta de grado bachiller",
-    "field": "estudios_superiores"
+    "title": "Diploma estudios superiores",
+    "field": "certificado_estudios_superiores"
   },
   {
-    "title": "Diploma estudios superiores",
-    "field": "certificado_basica_secundaria"
+    "title": "Certificados empleos anteriores",
+    "field": "certificado_empleos_anteriores"
   },
   {
     "title": "Tarjeta profesional",
@@ -52,11 +52,15 @@
     "field": "certificado_afp"
   },
   {
-    "title": "Soporte afiliacion  Cesantias",
-    "field": "certificado_cesantias"
+    "title": "Soporte afiliacion Cesantias",
+    "field": "soporte_cesantias"
   },
   {
     "title": "Copia de Registro unico tributario RUT ",
     "field": "certificado_rut"
+  },
+  {
+    "title": "Certificado de cuenta bancaria ",
+    "field": "certificado_banco"
   }
 ]

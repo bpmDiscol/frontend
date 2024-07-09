@@ -7,13 +7,7 @@ export default function MainViewProvider({ children, defaultView }) {
   const [view, setNewView] = React.useState();
   const [userName, setUserName] = React.useState("");
   const [newKey, setNewKey] = React.useState(0);
-  function disableBack() {
-    window.history.forward();
-  }
-  setTimeout(disableBack(), 0);
-  window.onbeforeunload = function () {
-    null;
-  };
+
 
   function setView(newView) {
     window.sessionStorage.setItem("currentView", newView);

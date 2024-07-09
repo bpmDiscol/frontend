@@ -3,12 +3,10 @@ import {
   backgroundCollection,
   curricullumsCollection,
 } from "./filesCollection";
-import { curricullumCollection } from "../curricullums/curricullumCollection";
 
 const collection = {
   background: backgroundCollection,
   curricullums: curricullumsCollection,
-  curricullum: curricullumCollection,
 };
 
 Meteor.methods({

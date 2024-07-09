@@ -8,10 +8,10 @@ export default function NotificationsProvider({ children }) {
   const openNotification = (
     type,
     message,
-    description,
+    description = "",
     btn = undefined,
     key = undefined,
-    duration = 4
+    duration = 3
   ) => {
     api[type]({
       message,
