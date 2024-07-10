@@ -17,12 +17,12 @@ export default function Workshop() {
   return (
     <Flex
       vertical
-      style={{ height: "100vh", width: "100vw", overflow: "hidden" }}
+      style={{ height: "100dvh", width: "100dvw" }}
     >
       {/* Header */}
       <Header />
       {/* Body */}
-      <Flex style={{ height: "calc(100lvh - 40px)" }}>
+      <Flex style={{ height: "calc(100dvh - 40px)", width:'100dvw' }}>
         {/* Drawer */}
         <Flex
           vertical
@@ -62,7 +62,7 @@ export default function Workshop() {
         {/* Main view */}
         <Flex
           id="main-view"
-          style={{ flex: 1, overflowX: "auto", scrollbarGutter:'stable both-edges', paddingLeft: "1%" }}
+          style={{ flex:1, overflow:'auto', paddingLeft: "1%" }}
         >
           {view}
         </Flex>

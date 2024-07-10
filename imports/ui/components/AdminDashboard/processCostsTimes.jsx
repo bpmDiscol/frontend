@@ -7,11 +7,12 @@ import "../transition/transition.css";
 import { getAreasTimes } from "./getAreasTimes";
 import { getTotalElapsedTime } from "./getTotalElapsedTimes";
 import { fillEmptySpaces } from "./fillEmptySpaces";
-import { sumaArrayValues } from "./sumaArrayValues";
+import { getCosts } from "./getCosts";
 
-export default function ProcessTimesChart({ requestProcess }) {
+export default function ProcessCostsChart({ requestProcess }) {
   const [processMedia, setProcessMedia] = React.useState();
   const [procesedTimes, setProcesedTimes] = React.useState();
+  const [processedCosts, setProcessedCosts] = React.useState();
   const [areasTimes, setAreasTimes] = React.useState();
   const [yearToView, setYearToView] = React.useState("2024");
   const [monthToView, setMonthToview] = React.useState();
@@ -25,7 +26,12 @@ export default function ProcessTimesChart({ requestProcess }) {
     },
     yaxis: {
       title: {
-        text: timeOperator.label,
+        text: "Millones",
+      },
+      labels: {
+        formatter: function (val) {
+          return val;
+        },
       },
     },
 
@@ -33,6 +39,7 @@ export default function ProcessTimesChart({ requestProcess }) {
       id: "mediaTimes",
       height: 350,
       type: "line",
+      stacked: true,
       events: {
         click: function (e, chart, config) {
           setMonthToview(monthNames[Math.max(config.dataPointIndex, 0)]);
@@ -48,24 +55,42 @@ export default function ProcessTimesChart({ requestProcess }) {
       },
       toolbar: { show: false },
     },
+    stroke: {
+      curve: "stepline",
+    },
     dataLabels: {
       enabled: true,
+      formatter: function (val) {
+        return `${parseFloat(val).toFixed(1)} M`;
+      },
     },
-    stroke: {
-      curve: "smooth",
+    plotOptions: {
+      bar: {
+        columnWidth: "70%",
+        barHeight: "70%",
+        dataLabels: {
+          enabled: true,
+          total: {
+            enabled: true,
+            style: {
+              fontWeight: 500,
+            },
+            formatter: function (val) {
+              return `${parseFloat(val).toFixed(1)} M`;
+            },
+          },
+        },
+      },
     },
     title: {
-      text: "Tiempo medio de todos los procesos",
+      text: "Costos de procesos",
       align: "left",
-    },
-    markers: {
-      size: 1,
     },
     tooltip: {
       shared: false,
       y: {
         formatter: function (val) {
-          return `${val.toFixed(2)} ${timeOperator.label}`;
+          return `${val.toFixed(2)} Millones`;
         },
       },
     },
@@ -73,20 +98,19 @@ export default function ProcessTimesChart({ requestProcess }) {
   const mediaAreasOptions = {
     xaxis: {
       categories: areasTimes ? areasTimes.areas : [""],
-      title: {
-        text: timeOperator.label,
-      },
     },
     yaxis: {
-      title: {
-        text: "Areas",
+      labels: {
+        formatter: function (val) {
+          return val;
+        },
       },
     },
     chart: {
       id: "areaTimes",
       type: "bar",
       height: 500,
-      stacked:true,
+      stacked: true,
       dropShadow: {
         enabled: true,
         color: "#000",
@@ -98,29 +122,31 @@ export default function ProcessTimesChart({ requestProcess }) {
     },
     plotOptions: {
       bar: {
-        horizontal: true,
+        columnWidth: "70%",
+        barHeight: "70%",
         dataLabels: {
           total: {
             enabled: true,
-            offsetX: 0,
             style: {
-              fontSize: '13px',
-              fontWeight: 900
-            }
-          }
+              fontWeight: 500,
+            },
+            formatter: function (val) {
+              return val.toFixed(2) + "M";
+            },
+          },
         },
       },
     },
     legend: { show: false },
     title: {
-      text: `Tiempo medio por area - ${monthToView}`,
+      text: `Costo por area - ${monthToView}`,
       align: "left",
     },
     tooltip: {
       shared: false,
       y: {
         formatter: function (val) {
-          return `${val.toFixed(2)} ${timeOperator.label}`;
+          return `${val} Millones`;
         },
       },
     },
@@ -146,20 +172,13 @@ export default function ProcessTimesChart({ requestProcess }) {
     );
   }, [procesedTimes, yearToView, monthToView]);
 
- 
-
+  React.useEffect(() => {
+    setProcessedCosts(getCosts(procesedTimes, yearToView));
+  }, [procesedTimes, yearToView]);
   return (
     <Flex style={{ overflowX: "hidden" }} gap={10}>
       <Card bordered style={{ border: "1px solid" }}>
         <Flex gap={"20px"}>
-          <Select
-            options={timeOptions}
-            defaultValue={60}
-            onChange={(_, option) => {
-              setTimeOperator(option);
-            }}
-          />
-
           {procesedTimes && (
             <Select
               options={Object.keys(procesedTimes).map((year) => {
@@ -174,33 +193,28 @@ export default function ProcessTimesChart({ requestProcess }) {
             />
           )}
         </Flex>
-        <Flex >
+        <Flex>
           <Flex gap={20}>
-            {processMedia && (
+            {processedCosts && (
               <Chart
-                type="line"
+                type="area"
                 options={mediaTimesOptions}
                 series={[
                   {
                     name: "Terminadas",
-                    data: fillEmptySpaces(processMedia.finisheds),
+                    data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
+                    // data: fillEmptySpaces(processedCosts.monthlyCost),
                   },
                   {
-                    name: "En espera",
-                    data: fillEmptySpaces(processMedia.unfinisheds),
-                  },
-                  {
-                    name: "Total transcurrido",
-                    data: sumaArrayValues(
-                      fillEmptySpaces(processMedia.finisheds),
-                      fillEmptySpaces(processMedia.unfinisheds)
-                    ),
+                    name: "En proceso",
+                    // data: fillEmptySpaces([0,,4,5,3]),
+                    data: fillEmptySpaces(processedCosts.unfinishedMonthlyCost),
                   },
                 ]}
                 style={{ width: "40dvw" }}
               />
             )}
-            {!processMedia && <Spin style={{ width: "500px" }} />}
+            {!processedCosts && <Spin style={{ width: "500px" }} />}
             {areasTimes && (
               <Card className={"showme"} style={{ border: "1px solid" }}>
                 <Chart
@@ -210,13 +224,14 @@ export default function ProcessTimesChart({ requestProcess }) {
                     {
                       name: "Terminadas",
                       data: areasTimes
-                        ? fillEmptySpaces(areasTimes.finishedMedias)
-                        : [""],
+                        ? fillEmptySpaces([1.332, 4.345])
+                        : // ? fillEmptySpaces(areasTimes.finishedCosts)
+                          [""],
                     },
                     {
                       name: "En espera",
                       data: areasTimes
-                        ? fillEmptySpaces(areasTimes.unfinishedMedias)
+                        ? fillEmptySpaces(areasTimes.unfinishedCosts)
                         : [""],
                     },
                   ]}
