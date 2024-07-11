@@ -1,40 +1,178 @@
 import React from "react";
-import calcularTiempoPromedioPorActividad from "./tiempoMedioPorActividad";
-import monthNames from "./monthNames.json";
+import { Card, Flex, Select, Spin } from "antd";
+import Chart from "react-apexcharts";
+import { fillEmptySpaces } from "./fillEmptySpaces";
+
+import "./apex.css";
+
+import {
+  getContractsByDate,
+  getContratationDates,
+  getProcessLine,
+} from "./contratations";
+import StepsLines from "./steps";
 
 export default function ProcessRequests({ requestProcess, approvations }) {
-  const [data, setData] = React.useState();
-  console.log("🚀 ~ ProcessRequests ~ data:", data)
+  const [dates, setDates] = React.useState();
+  const [currentDate, setCurrentDate] = React.useState();
+  const [contracts, setContracts] = React.useState();
+  const [processLines, setProcessLines] = React.useState();
+  const [key, setKey] = React.useState(0);
+  React.useEffect(() => {
+    setDates(getContratationDates(approvations, requestProcess));
+  }, [approvations, requestProcess]);
 
   React.useEffect(() => {
-    const data = calcularTiempoPromedioPorActividad(
+    if (dates?.length) {
+      const contracts_ = getContractsByDate(
+        currentDate || dates[0].value,
+        approvations,
+        requestProcess
+      );
+      setContracts(contracts_);
+      setCurrentDate(dates[0].value);
+    }
+  }, [currentDate, dates, approvations, requestProcess]);
+
+  function setArea(area) {
+    if (!area) return;
+    const processLines_ = getProcessLine(
+      area,
+      currentDate,
       approvations,
       requestProcess
     );
-    const contrataciones = data?.contrataciones;
-    if (contrataciones) {
-      let areas = [];
-      let candidates = [];
-      let finales = [];
+    setProcessLines(processLines_);
+  }
 
-      const areaList = Object.keys(contrataciones);
-      areaList.forEach((area) => {
-        areas.push(area);
-        const fecha = Object.keys(contrataciones[area]);
-        fecha.forEach((fechaStr) => {
-          fecha.push(fechaStr);
-          candidates.push(contrataciones[area][fechaStr].candidates);
-          finales.push(contrataciones[area][fechaStr].final);
-        });
-      });
+  const contractOptions = {
+    xaxis: {
+      categories: Object.keys(contracts || {}),
+      labels: {
+        style: {
+          fontSize: "16px",
+          cssClass: "selectableBar",
+        },
+      },
+    },
 
-      setData({
-        areas,
-        candidates,
-        finales,
-      });
-    }
-  }, [approvations, requestProcess]);
+    chart: {
+      id: "mediaTimes",
+      height: 500,
+      type: "line",
+      stacked: true,
+      stackType: "100%",
+      events: {
+        xAxisLabelClick: function (_, _, config) {
+          if (config.labelIndex < 0) return;
+          const area = config.globals.labels[config.labelIndex];
 
-  return <div>{JSON.stringify(approvations)}</div>;
+          setArea(area);
+          setKey(Math.random());
+        },
+
+        click: function (_, _, config) {
+          if (config.dataPointIndex < 0) return;
+          const area = config.globals.labels[config.dataPointIndex];
+          setArea(area);
+          setKey(Math.random());
+        },
+      },
+      dropShadow: {
+        enabled: true,
+        color: "#000",
+        top: 18,
+        left: 7,
+        blur: 10,
+        opacity: 0.2,
+      },
+      toolbar: { show: false },
+    },
+    stroke: {
+      curve: "stepline",
+    },
+    dataLabels: {
+      enabled: true,
+    },
+    plotOptions: {
+      bar: {
+        columnWidth: "70%",
+        barHeight: "70%",
+        horizontal: false,
+        dataLabels: {
+          enabled: true,
+        },
+      },
+    },
+    title: {
+      text: "Contrataciones por area",
+      align: "left",
+    },
+    tooltip: {
+      shared: false,
+      y: {},
+    },
+  };
+
+  function separateContract(contracts) {
+    let candidates = [];
+    let finales = [];
+    const areas = Object.keys(contracts);
+    areas.forEach((area) => {
+      candidates.push(contracts[area].candidates[0]);
+      finales.push(contracts[area].finales[0]);
+    });
+    return {
+      candidates,
+      finales,
+    };
+  }
+
+  return (
+    <Card bordered style={{ border: "1px solid" }}>
+      {!contracts && <Spin style={{ width: "500px" }} />}
+      {contracts && (
+        <Flex style={{ height: "55dvh" }}>
+          <Flex vertical>
+            <Flex>
+              {dates?.length && (
+                <Select
+                  options={dates}
+                  defaultValue={dates[0].value}
+                  onChange={(value) => setCurrentDate(value)}
+                />
+              )}
+            </Flex>
+            <Flex style={{ width: "40dvw", height: "40dvh" }}>
+              <Chart
+                type="bar"
+                options={contractOptions}
+                series={[
+                  {
+                    name: "Candidatos",
+                    data: fillEmptySpaces(
+                      separateContract(contracts).candidates
+                    ),
+                    //   data: fillEmptySpaces([20, 55]),
+                  },
+                  {
+                    name: "Contratados",
+                    data: fillEmptySpaces(separateContract(contracts).finales),
+                    //   data: fillEmptySpaces([3, 5]),
+                  },
+                ]}
+                width={400}
+                height={300}
+              />
+            </Flex>
+          </Flex>
+          <Flex style={{ flex: 1 }} justify="center">
+            {processLines && (
+              <StepsLines key={key} processLines={processLines} />
+            )}
+          </Flex>
+        </Flex>
+      )}
+    </Card>
+  );
 }

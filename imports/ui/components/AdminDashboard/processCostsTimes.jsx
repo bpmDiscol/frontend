@@ -90,7 +90,7 @@ export default function ProcessCostsChart({ requestProcess }) {
       shared: false,
       y: {
         formatter: function (val) {
-          return `${val.toFixed(2)} Millones`;
+          return `${parseFloat(val).toFixed(2)} Millones`;
         },
       },
     },

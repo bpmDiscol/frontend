@@ -29,6 +29,7 @@ export default function AlertNotificationsProvider({ children }) {
       return generalAlerts.concat(directedAlerts);
     }
   });
+  
   function doTask(taskName, taskId, caseId) {
     setView(taskName);
     saveTask(taskId);

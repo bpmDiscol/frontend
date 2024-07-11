@@ -11,6 +11,8 @@ export default function calcularTiempoPromedioPorActividad(
   const tiemposMes = {};
   const contrataciones = {};
 
+
+
   approvations?.forEach((approvationTaskList, index) => {
     const requestArea = requestProcess[index].requestArea;
 
