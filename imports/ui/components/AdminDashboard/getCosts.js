@@ -1,7 +1,8 @@
 import monthNames from "./monthNames.json";
 
 export function getCosts(procesedTimes, year) {
-  if (!procesedTimes) return;
+  if(!procesedTimes) return
+  if (!Object.keys(procesedTimes)?.length) return;
   const monthlyCost = [];
   const unfinishedMonthlyCost = [];
 
@@ -14,8 +15,9 @@ export function getCosts(procesedTimes, year) {
       cost += thisMonth[area].cost;
       unfinishedCost += thisMonth[area].unfinishedCost;
     });
-    monthlyCost[monthNames.indexOf(monthName)] = cost/1000000;
-    unfinishedMonthlyCost[monthNames.indexOf(monthName)] = unfinishedCost/1000000;
+    monthlyCost[monthNames.indexOf(monthName)] = cost / 1000000;
+    unfinishedMonthlyCost[monthNames.indexOf(monthName)] =
+      unfinishedCost / 1000000;
   });
   return {
     monthlyCost,

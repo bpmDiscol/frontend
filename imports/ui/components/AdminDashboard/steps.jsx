@@ -27,7 +27,7 @@ export default function StepsLines({ processLines }) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [currentSteps, setCurrentSteps] = React.useState();
   const currentData = processLines[currentPage - 1];
-
+  console.log("🚀 ~ StepsLines ~ currentData:", currentData);
   const { Text } = Typography;
   React.useEffect(() => {
     const currentSteps = currentData.steps.map((item) => {
@@ -48,7 +48,7 @@ export default function StepsLines({ processLines }) {
 
   return (
     processLines && (
-      <Flex vertical gap={10} className="showme">
+      <Flex vertical gap={10} className="showme" style={{ flex: 1 }}>
         <Flex gap={10}>
           <Flex
             justify="center"
@@ -79,14 +79,15 @@ export default function StepsLines({ processLines }) {
             align="center"
             vertical
             style={{
+              flex: 1,
               borderRadius: "10px",
               border: "1px solid",
               padding: "5px 15px",
             }}
           >
-            <Text>Vacantes solicitadas</Text>
+            <Text>Solicitud</Text>
             <Text strong style={{ fontSize: "16px" }}>
-              {currentData.places}
+              {currentData.placeName} x {currentData.places}
             </Text>
           </Flex>
         </Flex>

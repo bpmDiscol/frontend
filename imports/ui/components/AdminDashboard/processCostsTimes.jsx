@@ -152,11 +152,6 @@ export default function ProcessCostsChart({ requestProcess }) {
     },
   };
 
-  const timeOptions = [
-    { value: 1, label: "Minutos" },
-    { value: 60, label: "Horas" },
-    { value: 3600, label: "Días" },
-  ];
 
   React.useEffect(() => {
     const procesed = ProcessTimes(requestProcess);
@@ -202,8 +197,8 @@ export default function ProcessCostsChart({ requestProcess }) {
                 series={[
                   {
                     name: "Terminadas",
-                    data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
-                    // data: fillEmptySpaces(processedCosts.monthlyCost),
+                    // data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
+                    data: fillEmptySpaces(processedCosts.monthlyCost),
                   },
                   {
                     name: "En proceso",
@@ -224,9 +219,9 @@ export default function ProcessCostsChart({ requestProcess }) {
                     {
                       name: "Terminadas",
                       data: areasTimes
-                        ? fillEmptySpaces([1.332, 4.345])
-                        : // ? fillEmptySpaces(areasTimes.finishedCosts)
-                          [""],
+                        ? // ? fillEmptySpaces([1.332, 4.345])
+                          fillEmptySpaces(areasTimes.finishedCosts)
+                        : [""],
                     },
                     {
                       name: "En espera",

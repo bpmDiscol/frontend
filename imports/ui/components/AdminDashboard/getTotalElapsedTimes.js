@@ -1,6 +1,7 @@
 import monthNames from "./monthNames.json";
 
 export function getTotalElapsedTime(year, chartData, timeOperatorValue) {
+  if (!Object.keys(chartData)?.length) return;
   let finisheds = [];
   let unfinisheds = [];
 

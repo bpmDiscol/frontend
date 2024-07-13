@@ -110,6 +110,7 @@ export function getProcessLine(area, date, approvations, requestProcess) {
         createdAt: process.createdAt,
         modifyedAt: process.modifyedAt,
         places: process.places,
+        placeName: process.placeName,
         requestArea: process.requestArea,
         steps: refactorSteps(process.approvations),
       };
