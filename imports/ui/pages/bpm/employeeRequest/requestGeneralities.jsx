@@ -47,7 +47,7 @@ export default function RequestGeneralities({
         .map((group) => {
           return {
             label: group.replace(/_/g, " "),
-            value: group.replace(/_/g, " "),
+            value: group.replace(/_/g, " ").toUpperCase(),
           };
         });
     }
