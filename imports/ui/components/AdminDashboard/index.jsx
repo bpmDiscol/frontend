@@ -38,7 +38,7 @@ export default function AdminDashboard() {
 
   return (
     isVisible && (
-      <Flex vertical gap={20}>
+      <Flex vertical gap={20} style={{width:'98%'}}>
         {requestProcess && requestProcess && (
           <ProcessRequests
             requestProcess={requestProcess}

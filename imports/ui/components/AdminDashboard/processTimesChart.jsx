@@ -102,7 +102,7 @@ export default function ProcessTimesChart({ requestProcess }) {
         dataLabels: {
           total: {
             enabled: true,
-            offsetX: 0,
+            offsetX: 5,
             style: {
               fontSize: "13px",
               fontWeight: 900,
@@ -127,9 +127,9 @@ export default function ProcessTimesChart({ requestProcess }) {
   };
 
   const timeOptions = [
-    { value: 1, label: "Minutos" },
-    { value: 60, label: "Horas" },
-    { value: 3600, label: "Días" },
+    { value: 1, label: "Ver en minutos" },
+    { value: 60, label: "Ver en Horas" },
+    { value: 60 * 24, label: "Ver en Días" },
   ];
 
   React.useEffect(() => {
@@ -147,33 +147,33 @@ export default function ProcessTimesChart({ requestProcess }) {
   }, [procesedTimes, yearToView, monthToView]);
 
   return (
-    <Flex gap={10}>
-      <Card bordered style={{ border: "1px solid" }}>
-        <Flex gap={"20px"}>
-          <Select
-            options={timeOptions}
-            defaultValue={60}
-            onChange={(_, option) => {
-              setTimeOperator(option);
-            }}
-          />
-
-          {procesedTimes && (
+    <Card bordered style={{ border: "1px solid" }}>
+      {!processMedia && <Spin style={{ width: "500px" }} />}
+      <Flex style={{ height: "55dvh" }}>
+        <Flex vertical>
+          <Flex gap={20}>
+            {procesedTimes && (
+              <Select
+                options={Object.keys(procesedTimes).map((year) => {
+                  return {
+                    label: year,
+                    value: year,
+                  };
+                })}
+                onChange={(value) => setYearToView(value)}
+                defaultActiveFirstOption={true}
+                defaultValue={"2024"}
+              />
+            )}
             <Select
-              options={Object.keys(procesedTimes).map((year) => {
-                return {
-                  label: year,
-                  value: year,
-                };
-              })}
-              onChange={(value) => setYearToView(value)}
-              defaultActiveFirstOption={true}
-              defaultValue={"2024"}
+              options={timeOptions}
+              defaultValue={60}
+              onChange={(_, option) => {
+                setTimeOperator(option);
+              }}
             />
-          )}
-        </Flex>
-        <Flex>
-          <Flex gap={20} style={{ width: "40dvw", height: "40dvh" }}>
+          </Flex>
+          <Flex style={{ width: "40dvw", height: "40dvh" }}>
             {processMedia && (
               <Chart
                 type="line"
@@ -195,38 +195,39 @@ export default function ProcessTimesChart({ requestProcess }) {
                     ),
                   },
                 ]}
-                style={{ width: "40dvw" }}
-                width={400}
+                style={{ flex: 1 }}
+                width={"90%"}
                 height={300}
               />
             )}
-            {!processMedia && <Spin style={{ width: "500px" }} />}
-            {areasTimes && (
-              <Card className={"showme"} style={{ border: "1px solid" }}>
-                <Chart
-                  type="bar"
-                  options={mediaAreasOptions}
-                  series={[
-                    {
-                      name: "Terminadas",
-                      data: areasTimes
-                        ? fillEmptySpaces(areasTimes.finishedMedias)
-                        : [""],
-                    },
-                    {
-                      name: "En espera",
-                      data: areasTimes
-                        ? fillEmptySpaces(areasTimes.unfinishedMedias)
-                        : [""],
-                    },
-                  ]}
-                  style={{ width: "30dvw" }}
-                />
-              </Card>
-            )}
           </Flex>
         </Flex>
-      </Card>
-    </Flex>
+        <Flex style={{ flex: 1 }}>
+          {areasTimes && (
+            <Card className={"showme"} style={{ border: "1px solid", flex: 1 }}>
+              <Chart
+                type="bar"
+                options={mediaAreasOptions}
+                series={[
+                  {
+                    name: "Terminadas",
+                    data: areasTimes
+                      ? fillEmptySpaces(areasTimes.finishedMedias)
+                      : [""],
+                  },
+                  {
+                    name: "En espera",
+                    data: areasTimes
+                      ? fillEmptySpaces(areasTimes.unfinishedMedias)
+                      : [""],
+                  },
+                ]}
+                style={{ flex: 1 }}
+              />
+            </Card>
+          )}
+        </Flex>
+      </Flex>
+    </Card>
   );
 }

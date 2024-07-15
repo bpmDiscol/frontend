@@ -173,55 +173,49 @@ export default function ProcessCostsChart({ requestProcess }) {
     <Card bordered style={{ border: "1px solid" }}>
       {!processedCosts && <Spin style={{ width: "500px" }} />}
       <Flex style={{ height: "55dvh" }}>
-      <Flex vertical>
-        <Flex>
-          selector
+        <Flex vertical>
+          <Flex>
+            {procesedTimes && (
+              <Select
+                options={Object.keys(procesedTimes).map((year) => {
+                  return {
+                    label: year,
+                    value: year,
+                  };
+                })}
+                onChange={(value) => setYearToView(value)}
+                defaultActiveFirstOption={true}
+                defaultValue={"2024"}
+              />
+            )}
+          </Flex>
+          <Flex style={{ width: "40dvw", height: "40dvh" }}>
+            {processedCosts && (
+              <Chart
+                type="area"
+                options={mediaTimesOptions}
+                series={[
+                  {
+                    name: "Terminadas",
+                    // data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
+                    data: fillEmptySpaces(processedCosts.monthlyCost),
+                  },
+                  {
+                    name: "En proceso",
+                    // data: fillEmptySpaces([0,,4,5,3]),
+                    data: fillEmptySpaces(processedCosts.unfinishedMonthlyCost),
+                  },
+                ]}
+                style={{ flex: 1 }}
+                width={'90%'}
+                height={300}
+              />
+            )}
+          </Flex>
         </Flex>
-
-      </Flex>
-      </Flex>
-
-      <Flex gap={"20px"}>
-        {procesedTimes && (
-          <Select
-            options={Object.keys(procesedTimes).map((year) => {
-              return {
-                label: year,
-                value: year,
-              };
-            })}
-            onChange={(value) => setYearToView(value)}
-            defaultActiveFirstOption={true}
-            defaultValue={"2024"}
-          />
-        )}
-      </Flex>
-      <Flex>
-        <Flex gap={20} style={{ width: "40dvw", height: "40dvh" }}>
-          {processedCosts && (
-            <Chart
-              type="area"
-              options={mediaTimesOptions}
-              series={[
-                {
-                  name: "Terminadas",
-                  // data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
-                  data: fillEmptySpaces(processedCosts.monthlyCost),
-                },
-                {
-                  name: "En proceso",
-                  // data: fillEmptySpaces([0,,4,5,3]),
-                  data: fillEmptySpaces(processedCosts.unfinishedMonthlyCost),
-                },
-              ]}
-              style={{ width: "40dvw" }}
-              width={400}
-              height={300}
-            />
-          )}
-          {!processedCosts && <Spin style={{ width: "500px" }} />}
+        <Flex style={{ flex: 1 }}>
           {areasTimes && (
-            <Card className={"showme"} style={{ border: "1px solid" }}>
+            <Card className={"showme"} style={{ border: "1px solid", flex: 1 }}>
               <Chart
                 type="bar"
                 options={mediaAreasOptions}
@@ -240,7 +234,7 @@ export default function ProcessCostsChart({ requestProcess }) {
                       : [""],
                   },
                 ]}
-                style={{ width: "30dvw" }}
+                style={{ flex: 1 }}
               />
             </Card>
           )}
