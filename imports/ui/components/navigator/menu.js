@@ -1,5 +1,6 @@
 import {
   AppstoreAddOutlined,
+  BellOutlined,
   SettingOutlined,
   SisternodeOutlined,
 } from "@ant-design/icons";
@@ -23,6 +24,6 @@ export const menuItems = [
   {
     key: "notifications",
     label: "Notificaciones",
-    icon: SettingOutlined,
+    icon: BellOutlined,
   },
 ];

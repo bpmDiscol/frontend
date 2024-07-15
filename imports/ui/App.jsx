@@ -17,7 +17,7 @@ export function App() {
         <NotificationsProvider>
           <SecurityProvider publicPage={<PublicLogin />}>
             <ConfigProvider theme={antStyles}>
-              <MainViewProvider defaultView="dashboard">
+              <MainViewProvider defaultView="tasks">
                 <AlertNotificationsProvider>
                   <Workshop />
                 </AlertNotificationsProvider>
