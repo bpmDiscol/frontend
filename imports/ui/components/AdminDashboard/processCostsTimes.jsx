@@ -152,7 +152,6 @@ export default function ProcessCostsChart({ requestProcess }) {
     },
   };
 
-
   React.useEffect(() => {
     const procesed = ProcessTimes(requestProcess);
     setProcesedTimes(procesed);
@@ -171,72 +170,82 @@ export default function ProcessCostsChart({ requestProcess }) {
     setProcessedCosts(getCosts(procesedTimes, yearToView));
   }, [procesedTimes, yearToView]);
   return (
-    <Flex style={{ overflowX: "hidden" }} gap={10}>
-      <Card bordered style={{ border: "1px solid" }}>
-        <Flex gap={"20px"}>
-          {procesedTimes && (
-            <Select
-              options={Object.keys(procesedTimes).map((year) => {
-                return {
-                  label: year,
-                  value: year,
-                };
-              })}
-              onChange={(value) => setYearToView(value)}
-              defaultActiveFirstOption={true}
-              defaultValue={"2024"}
+    <Card bordered style={{ border: "1px solid" }}>
+      {!processedCosts && <Spin style={{ width: "500px" }} />}
+      <Flex style={{ height: "55dvh" }}>
+      <Flex vertical>
+        <Flex>
+          selector
+        </Flex>
+
+      </Flex>
+      </Flex>
+
+      <Flex gap={"20px"}>
+        {procesedTimes && (
+          <Select
+            options={Object.keys(procesedTimes).map((year) => {
+              return {
+                label: year,
+                value: year,
+              };
+            })}
+            onChange={(value) => setYearToView(value)}
+            defaultActiveFirstOption={true}
+            defaultValue={"2024"}
+          />
+        )}
+      </Flex>
+      <Flex>
+        <Flex gap={20} style={{ width: "40dvw", height: "40dvh" }}>
+          {processedCosts && (
+            <Chart
+              type="area"
+              options={mediaTimesOptions}
+              series={[
+                {
+                  name: "Terminadas",
+                  // data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
+                  data: fillEmptySpaces(processedCosts.monthlyCost),
+                },
+                {
+                  name: "En proceso",
+                  // data: fillEmptySpaces([0,,4,5,3]),
+                  data: fillEmptySpaces(processedCosts.unfinishedMonthlyCost),
+                },
+              ]}
+              style={{ width: "40dvw" }}
+              width={400}
+              height={300}
             />
           )}
-        </Flex>
-        <Flex>
-          <Flex gap={20}>
-            {processedCosts && (
+          {!processedCosts && <Spin style={{ width: "500px" }} />}
+          {areasTimes && (
+            <Card className={"showme"} style={{ border: "1px solid" }}>
               <Chart
-                type="area"
-                options={mediaTimesOptions}
+                type="bar"
+                options={mediaAreasOptions}
                 series={[
                   {
                     name: "Terminadas",
-                    // data: fillEmptySpaces([2, 4, 5, 6, 1, 3]),
-                    data: fillEmptySpaces(processedCosts.monthlyCost),
+                    data: areasTimes
+                      ? // ? fillEmptySpaces([1.332, 4.345])
+                        fillEmptySpaces(areasTimes.finishedCosts)
+                      : [""],
                   },
                   {
-                    name: "En proceso",
-                    // data: fillEmptySpaces([0,,4,5,3]),
-                    data: fillEmptySpaces(processedCosts.unfinishedMonthlyCost),
+                    name: "En espera",
+                    data: areasTimes
+                      ? fillEmptySpaces(areasTimes.unfinishedCosts)
+                      : [""],
                   },
                 ]}
-                style={{ width: "40dvw" }}
+                style={{ width: "30dvw" }}
               />
-            )}
-            {!processedCosts && <Spin style={{ width: "500px" }} />}
-            {areasTimes && (
-              <Card className={"showme"} style={{ border: "1px solid" }}>
-                <Chart
-                  type="bar"
-                  options={mediaAreasOptions}
-                  series={[
-                    {
-                      name: "Terminadas",
-                      data: areasTimes
-                        ? // ? fillEmptySpaces([1.332, 4.345])
-                          fillEmptySpaces(areasTimes.finishedCosts)
-                        : [""],
-                    },
-                    {
-                      name: "En espera",
-                      data: areasTimes
-                        ? fillEmptySpaces(areasTimes.unfinishedCosts)
-                        : [""],
-                    },
-                  ]}
-                  style={{ width: "30dvw" }}
-                />
-              </Card>
-            )}
-          </Flex>
+            </Card>
+          )}
         </Flex>
-      </Card>
-    </Flex>
+      </Flex>
+    </Card>
   );
 }

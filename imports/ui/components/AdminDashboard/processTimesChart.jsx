@@ -86,7 +86,7 @@ export default function ProcessTimesChart({ requestProcess }) {
       id: "areaTimes",
       type: "bar",
       height: 500,
-      stacked:true,
+      stacked: true,
       dropShadow: {
         enabled: true,
         color: "#000",
@@ -104,10 +104,10 @@ export default function ProcessTimesChart({ requestProcess }) {
             enabled: true,
             offsetX: 0,
             style: {
-              fontSize: '13px',
-              fontWeight: 900
-            }
-          }
+              fontSize: "13px",
+              fontWeight: 900,
+            },
+          },
         },
       },
     },
@@ -146,10 +146,8 @@ export default function ProcessTimesChart({ requestProcess }) {
     );
   }, [procesedTimes, yearToView, monthToView]);
 
- 
-
   return (
-    <Flex style={{ overflowX: "hidden" }} gap={10}>
+    <Flex gap={10}>
       <Card bordered style={{ border: "1px solid" }}>
         <Flex gap={"20px"}>
           <Select
@@ -174,8 +172,8 @@ export default function ProcessTimesChart({ requestProcess }) {
             />
           )}
         </Flex>
-        <Flex >
-          <Flex gap={20}>
+        <Flex>
+          <Flex gap={20} style={{ width: "40dvw", height: "40dvh" }}>
             {processMedia && (
               <Chart
                 type="line"
@@ -198,6 +196,8 @@ export default function ProcessTimesChart({ requestProcess }) {
                   },
                 ]}
                 style={{ width: "40dvw" }}
+                width={400}
+                height={300}
               />
             )}
             {!processMedia && <Spin style={{ width: "500px" }} />}
