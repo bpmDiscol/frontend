@@ -207,7 +207,7 @@ export default function ProcessCostsChart({ requestProcess }) {
                   },
                 ]}
                 style={{ flex: 1 }}
-                width={'90%'}
+                width={"90%"}
                 height={300}
               />
             )}
@@ -215,7 +215,10 @@ export default function ProcessCostsChart({ requestProcess }) {
         </Flex>
         <Flex style={{ flex: 1 }}>
           {areasTimes && (
-            <Card className={"showme"} style={{ border: "1px solid", flex: 1 }}>
+            <Card
+              className={"showme"}
+              style={{ border: "1px solid", flex: 1 }}
+            >
               <Chart
                 type="bar"
                 options={mediaAreasOptions}
@@ -234,7 +237,8 @@ export default function ProcessCostsChart({ requestProcess }) {
                       : [""],
                   },
                 ]}
-                style={{ flex: 1 }}
+                style={{ flex: 1}}
+                height={300}
               />
             </Card>
           )}

@@ -223,6 +223,7 @@ export default function ProcessTimesChart({ requestProcess }) {
                   },
                 ]}
                 style={{ flex: 1 }}
+                height={300}
               />
             </Card>
           )}

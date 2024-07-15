@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, Flex, Pagination, Statistic, Steps, Typography } from "antd";
+import {
+  Badge,
+  Card,
+  Flex,
+  Pagination,
+  Statistic,
+  Steps,
+  Typography,
+} from "antd";
 import TimeCounter from "../timeCounter";
 
 const significa = {
@@ -27,13 +35,19 @@ export default function StepsLines({ processLines }) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [currentSteps, setCurrentSteps] = React.useState();
   const currentData = processLines[currentPage - 1];
-  console.log("🚀 ~ StepsLines ~ currentData:", currentData);
-  const { Text } = Typography;
+  const { Text, Title } = Typography;
   React.useEffect(() => {
     const currentSteps = currentData.steps.map((item) => {
       return {
         status: item.status,
-        title: item.area,
+        title: (
+          <Badge
+            status={item.responsible === "undefined" ? "processing" : "success"}
+            text={`${item.area} [${
+              item.responsible !== "undefined" ? item.responsible : "..."
+            }]`}
+          />
+        ),
         subTitle: significa[item.taskName],
         description:
           item.status === "finish" ? (
@@ -85,9 +99,9 @@ export default function StepsLines({ processLines }) {
               padding: "5px 15px",
             }}
           >
-            <Text>Solicitud</Text>
+            <Text>{currentData.initiator.toUpperCase()} solicita</Text>
             <Text strong style={{ fontSize: "16px" }}>
-              {currentData.placeName} x {currentData.places}
+              {`${currentData.placeName} (${currentData.places})`}
             </Text>
           </Flex>
         </Flex>
