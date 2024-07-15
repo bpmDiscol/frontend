@@ -2,7 +2,6 @@ import React from "react";
 import { Typography, Flex, Row, Col } from "antd";
 import UploadFile from "./uploadCard";
 import { getTask, getTaskName } from "../../config/taskManagement";
-import StatusButton from "./statusButton";
 
 import "react-quill/dist/quill.snow.css";
 import Notes from "./notes";
@@ -74,13 +73,6 @@ export default function CVFilesForm({ id }) {
                 />
               ))}
           </Flex>
-
-          {/* <StatusButton
-            currentCVFiles={currentCVFiles}
-            setCurrentCVFiles={setNewBackground}
-            targetField={"status"}
-            key={key * Math.random() * 100000}
-          /> */}
         </Col>
         <Col xs={24} md={12} lg={16}>
           <Notes

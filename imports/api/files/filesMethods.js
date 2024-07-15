@@ -9,6 +9,10 @@ const collection = {
   curricullums: curricullumsCollection,
 };
 
+function replaceBaseUrl(link) {
+  return link.replace("http://localhost/", process.env.ROOT_URL);
+}
+
 Meteor.methods({
   async getFileById(id, collectionId) {
     const collectionType = collection[`${collectionId}`];
@@ -18,9 +22,8 @@ Meteor.methods({
     return collection[`${collectionName}`].collection
       .find({})
       .map(function (fileRef) {
-        
         return {
-          link: collection[`${collectionName}`].link(fileRef),
+          link: replaceBaseUrl(collection[`${collectionName}`].link(fileRef)),
           id: fileRef._id,
         };
       })

@@ -3,12 +3,10 @@ import { Meteor } from "meteor/meteor";
 
 import "./login.css";
 import { NotificationsContext } from "../../context/notificationsProvider";
-import { Button, Flex, Modal, message } from "antd";
-import OTP from "../publicLogin/OTP";
+import { message } from "antd";
 
 export default function Login({ onClose }) {
   const [username, setUsername] = React.useState("");
-  console.log("🚀 ~ Login ~ username:", username)
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [openOTP, setOpenOTP] = React.useState(false);
@@ -54,7 +52,7 @@ export default function Login({ onClose }) {
       async (error, result) => {
         if (error) console.log(error.reason);
         else {
-          if (result.variant == "success") console.log("algo");
+          if (result.variant == "success") console.log("login");
           meteorLogin({
             bonitaUser: result.bonitaUser,
             token: result.token,

@@ -3,7 +3,6 @@ import { curricullumCollection } from "./curricullumCollection.js";
 
 Meteor.methods({
   upload_file(fileData) {
-    console.log("upload file: " + fileData);
     return Meteor.call("post_data", {
       url: "/API/formFileUpload",
       data: fileData,

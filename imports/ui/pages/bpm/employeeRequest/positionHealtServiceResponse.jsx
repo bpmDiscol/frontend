@@ -25,7 +25,6 @@ export default function PositionHealthServiceResponse({
 }) {
   const [drawerData, setDrawerData] = React.useState(closed);
   const [currentHealthResponses, setCurrentHealthResponses] = React.useState();
-  console.log("🚀 ~ currentHealthResponses:", currentHealthResponses)
   const [key, setNewkey] = React.useState(Math.random());
 
   React.useEffect(() => {
@@ -54,12 +53,10 @@ export default function PositionHealthServiceResponse({
   }
 
   function setNewHealthResponse(value, targetField, id) {
-    console.log("🚀 ~ setNewHealthResponse ~ value:", {[`${targetField}`]: value})
     const newBg = Object.assign(currentHealthResponses || {}, {
       [`${id}`]: value,
     });
     setResponse(newBg);
-    console.log("🚀 ~ setNewHealthResponse ~ newBg:", newBg)
     Meteor.callAsync("update_Health_service_files", {
       taskId: getTaskName() + getTask(),
       id,

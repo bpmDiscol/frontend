@@ -37,11 +37,6 @@ export default function EmployeeRequestResponse({
       return requestEmployee;
     }
   });
-  console.log(
-    "🚀 ~ requestEmployeeData ~ requestEmployeeData:",
-    requestEmployeeData
-  );
-
   function reloadPage(index) {
     const key = Math.random();
     setTabView(
