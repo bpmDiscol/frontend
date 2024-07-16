@@ -29,7 +29,7 @@ export default function AlertNotificationsProvider({ children }) {
       return generalAlerts.concat(directedAlerts);
     }
   });
-  
+
   function doTask(taskName, taskId, caseId) {
     setView(taskName);
     saveTask(taskId);
@@ -115,7 +115,8 @@ export default function AlertNotificationsProvider({ children }) {
             infoView.message,
             btn,
             infoView._id,
-            0
+            3,
+            markAsViewed(infoView._id)
           );
         });
       }

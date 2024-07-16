@@ -227,7 +227,6 @@ Meteor.methods({
         .filter((element) => !element.selected)
         .map((case_) => case_.interviewId);
 
-      console.log("🚀 ~ clean_unselecteds ~ rejecteds:", rejecteds);
 
       requestEmployeeCollection.update(
         { caseId },

@@ -11,7 +11,8 @@ export default function NotificationsProvider({ children }) {
     description = "",
     btn = undefined,
     key = undefined,
-    duration = 3
+    duration = 3,
+    onClose = () => {}
   ) => {
     api[type]({
       message,
@@ -21,6 +22,7 @@ export default function NotificationsProvider({ children }) {
       placement: "topRight",
       showProgress: true,
       duration,
+      onClose,
     });
   };
 
