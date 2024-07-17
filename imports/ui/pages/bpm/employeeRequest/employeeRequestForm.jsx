@@ -43,28 +43,48 @@ export default function EmployeeRequestForm() {
     });
   }, []);
 
-  React.useEffect(() => {
-    if (requestData) setTabView(LoadPage(tabContents[currentTab]));
-  }, [requestData]);
+  // React.useEffect(() => {
+  //   if (requestData) setTabView(LoadPage(tabContents[currentTab]));
+  // }, [requestData]);
   //re render dependiendo de request data
 
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    await Meteor.callAsync("update_task", { taskId, field, value }).catch(error=> console.error(error));
+    await Meteor.callAsync("update_task", { taskId, field, value }).catch(
+      (error) => console.error(error)
+    );
   }
 
-  const LoadPage = React.useCallback(
-    (Component) => {
-      return (
-        <Component
-          requestData={requestData} //TODO: remove in test
-          update={updateData}
-          fiterErrors={fiterErrors}
-        />
-      );
-    },
-    [requestData]
-  );
+  function fiterErrors(fieldId) {
+    const fields = errorFields?.filter((field) =>
+      field.path?.includes(fieldId)
+    );
+    return fields?.length == 0 ? "" : "error";
+  }
+
+  function reloadPage(index) {
+    setTabView(
+      <LoadPage
+        Component={tabContents[index]}
+        updateData={updateData}
+        fiterErrors={fiterErrors}
+      />
+    );
+  }
+
+  function LoadPage({ Component, updateData, fiterErrors }) {
+    return (
+      <Component
+        requestData={requestData}
+        update={updateData}
+        fiterErrors={fiterErrors}
+      />
+    );
+  }
+
+  React.useEffect(() => {
+    reloadPage(0);
+  }, []);
 
   const tabTitles = [
     { label: "Datos del cargo", value: 0 },
@@ -103,7 +123,6 @@ export default function EmployeeRequestForm() {
       (error, response) => {
         setWaitingToSend(false);
         if (response?.error) {
-          
           if (response?.status >= 500) {
             openNotification(
               "error",
@@ -156,13 +175,6 @@ export default function EmployeeRequestForm() {
     setCurrentTab(tabNumber);
   }
 
-  function fiterErrors(fieldId) {
-    const fields = errorFields?.filter((field) =>
-      field.path?.includes(fieldId)
-    );
-    return fields?.length == 0 ? "" : "error";
-  }
-
   return (
     <Flex
       id="employee-request-container"
@@ -179,9 +191,8 @@ export default function EmployeeRequestForm() {
       <Flex vertical gap={"10px"} id="segmented-tabs">
         <Segmented
           options={tabTitles}
-          onChange={changeTab}
           defaultValue={0}
-          value={currentTab}
+          onChange={(value) => reloadPage(value)}
         />
         <SpinningLoader condition={requestData} content={tabView} />
       </Flex>
