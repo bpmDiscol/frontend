@@ -1,6 +1,7 @@
 import PositionEmployeeData from "../employeeRequest/positionEmployeeData";
+import PositionGears from "../employeeRequest/positionGears";
 
-const tabContents = [PositionEmployeeData];
+const tabContents = [PositionEmployeeData, PositionGears];
 
 const tabTitles = [{ label: "Registros Biométricos", value: 0 }];
 
