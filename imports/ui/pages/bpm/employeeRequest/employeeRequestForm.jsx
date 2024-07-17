@@ -84,8 +84,8 @@ export default function EmployeeRequestForm() {
   }
 
   React.useEffect(() => {
-    reloadPage(0);
-  }, []);
+    reloadPage(currentTab);
+  }, [requestData]);
 
   const tabTitles = [
     { label: "Datos del cargo", value: 0 },
@@ -172,7 +172,7 @@ export default function EmployeeRequestForm() {
 
   function changeTab(tabNumber) {
     request(setRequestData);
-    setTabView(LoadPage(tabContents[tabNumber]));
+    reloadPage(tabNumber);
     setCurrentTab(tabNumber);
   }
 
@@ -193,6 +193,7 @@ export default function EmployeeRequestForm() {
         <Segmented
           options={tabTitles}
           defaultValue={0}
+          value={currentTab}
           onChange={(value) => reloadPage(value)}
         />
         <SpinningLoader condition={requestData} content={tabView} />
