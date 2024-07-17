@@ -194,7 +194,7 @@ export default function EmployeeRequestForm() {
           options={tabTitles}
           defaultValue={0}
           value={currentTab}
-          onChange={(value) => reloadPage(value)}
+          onChange={(value) => changeTab(value)}
         />
         <SpinningLoader condition={requestData} content={tabView} />
       </Flex>
