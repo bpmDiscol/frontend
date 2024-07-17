@@ -66,13 +66,14 @@ export default function EmployeeRequestForm() {
     setTabView(
       <LoadPage
         Component={tabContents[index]}
+        requestData={requestData}
         updateData={updateData}
         fiterErrors={fiterErrors}
       />
     );
   }
 
-  function LoadPage({ Component, updateData, fiterErrors }) {
+  function LoadPage({ Component, requestData, updateData, fiterErrors }) {
     return (
       <Component
         requestData={requestData}
