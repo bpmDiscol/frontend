@@ -1,5 +1,4 @@
 import { Meteor } from "meteor/meteor";
-import { Random } from "meteor/random";
 import {
   processInterviews,
   validateEmployeeRequest,
@@ -22,7 +21,7 @@ Meteor.methods({
   },
   async get_employee_request_data(taskId) {
     const context = await Meteor.callAsync("get_context", { taskId }).catch(
-      (error) => console.error(error)
+      (error) => console.error("catch get_employee_request_data(taskId) {")
     );
 
     if (context)
@@ -227,7 +226,6 @@ Meteor.methods({
         .filter((element) => !element.selected)
         .map((case_) => case_.interviewId);
 
-
       requestEmployeeCollection.update(
         { caseId },
         { $pull: { curricullumsInput: { fileId: { $in: rejecteds } } } }
@@ -254,7 +252,7 @@ Meteor.methods({
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
         health_responseInput: healthRequests,
-        responsible
+        responsible,
       },
     }).catch((error) => console.error(error));
   },
@@ -277,7 +275,7 @@ Meteor.methods({
 
     return await Meteor.callAsync("post_data", {
       url: `/API/bpm/userTask/${taskId}/execution`,
-      data: { response:'done', responsible },
+      data: { response: "done", responsible },
     }).catch((error) => console.error(error));
   },
 });

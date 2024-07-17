@@ -4,6 +4,7 @@ import { Flex } from "antd";
 import ProcessTimesChart from "./processTimesChart";
 import ProcessCostsChart from "./processCostsTimes";
 import ProcessRequests from "./processRequests";
+import Founded from "./founded";
 
 export default function AdminDashboard() {
   const [requestProcess, setRequestProcess] = React.useState();
@@ -38,7 +39,7 @@ export default function AdminDashboard() {
 
   return (
     isVisible && (
-      <Flex vertical gap={20} style={{width:'98%'}}>
+      <Flex vertical gap={20} style={{ width: "98%" }}>
         {requestProcess && requestProcess && (
           <ProcessRequests
             requestProcess={requestProcess}
@@ -51,6 +52,7 @@ export default function AdminDashboard() {
         {requestProcess && (
           <ProcessTimesChart requestProcess={requestProcess} />
         )}
+        <Founded />
       </Flex>
     )
   );

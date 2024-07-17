@@ -85,6 +85,7 @@ Meteor.methods({
     return response;
   },
   async get_data({ url, params }) {
+    if (!url) return;
     const token = await Meteor.callAsync("get_token").catch((error) =>
       console.error(error)
     );
@@ -98,7 +99,7 @@ Meteor.methods({
           return response.data;
         })
         .catch((error) => {
-          console.log(error)
+          console.log({data: error.data, url});
           return "error";
         });
     else return "no token";

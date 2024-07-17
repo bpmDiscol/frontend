@@ -298,10 +298,11 @@ export default function EmployeeRequestBackground() {
         open={warningMessage}
         onOk={() => setWarningMessage(false)}
         footer={[
-          <Button onClick={() => request()} key="send">
+          <Button onClick={() => request()} loading={waitToSend}>
             Enviar de todas formas
           </Button>,
           <Button
+            loading={waitToSend}
             type="primary"
             style={{ marginTop: "1rem" }}
             onClick={() => setWarningMessage(false)}

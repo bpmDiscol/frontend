@@ -69,6 +69,7 @@ export default function AlertNotificationsProvider({ children }) {
   }, []);
 
   React.useEffect(() => {
+    if (!Meteor.userId()) return;
     Meteor.call("filter_watched_alerts", alerts, (err, resp) => {
       if (!err && resp?.length) {
         resp.forEach((infoView) => {

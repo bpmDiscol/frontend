@@ -23,4 +23,9 @@ Meteor.methods({
       { $set: { [`${field}`]: data.value } }
     );
   },
+  count_employee_font(font) {
+    return requestEmployeeCollection
+      .find({ "curricullumsInput.foundBy": font })
+      .count();
+  },
 });

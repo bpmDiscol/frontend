@@ -277,10 +277,11 @@ export default function EmployeeHealthServiceResponse() {
         onOk={() => setWarningMessage(false)}
         // confirmLoading={confirmLoading}
         footer={[
-          <Button onClick={() => request()} key="send">
+          <Button onClick={() => request()} loading={waitToSend}>
             Enviar de todas formas
           </Button>,
           <Button
+            loading={waitToSend}
             type="primary"
             style={{ marginTop: "1rem" }}
             onClick={() => setWarningMessage(false)}

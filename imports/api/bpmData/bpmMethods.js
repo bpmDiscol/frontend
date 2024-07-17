@@ -17,7 +17,7 @@ Meteor.methods({
       return await Meteor.callAsync("get_data", {
         url: taskMode[filter] + bonitaId,
         params: {},
-      }).catch((error) => console.error(error));
+      }).catch((error) => console.error('error catching data (get_data)'));
     }
     console.log("no user id");
     return [];
@@ -35,12 +35,7 @@ Meteor.methods({
       params: {},
     });
   },
-  async get_context(taskId) {
-    return await Meteor.callAsync("get_data", {
-      url: `/API/bpm/userTask/${taskId}/context`,
-      params: {},
-    }).catch((error) => console.error(error));
-  },
+ 
   async get_session() {
     return await Meteor.callAsync("get_data", {
       url: `/API/system/session/unusedId`,

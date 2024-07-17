@@ -234,10 +234,11 @@ export default function EmployeeHSEApprovation() {
         open={warningMessage}
         onOk={() => setWarningMessage(false)}
         footer={[
-          <Button onClick={() => request()} key="send">
+          <Button onClick={() => request()} loading={waitToSend}>
             Es correcto
           </Button>,
           <Button
+            loading={waitToSend}
             type="primary"
             style={{ marginTop: "1rem" }}
             onClick={() => setWarningMessage(false)}

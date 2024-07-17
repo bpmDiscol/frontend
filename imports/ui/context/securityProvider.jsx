@@ -40,10 +40,10 @@ export default function SecurityProvider({ children, publicPage }) {
     if (loggedUser) {
       Meteor.call("has2fa", (_, resp) => setEnable2fa(resp));
       document.addEventListener("visibilitychange", detectVisibility);
-      window.addEventListener("beforeunload", (e) => {
-        e.preventDefault();
-        safeLogOut();
-      });
+      // window.addEventListener("beforeunload", (e) => {
+      //   e.preventDefault();
+      //   safeLogOut();
+      // });
       
     } else document.removeEventListener("visibilitychange", detectVisibility);
 

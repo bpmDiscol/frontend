@@ -40,7 +40,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       },
       (error, resp) => {
         if (error) {
-          console.log(error);
+          console.log('task buton');
           return;
         }
         if (resp?.error == "no user") {

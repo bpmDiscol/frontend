@@ -22,19 +22,24 @@ export default function TaskList({
 
   React.useEffect(() => {
     Meteor.call("get_task_list", filter, (error, result) => {
-      if (error) console.log(error);
+      if (error) console.log("tasklist error");
       setTaskList(result);
       setVisibleTasks(result);
     });
   }, []);
 
   React.useEffect(() => {
-    if (taskList?.length > 0 && taskList != "error") {
-      const taskDataPromises = taskList.map((task) => {
-        return Meteor.callAsync("get_employee_request_data", task.id);
+    if (taskList?.length > 0 && taskList != "error" && title !== "Completado") {
+      const taskDataPromises = taskList.map(async (task) => {
+        try {
+          return await Meteor.callAsync("get_employee_request_data", task.id);
+        } catch (e) {
+          return console.log(e);
+        }
       });
 
       Promise.all(taskDataPromises)
+        .then((data) => data)
         .then((data) => {
           const newData = data.map((innerInfo, index) => {
             return {
@@ -53,9 +58,7 @@ export default function TaskList({
           });
           setTaskData(newData);
         })
-        .catch((err) => console.log(err));
-
-     
+        .catch((err) => err /*console.log(err)*/);
     }
   }, [taskList]);
 
