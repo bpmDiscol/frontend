@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Drawer, Flex } from "antd";
+import { Button, Drawer, Flex, Tooltip } from "antd";
 import Icon, {
   CheckOutlined,
   DownloadOutlined,
@@ -117,15 +117,18 @@ export default function PositionHSEApprovation({
                   {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
                 </Flex>
                 <Flex gap={16}>
-                <Button
-                    onClick={() => newTab(gethealthResponseLink(interview.fileId), true)}
+                  <Button
+                    onClick={() =>
+                      newTab(gethealthResponseLink(interview.fileId), true)
+                    }
                     type="primary"
                     shape="circle"
                     icon={<DownloadOutlined />}
                     id="download-cv"
+                    title="Descargar resultados"
                   />
                   <Button
-                    title="Ver curricullum"
+                    title="Ver resultados"
                     onClick={() =>
                       newTab(
                         googleDocsViewer +
@@ -155,21 +158,28 @@ export default function PositionHSEApprovation({
                     shape="circle"
                     icon={<WechatFilled style={{ fontSize: "20px" }} />}
                   />
-                  <Button
-                    title="Seleccionar este candidato"
-                    type="primary"
-                    shape="circle"
-                    icon={
-                      <CheckOutlined
-                        style={{
-                          fontSize: checkeds.includes(interview.fileId)
-                            ? 20
-                            : 14,
-                        }}
-                      />
+                  <Tooltip
+                    title={
+                      (checkeds.includes(interview.fileId)
+                        ? "Rechazar"
+                        : "Seleccionar") + " este candidato"
                     }
-                    onClick={() => handleCandidate(interview.fileId)}
-                  />
+                  >
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      icon={
+                        <CheckOutlined
+                          style={{
+                            fontSize: checkeds.includes(interview.fileId)
+                              ? 20
+                              : 14,
+                          }}
+                        />
+                      }
+                      onClick={() => handleCandidate(interview.fileId)}
+                    />
+                  </Tooltip>
                 </Flex>
               </Flex>
             );

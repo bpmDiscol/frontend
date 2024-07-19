@@ -12,12 +12,18 @@ export default function AdminDashboard() {
   const [isVisible, setVisible] = React.useState(false);
 
   async function openVisibility() {
-    const memberships = await Meteor.callAsync("get_my_memberships")
-      .then((resp) => resp)
-      .catch(() => []);
-    if (memberships?.length) {
-      if (memberships.flat(1).includes("director")) setVisible(true);
-    }
+    const roles = [
+      ["director", "discol"],
+      ["Lider", "Gestion_Humana"],
+    ];
+    const test = roles.map((role) => {
+      return Meteor.callAsync("is_proccess_auth", role);
+    });
+    Promise.all(test)
+      .then((permissions) => setVisible(permissions.includes(true)))
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   React.useEffect(() => {

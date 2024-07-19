@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, Drawer, Empty, Flex } from "antd";
+import { Button, Drawer, Flex } from "antd";
 import Icon, {
   CheckCircleOutlined,
   CloseCircleOutlined,
-  EditFilled,
   FileTextFilled,
   WarningOutlined,
   WechatFilled,
@@ -66,7 +65,7 @@ export default function PositionHealthServiceResponse({
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
+      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 50dvw)" }}>
         {curricullums &&
           curricullums
             .map((interview, index) => {
@@ -140,6 +139,8 @@ export default function PositionHealthServiceResponse({
                       targetField={"healthResponse"}
                       id={interview.fileId}
                     />
+
+
                   </Flex>
                   <Flex style={{ position: "absolute", right: "10%" }}>
                     {warningUsers.includes(interview.fileId) && (

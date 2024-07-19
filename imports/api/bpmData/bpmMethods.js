@@ -17,7 +17,7 @@ Meteor.methods({
       return await Meteor.callAsync("get_data", {
         url: taskMode[filter] + bonitaId,
         params: {},
-      }).catch((error) => console.error('error catching data (get_data)'));
+      }).catch((error) => console.error("error catching data (get_data)"));
     }
     console.log("no user id");
     return [];
@@ -35,7 +35,7 @@ Meteor.methods({
       params: {},
     });
   },
- 
+
   async get_session() {
     return await Meteor.callAsync("get_data", {
       url: `/API/system/session/unusedId`,
@@ -122,8 +122,15 @@ Meteor.methods({
       console.log(e);
       return [];
     });
-    rolesTags = resp.flat(1);
-    return rolesTags.includes(role);
+    if (resp?.length) {
+      const authMemberships = resp.filter((membership) =>
+        role.length == 1
+          ? membership.includes(role[0])
+          : JSON.stringify(role) === JSON.stringify(membership)
+      );
+      return authMemberships.length > 0;
+    }
+    return;
   },
   async get_application(token) {
     return await Meteor.callAsync("get_data", {
@@ -137,5 +144,4 @@ Meteor.methods({
       params: {},
     }).catch((error) => console.error(error));
   },
-
 });

@@ -12,7 +12,7 @@ export function deleteFile(collectionId, _id) {
   collection[`${collectionId}`].remove({ _id });
 }
 
-export async function uploadFile(collectionId, fileData, callback) {
+export async function uploadFile(collectionId, fileData, callback, errCallback) {
   const collectionType = collection[`${collectionId}`];
   const upload = collectionType.insert(
     {
@@ -22,15 +22,12 @@ export async function uploadFile(collectionId, fileData, callback) {
     false
   );
 
-  upload.on("end", (error, fileObj) => {
-    
+  upload.on("uploaded", (error, fileObj) => {
     if (error) console.log(error);
     else {
       return callback(fileObj);
     }
   });
+  upload.on('error', errCallback)
   upload.start();
 }
-
-
-

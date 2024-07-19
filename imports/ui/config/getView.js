@@ -26,6 +26,7 @@ import socialSecurity from "../pages/bpm/configPages/socialSecurity"
 import bankCertificate from "../pages/bpm/configPages/bankCertificate"
 import nominaBase from "../pages/bpm/configPages/nominaBase"
 import gearsAuth from "../pages/bpm/configPages/gearsAuth"
+import RequestEmployeeSearch from "../pages/requestEmployeeSearch";
 
 
 export function getView(view) {
@@ -54,6 +55,7 @@ export function getView(view) {
     bank_certificate: <EmployeeRequestResponse {...bankCertificate} subtitle={"Certificados cuenta bancaria"} />,
     base: <EmployeeRequestResponse {...nominaBase} subtitle={"Nueva base de nómina"} />,
     sign_contract: <EmployeeRequestResponse {...generateInduction} subtitle={"Firma de contratos"} />,
+    employee_request_search: <RequestEmployeeSearch />
 
   };
   

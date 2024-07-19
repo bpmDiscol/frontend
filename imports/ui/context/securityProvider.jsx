@@ -44,14 +44,10 @@ export default function SecurityProvider({ children, publicPage }) {
       //   e.preventDefault();
       //   safeLogOut();
       // });
-      
     } else document.removeEventListener("visibilitychange", detectVisibility);
-
-   
-
   }, [loggedUser]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     window.addEventListener("offline", () => {
       openNotification(
         "error",
@@ -62,13 +58,9 @@ export default function SecurityProvider({ children, publicPage }) {
     });
 
     window.addEventListener("online", () => {
-      openNotification(
-        "success",
-        "Sistemas en linea",
-      );
+      openNotification("success", "Sistemas en linea");
     });
-
-  },[])
+  }, []);
 
   if (isLoadingLoggedUser) return <Loader />;
   return (

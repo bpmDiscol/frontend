@@ -55,15 +55,22 @@ export default function PositionEmployeeData({ requestEmployee, buttons }) {
       }
     }
   }
+
+  const selectedCurricullums = requestEmployee.curricullumsInput
+    .map((curricullum, index) => {
+      return { ...requestEmployee.interviewInput[index], ...curricullum };
+    })
+    .filter((curricullum) => curricullum.selected);
+
   return (
-    <Flex vertical>
-      <Flex gap={16} style={{padding:10}}>
+    <Flex vertical gap={10} style={{ width: "50dvw" }}>
+      <Flex gap={16} style={{ padding: 10 }}>
         <Text>Area: {requestEmployee.area_proyect}</Text>
         <Text>{`Cargo: ${requestEmployee.companyPosition}`}</Text>
       </Flex>
       <List
-        dataSource={requestEmployee.curricullumsInput}
-        renderItem={(member, index) => (
+        dataSource={selectedCurricullums}
+        renderItem={(member) => (
           <List.Item
             style={{
               border: "1px solid black",
@@ -73,9 +80,7 @@ export default function PositionEmployeeData({ requestEmployee, buttons }) {
           >
             <List.Item.Meta
               title={`${member.applicantName} ${member.applicantMidname} ${member.applicantLastname}`.toUpperCase()}
-              description={
-                "Identificación: " + requestEmployee.interviewInput[index].id
-              }
+              description={"Identificación: " + member.id}
             />
             <Flex gap={16}>
               {buttons?.background &&
@@ -99,16 +104,26 @@ export default function PositionEmployeeData({ requestEmployee, buttons }) {
                   </Button>
                 ))}
               {buttons?.curricullum && (
-                <Button
-                  title={"Ver currivullum"}
-                  type="primary"
-                  shape="round"
-                  icon={<FileTextFilled />}
-                  id={"cufricullum-button"}
-                  onClick={() => getFile(member.fileId, "curricullums")}
-                >
-                  Ver Curricullum
-                </Button>
+                <Flex gap={10}>
+                  <Button
+                    title={"Ver curricullum"}
+                    type="primary"
+                    shape="round"
+                    icon={<FileTextFilled />}
+                    id={"curricullum-button"}
+                    onClick={() => getFile(member.fileId, "curricullums")}
+                  >
+                    Ver Curricullum
+                  </Button>
+                  <Button
+                    title="Descargar"
+                    type="primary"
+                    shape="circle"
+                    icon={<DownloadOutlined />}
+                    id={"download-curricullum-button"}
+                    onClick={() => getFile(member.fileId, "curricullums", true)}
+                  />
+                </Flex>
               )}
             </Flex>
           </List.Item>

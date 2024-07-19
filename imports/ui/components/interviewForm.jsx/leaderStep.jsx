@@ -17,7 +17,6 @@ export default function LeaderStep() {
               name={"tecnicalknowledge"}
               rules={[
                 {
-                  required: true,
                   message:
                     "Por favor, introduce tus conceptos sobre conocimiento técnico",
                 },
@@ -47,7 +46,6 @@ export default function LeaderStep() {
               name={"learningAdaptation"}
               rules={[
                 {
-                  required: true,
                   message:
                     "Por favor, introduce tus conceptos sobre adaptación o aprendizaje frente al cargo",
                 },
@@ -77,7 +75,6 @@ export default function LeaderStep() {
               name={"tecnicalEvaluation"}
               rules={[
                 {
-                  required: true,
                   message:
                     "Por favor, introduce tus observaciones sobre evaluación técnica",
                 },

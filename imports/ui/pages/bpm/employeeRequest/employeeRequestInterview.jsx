@@ -208,7 +208,7 @@ export default function EmployeeRequestInterview() {
       </Flex>
 
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
-        <Flex style={{ overflow: "auto" }} id="segmented">
+        <Flex style={{ overflow: "hidden" }} id="segmented">
           <Segmented
             options={tabTitles}
             defaultValue={tabContents.length - 1}

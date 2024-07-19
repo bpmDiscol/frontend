@@ -10,18 +10,14 @@ export default function Process() {
   async function getProcessData() {
     setLoading(true);
     const test = aplications.map((app) => {
-      return app.restrictions.map((role) => {
-        return Meteor.callAsync("is_proccess_auth", role);
-      });
+      return Meteor.callAsync("is_proccess_auth", app.restrictions);
     });
     Promise.all(test)
-      .then((apps) => Promise.all(apps.flat(1)))
       .then((apps) => {
         const displayedApps = aplications.filter((_, index) => apps[index]);
         setLoading(false);
         setApps(displayedApps);
       })
-
       .catch((error) => {
         console.log(error);
         setLoading(false);
@@ -35,7 +31,7 @@ export default function Process() {
   return (
     <div style={{ padding: "20px", width: "100%" }}>
       <h2>Procesos disponibles</h2>
-      <Flex gap={'10px'}>
+      <Flex gap={"10px"}>
         {apps.map((application, index) => {
           return (
             <AppCard key={Math.random() * 10000} application={application} />

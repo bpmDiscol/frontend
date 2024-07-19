@@ -96,16 +96,25 @@ Meteor.methods({
         return { error: true, message: "no files" };
 
       const field = ["curricullumsInput"];
+
+      const curricullumsCorrecteds = curricullumsInput.map((curricullum) => ({
+        applicantName: curricullum.applicantName,
+        applicantMidname: curricullum.applicantMidname,
+        applicantLastname: curricullum.applicantName,
+        foundBy: curricullum.foundBy,
+        fileId: curricullum.file.uid,
+      }));
+
       Meteor.callAsync(
         "set_data",
-        { field, value: curricullumsInput },
+        { field, value: curricullumsCorrecteds },
         caseId
       ).catch((error) => console.error(error));
 
       return await Meteor.callAsync("post_data", {
         url: `/API/bpm/userTask/${taskId}/execution`,
         data: {
-          curricullumsInput,
+          curricullumsInput: curricullumsCorrecteds,
           responsible: userName,
         },
       }).catch((error) => console.error(error));

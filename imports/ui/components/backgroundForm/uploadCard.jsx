@@ -1,7 +1,6 @@
 import React from "react";
-import { deleteFile, uploadFile } from "../../misc/filemanagement";
-import { Upload, Typography, Flex, Button, Row, Col } from "antd";
-import { CheckOutlined, UploadOutlined } from "@ant-design/icons";
+import { Typography, Flex, Row, Col } from "antd";
+import UploadFileButton from "../uploadFileButton";
 
 export default function UploadFile({
   title,
@@ -14,31 +13,8 @@ export default function UploadFile({
     ? currentBackground[`${targetField}`]
     : null;
 
-  function remove(file) {
-    deleteFile("background", file.uid);
-    setNewBackground(null);
-  }
-
-  function upload(file) {
-    if (currentFile) deleteFile("background", currentFile._id);
-    uploadFile("background", file, ({ _id, name }) => {
-      setCurrentBackground({ _id, name }, targetField);
-      console.log("uploading...");
-    });
-
-    return false;
-  }
-
-  function defaultFileShow() {
-    return currentFile
-      ? [
-          {
-            uid: currentFile?._id,
-            name: currentFile?.name,
-            status: "done",
-          },
-        ]
-      : [];
+  function onLoad(file) {
+    setCurrentBackground({ _id: file.uid, name: file.name }, targetField);
   }
 
   return (
@@ -57,32 +33,31 @@ export default function UploadFile({
             {title}
           </Title>
         </Col>
-        <Col span={12} style={{ display: "flex", alignItems: "center" }}>
-          <Upload
-            maxCount={1}
-            onRemove={remove}
-            beforeUpload={upload}
-            defaultFileList={defaultFileShow}
-            // action={`${Meteor.absoluteUrl("/")}post`}
+        <Col span={12}>
+          <Flex
+            justify="center"
+            style={{
+              display: "flex",
+              flex: 1,
+              alignItems: "center",
+            }}
           >
-            <Button
-              style={{
-                backgroundColor: currentFile ? "green" : "dimgray",
-                width: "10rem",
-              }}
-              icon={
-                currentFile ? (
-                  <CheckOutlined style={{ fontSize: "18px" }} />
-                ) : (
-                  <UploadOutlined style={{ fontSize: "18px" }} />
-                )
+            <UploadFileButton
+              targetCollection={"background"}
+              onUpload={onLoad}
+              defaultFileShow={
+                currentFile
+                  ? [
+                      {
+                        uid: currentFile?._id,
+                        name: currentFile?.name,
+                        status: "done",
+                      },
+                    ]
+                  : undefined
               }
-              iconPosition="end"
-              type="primary"
-            >
-              {currentFile ? "Cargado" : " Cargar archivo"}
-            </Button>
-          </Upload>
+            />
+          </Flex>
         </Col>
       </Row>
     </Flex>

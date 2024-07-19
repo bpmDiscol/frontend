@@ -152,7 +152,7 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
       }}
     >
       <Row gutter={{ xs: 8, lg: 32 }}>
-        <Col span={3}>
+        <Col span={4}>
           <Flex vertical gap={10}>
             {menuList.map((menuItem, index) => {
               return (
@@ -214,7 +214,7 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
             </Flex>
           </Flex>
         </Col>
-        <Col span={21}>
+        <Col span={20}>
           <Row>
             <Col span={24}>
               <Divider>{menuList[currentForm || 0].title}</Divider>
