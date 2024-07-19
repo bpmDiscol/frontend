@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Badge,
   Col,
@@ -9,7 +10,8 @@ import {
   Tag,
   Typography,
 } from "antd";
-import React from "react";
+
+import translate from "../../misc/translate.json";
 
 function gimmeThaLinks(datastream, callback) {
   if (Object.keys(datastream).includes("links")) {
@@ -29,7 +31,8 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
   const learningAdaptation = React.useRef();
   const tecnicalEvaluation = React.useRef();
   const finalConcept = React.useRef();
-//TODO: imprimir PDF
+
+  //TODO: imprimir PDF
   const [laboralExperience, setLaboralExperience] = React.useState([]);
 
   function BooleanTag({ tagValue }) {
@@ -57,11 +60,13 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
   }
 
   React.useLayoutEffect(() => {
-    if(personalAnnotations &&
+    if (
+      personalAnnotations &&
       tecnicalknowledge &&
       learningAdaptation &&
       tecnicalEvaluation &&
-      finalConcept){
+      finalConcept
+    ) {
       personalAnnotations.current.innerHTML = interviewForm.personalAnnotation;
       tecnicalknowledge.current.innerHTML = interviewForm.tecnicalknowledge;
       learningAdaptation.current.innerHTML = interviewForm.learningAdaptation;
@@ -120,7 +125,7 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
     {
       key: "5",
       label: "Tipo de postulación",
-      children: interviewForm.applicationType,
+      children: translate[interviewForm.applicationType],
       span: 4,
     },
     {
@@ -132,7 +137,7 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
     {
       key: "7",
       label: "Estado civil",
-      children: interviewForm.status,
+      children: translate[interviewForm.status],
       span: 1,
     },
     {
@@ -624,7 +629,3 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
     </Row>
   );
 }
-
-    
-    
-    

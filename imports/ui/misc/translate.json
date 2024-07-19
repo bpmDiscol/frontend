@@ -1,0 +1,24 @@
+{
+    "new-charge": "Nuevo cargo",
+    "upgrade": "Aumento del personal",
+    "licence": "Licencia",
+    "new-proyect": "Nuevo proyecto",
+    "replacement": "Reemplazo",
+    "inhability": "Incapacidad",
+    "single": "Soltero",
+    "married": "Casado",
+    "widowed": "Viudo",
+    "separated": "Separado",
+    "common_law": "Unión libre",
+    "full-time": "Tiempo completo",
+    "mid-time": "Medio tiempo",
+    "day-time": "Trabajo por dias",
+    "remote": "Trabajo remoto",
+    "labour": "Obra o labor contratada",
+    "undefined": "Indefinido",
+    "fixed": "Termino fijo",
+    "learning": "Aprendizaje",
+    "internal":"Interna",
+    "external":"Externa"
+  }
+  
