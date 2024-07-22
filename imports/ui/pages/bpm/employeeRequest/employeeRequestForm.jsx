@@ -82,9 +82,13 @@ export default function EmployeeRequestForm() {
       />
     );
   }
+  let loaded = false;
 
   React.useEffect(() => {
-    changeTab(currentTab);
+    if (!loaded && requestData) {
+      loaded = true;
+      reloadPage(currentTab);
+    }
   }, [requestData]);
 
   const tabTitles = [
@@ -196,7 +200,8 @@ export default function EmployeeRequestForm() {
           value={currentTab}
           onChange={(value) => changeTab(value)}
         />
-      <SpinningLoader condition={requestData} content={tabView} />
+
+        <SpinningLoader condition={requestData} content={tabView} />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button
