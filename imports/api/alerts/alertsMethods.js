@@ -6,7 +6,7 @@ Meteor.methods({
     if (alerts) {
       const watchedAlerts = Meteor.user({
         fields: { watchedAlerts: 1 },
-      }).watchedAlerts;
+      })?.watchedAlerts;
 
       if (watchedAlerts) {
         return alerts.filter((alert) => !watchedAlerts.includes(alert._id));
