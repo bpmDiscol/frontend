@@ -174,8 +174,8 @@ Meteor.methods({
       data: {
         interviewInput,
         responsible: userName,
-        user
       },
+      user
     }).catch((error) => console.error(error));
   },
   async get_interviews(taskId, user) {

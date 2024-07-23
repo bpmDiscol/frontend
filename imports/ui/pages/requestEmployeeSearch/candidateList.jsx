@@ -127,7 +127,7 @@ export default function CandidateList({ requestEmployee }) {
   }, [requestEmployee]);
   return (
     <Flex vertical>
-      <Flex justify="center" style={{ height: "30dvh" }}>
+      <Flex justify="center" style={{ height: "30dvh", border:'1px solid' }}>
         {!candidatesData && (
           <Empty
             description="Aún sin candidatos"

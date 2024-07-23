@@ -1,4 +1,5 @@
 import React from "react";
+import { Meteor } from "meteor/meteor";
 import PositionGereralities from "./positionGereralities";
 import PositionVehicle from "./positionVehicle";
 import PositionRequirements from "./positionRequirements";
@@ -122,82 +123,92 @@ export default function EmployeeRequestInterview() {
 
   async function request() {
     setWaitingToSend(true);
-    Meteor.call("get_task_data", getTaskName() + getTask(), Meteor.userId(),  (err, resp) => {
-      const iv = Object.keys(resp[0]).filter((x) => x != "taskId");
-      if (!err) {
-        if (!iv?.length) {
-          openNotification(
-            "error",
-            "No se ha cargado nada 😒",
-            "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
-          );
-          setWaitingToSend(false);
-          return;
-        }
-        const interviewIds = requestEmployeeData.curricullumsInput.map(
-          (data) => data.fileId
-        );
-        if (!sonIguales(iv, interviewIds)) {
-          const diference = interviewIds.filter((x) => !iv.includes(x));
-          setWarningUsers(diference);
-          openNotification(
-            "warning",
-            "No has terminado aún!!",
-            "No has visto algunos candidatos. Recuerda que debes llenar todos los campos"
-          );
-          setWaitingToSend(false);
-          return;
-        }
-
-        const savedData = resp[0];
-        const req = interviews.map((interview) => {
-          return {
-            ...savedData[`${interview.fileId}`],
-            interviewId: interview.fileId,
-          };
-        });
-        setWaitingToSend(false);
-        Meteor.call(
-          "send_interviews",
-          req,
-          getCase(),
-          getTask(),
-          userName,
-          Meteor.userId(),
-          (error, response) => {
+    Meteor.call(
+      "get_task_data",
+      getTaskName() + getTask(),
+      Meteor.userId(),
+      (err, resp) => {
+        const iv = Object.keys(resp[0]).filter((x) => x != "taskId");
+        if (!err) {
+          if (!iv?.length) {
+            openNotification(
+              "error",
+              "No se ha cargado nada 😒",
+              "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
+            );
             setWaitingToSend(false);
+            return;
+          }
+          const interviewIds = requestEmployeeData.curricullumsInput.map(
+            (data) => data.fileId
+          );
+          if (!sonIguales(iv, interviewIds)) {
+            const diference = interviewIds.filter((x) => !iv.includes(x));
+            setWarningUsers(diference);
+            openNotification(
+              "warning",
+              "No has terminado aún!!",
+              "No has visto algunos candidatos. Recuerda que debes llenar todos los campos"
+            );
+            setWaitingToSend(false);
+            return;
+          }
 
-            if (error) {
-              console.log(error);
-              return;
-            }
-            if (response == "no token") {
-              openNotification(
-                "Error",
-                "Algo ha salido mal",
-                "Hubo error del servidor, por favor ingresa nuevamente"
-              );
-              safeLogOut();
-            } else {
-              if (!response.error) {
-                Meteor.call("delete_task", getTaskName() + getTask(), Meteor.userId(), (err) => {
-                  if (!err) sessionStorage.removeItem("albous");
-                });
+          const savedData = resp[0];
+          const req = interviews.map((interview) => {
+            return {
+              ...savedData[`${interview.fileId}`],
+              interviewId: interview.fileId,
+            };
+          });
+          setWaitingToSend(false);
+          Meteor.call(
+            "send_interviews",
+            req,
+            getCase(),
+            getTask(),
+            userName,
+            Meteor.userId(),
+            (error, response) => {
+              setWaitingToSend(false);
 
+              if (error) {
+                console.log(error);
+                return;
+              }
+              if (response == "no token") {
                 openNotification(
-                  "success",
-                  "¡Buen trabajo!",
-                  "Los archivos se han enviado satisfactoriamente"
+                  "Error",
+                  "Algo ha salido mal",
+                  "Hubo error del servidor, por favor ingresa nuevamente"
                 );
-                setTimeout(() => {
-                  setView("tasks");
-                }, 1000);
+                safeLogOut();
+              } else {
+                if (!response.error) {
+                  Meteor.call(
+                    "delete_task",
+                    getTaskName() + getTask(),
+                    Meteor.userId(),
+                    (err) => {
+                      if (!err) sessionStorage.removeItem("albous");
+                    }
+                  );
+
+                  openNotification(
+                    "success",
+                    "¡Buen trabajo!",
+                    "Los archivos se han enviado satisfactoriamente"
+                  );
+                  setTimeout(() => {
+                    setView("tasks");
+                  }, 1000);
+                }
               }
             }
-          }
-        );
+          );
+        }
       }
-    });
+    );
   }
 
   return (
