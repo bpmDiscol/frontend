@@ -150,6 +150,7 @@ export default function EmployeeCurricullumCheck() {
       getCase(),
       getTask(),
       userName,
+      Meteor.userId(),
       (err, res) => {
         if (err) console.log(err);
         if (res == "no token") {

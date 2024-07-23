@@ -163,6 +163,7 @@ export default function EmployeeRequestInterview() {
           getCase(),
           getTask(),
           userName,
+          Meteor.userId(),
           (error, response) => {
             setWaitingToSend(false);
 

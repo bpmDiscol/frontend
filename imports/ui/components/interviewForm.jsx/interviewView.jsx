@@ -13,17 +13,6 @@ import {
 
 import translate from "../../misc/translate.json";
 
-function gimmeThaLinks(datastream, callback) {
-  if (Object.keys(datastream).includes("links")) {
-    const linksPromises = datastream.links.map(({ href }) =>
-      Meteor.callAsync("get_link_data", { href })
-    );
-    Promise.all(linksPromises)
-      .then((data) => callback(data[0]))
-      .catch((error) => console.log(error));
-  }
-}
-
 export default function InterviewView({ onClose, fileId, interviewForm }) {
   const { Title, Text } = Typography;
   const personalAnnotations = React.useRef();

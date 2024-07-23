@@ -72,7 +72,6 @@ export default function General({requestEmployee}) {
       children: requestEmployee.isBonus
         ? `Cada ${requestEmployee.bonusesFrecuency.cuantity} ${requestEmployee.bonusesFrecuency.timePart}`
         : "Sin bono",
-      span: 3,
     },
   ];
 
@@ -89,18 +88,18 @@ export default function General({requestEmployee}) {
     {
       key: "11",
       label: "Vehículo requerido",
-      children: capitalize(requestEmployee.vehicleType),
+      children: capitalize(requestEmployee.vehicleType)|| <Tag color="error">No requerido</Tag>,
       span: 2,
     },
     {
       key: "12",
       label: "Tipo de licencia",
-      children: requestEmployee.licenceType,
+      children: requestEmployee.licenceType|| <Tag color="error">No requerido</Tag>,
     },
     {
       key: "13",
       label: "Valor de rodamiento",
-      children: pesos.format(requestEmployee.bearingValue),
+      children: pesos.format(requestEmployee.bearingValue)|| <Tag color="error">No requerido</Tag>,
       span: 2,
     },
   ];
@@ -119,7 +118,7 @@ export default function General({requestEmployee}) {
       label: "Observaciones",
       children: requestEmployee.observations.map((observation, index) => {
         return (
-          <Flex>
+          <Flex key={index}>
             {observationTitles[index]}
             <p dangerouslySetInnerHTML={{ __html: observation }} />
           </Flex>
@@ -157,7 +156,7 @@ export default function General({requestEmployee}) {
       <List
         dataSource={lastSteps}
         renderItem={(item) => (
-          <List.Item>
+          <List.Item key={item}>
             <List.Item.Meta
               title={translate[item]}
               avatar={

@@ -225,6 +225,7 @@ export default function EmployeeUploadCVFiles() {
           getCase(),
           getTask(),
           userName,
+          Meteor.userId(),
           (err, res) => {
             setWaitingToSend(false);
             if (err) console.log(err);
