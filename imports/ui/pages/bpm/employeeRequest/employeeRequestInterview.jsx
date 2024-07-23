@@ -122,7 +122,7 @@ export default function EmployeeRequestInterview() {
 
   async function request() {
     setWaitingToSend(true);
-    Meteor.call("get_task_data", getTaskName() + getTask(), (err, resp) => {
+    Meteor.call("get_task_data", getTaskName() + getTask(), Meteor.userId(),  (err, resp) => {
       const iv = Object.keys(resp[0]).filter((x) => x != "taskId");
       if (!err) {
         if (!iv?.length) {
@@ -179,7 +179,7 @@ export default function EmployeeRequestInterview() {
               safeLogOut();
             } else {
               if (!response.error) {
-                Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
+                Meteor.call("delete_task", getTaskName() + getTask(), Meteor.userId(), (err) => {
                   if (!err) sessionStorage.removeItem("albous");
                 });
 

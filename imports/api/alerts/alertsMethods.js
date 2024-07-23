@@ -2,11 +2,9 @@ import { Meteor } from "meteor/meteor";
 import { AlertsCollection } from "./alertsCollection";
 
 Meteor.methods({
-  filter_watched_alerts(alerts) {
+  filter_watched_alerts(alerts, user) {
     if (alerts) {
-      const watchedAlerts = Meteor.user({
-        fields: { watchedAlerts: 1 },
-      })?.watchedAlerts;
+      const watchedAlerts = Meteor.users.findOne(user)?.watchedAlerts;
 
       if (watchedAlerts) {
         return alerts.filter((alert) => !watchedAlerts.includes(alert._id));
@@ -14,8 +12,8 @@ Meteor.methods({
       return alerts;
     }
   },
-  watch_alert(alertId) {
-    Meteor.users.update(Meteor.userId(), { $addToSet: { watchedAlerts: alertId } });
+  watch_alert(alertId, user) {
+    Meteor.users.update(user, { $addToSet: { watchedAlerts: alertId } });
   },
   create_alert(alert) {
     AlertsCollection.insert({ ...alert, date: new Date() });

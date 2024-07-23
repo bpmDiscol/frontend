@@ -38,7 +38,7 @@ export default function SecurityProvider({ children, publicPage }) {
     }
     if (!loggedUser) setEnable2fa(false);
     if (loggedUser) {
-      Meteor.call("has2fa", (_, resp) => setEnable2fa(resp));
+      Meteor.call("has2fa", Meteor.userId(), (_, resp) => setEnable2fa(resp));
       document.addEventListener("visibilitychange", detectVisibility);
       // window.addEventListener("beforeunload", (e) => {
       //   e.preventDefault();

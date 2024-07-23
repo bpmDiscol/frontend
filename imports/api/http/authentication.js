@@ -2,15 +2,15 @@ import { Meteor } from "meteor/meteor";
 import Axios from "axios";
 
 import { wrapper } from "axios-cookiejar-support";
-import { CookieJar } from "tough-cookie";
+import { Cookie, CookieJar } from "tough-cookie";
 
 import configData from "../../../data.json";
 
 wrapper(Axios);
-
 const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
+
 if (Meteor.isDevelopment)
   Axios.defaults.baseURL = configData.server.development;
 else Axios.defaults.baseURL = configData.server.production;
@@ -18,11 +18,9 @@ else Axios.defaults.baseURL = configData.server.production;
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
 
-let token = "";
-let JSESSIONID = "";
-
 Meteor.methods({
   async bonita_login({ username, password }) {
+    await cookieJar.removeAllCookies();
     const response = await Axios.post(
       serviceUrl,
       {
@@ -48,11 +46,11 @@ Meteor.methods({
           const tokenCookie = response.config.jar
             .serializeSync()
             .cookies.filter((cookie) => cookie.key == "X-Bonita-API-Token");
-          const JSESSIONIDCookie = response.config.jar
+          const token = tokenCookie[0]?.value;
+
+          const axiosCookie = response.config.jar
             .serializeSync()
-            .cookies.filter((cookie) => cookie.key == "JSESSIONID");
-          token = tokenCookie[0]?.value;
-          JSESSIONID = JSESSIONIDCookie[0]?.value;
+            .cookies.filter((cookie) => cookie.key == "JSESSIONID")[0];
 
           return await Axios.get(session, {
             headers: {
@@ -65,7 +63,7 @@ Meteor.methods({
                 variant: "success",
                 bonitaUser: response.data.user_id,
                 token,
-                JSESSIONID,
+                axiosCookie,
               };
             })
             .catch((error) => {
@@ -84,89 +82,42 @@ Meteor.methods({
       });
     return response;
   },
-  async get_data({ url, params }) {
-    if (!url) return;
-    const token = await Meteor.callAsync("get_token").catch((error) =>
-      console.error(error)
-    );
-    if (token)
-      return await Axios.get(url, params, {
-        headers: {
-          "X-Bonita-API-Token": token,
-        },
+  async manage_data(method, { url, data, user }) {
+    const currentUser = Meteor.users.findOne(user);
+    const { token, axiosCookie } = currentUser?.profile;
+    if (!token && !axiosCookie) return "no token";
+
+    await cookieJar.removeAllCookies();
+    cookieJar.setCookie(new Cookie(axiosCookie), Axios.defaults.baseURL);
+    return await Axios({
+      url,
+      data,
+      method,
+      headers: { "X-Bonita-API-Token": token },
+    })
+      .then((response) => {
+        return {
+          error: false,
+          response: response.data,
+          message: "Completado exitosamente",
+        };
       })
-        .then((response) => {
-          return response.data;
-        })
-        .catch((error) => {
-          console.log({data: error.data, url});
-          return "error";
+      .catch((error) => {
+        console.warn({
+          status: error.response.status,
+          message: error.response.data,
         });
-    else return "no token";
+        return {
+          error: true,
+          status: error.response.status,
+          message: error.response.data,
+        };
+      });
   },
-  async post_data({ url, data }) {
-    const token = await Meteor.callAsync("get_token").catch((error) =>
-      console.error(error)
-    );
-    if (token) {
-      return await Axios.post(url, data, {
-        headers: {
-          "X-Bonita-API-Token": token,
-        },
-      })
-        .then((response) => {
-          return {
-            error: false,
-            response: response.data,
-            message: "Completado exitosamente",
-          };
-        })
-        .catch((error) => {
-          return {
-            error: true,
-            status: error.response.status,
-            message: error.response.data,
-          };
-        });
-    } else return "no token";
-  },
-  async put_data({ url, data }) {
-    const token = await Meteor.callAsync("get_token").catch((error) =>
-      console.error(error)
-    );
-    if (token) {
-      return await Axios.put(url, data, {
-        headers: {
-          "X-Bonita-API-Token": token,
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => {
-          return {
-            error: false,
-            response: response.data,
-            message: "Completado exitosamente",
-          };
-        })
-        .catch((error) => {
-          return {
-            error: true,
-            status: error.response.status,
-            message: error,
-          };
-        });
-    } else return "no token";
-  },
-  get_token() {
-    return Meteor.users.findOne(Meteor.userId({})).profile?.token;
-  },
-  get_jsession_id() {
-    return Meteor.users.findOne(Meteor.userId({})).profile?.JSESSIONID;
-  },
-  update_credentials({ bonitaUser, token, JSESSIONID }) {
+  update_credentials({ bonitaUser, token, axiosCookie, user }) {
     Meteor.users.update(
-      { _id: Meteor.userId() },
-      { $set: { profile: { bonitaUser, token, JSESSIONID } } }
+      { _id: user },
+      { $set: { profile: { bonitaUser, token, axiosCookie } } }
     );
   },
 });

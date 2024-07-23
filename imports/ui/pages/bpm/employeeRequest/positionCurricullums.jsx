@@ -28,13 +28,13 @@ export default function PositionCurricullums() {
   React.useEffect(() => {
     const taskId = getTaskName() + getTask();
     setTaskId(taskId);
-    Meteor.call("get_task_data", taskId, (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp) setCurricullums(resp[0].curricullums || []);
     });
   }, []);
 
   async function updateData(field, value) {
-    await Meteor.callAsync("update_task", { taskId, field, value }).catch((e) =>
+    await Meteor.callAsync("update_task", { taskId, field, value, user: Meteor.userId() }).catch((e) =>
       console.log(e)
     );
   }

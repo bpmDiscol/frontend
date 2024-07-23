@@ -73,6 +73,7 @@ export default function EmployeeRequestCurricullums() {
       getTask(),
       userName,
       getTaskName(),
+      Meteor.userId(),
       (error, response) => {
         setWaitingToSend(false);
         if (error) {
@@ -88,7 +89,7 @@ export default function EmployeeRequestCurricullums() {
           safeLogOut();
         } else {
           if (!response?.error) {
-            Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
+            Meteor.call("delete_task", getTaskName() + getTask(), Meteor.userId(), (err) => {
               if (!err) sessionStorage.removeItem("albous");
             });
             openNotification(

@@ -144,7 +144,7 @@ export default function EmployeeUploadCVFiles() {
 
   function handleBeforeSend() {
     const taskId = getTaskName() + getTask();
-    Meteor.call("get_task_data", taskId, (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         if (!resp[0].cvFiles) {
           openNotification(
@@ -200,7 +200,7 @@ export default function EmployeeUploadCVFiles() {
   function request() {
     setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
-    Meteor.call("get_task_data", taskId, (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(),  (err, resp) => {
       if (!err && resp?.length) {
         const cvs = resp[0].cvFiles;
         const healthRequests = Object.keys(cvs).map((key) => {
@@ -237,7 +237,7 @@ export default function EmployeeUploadCVFiles() {
               safeLogOut();
             } else {
               if (!res.error) {
-                Meteor.call("delete_task", taskId);
+                Meteor.call("delete_task", taskId, Meteor.userId(),);
                 setTimeout(() => {
                   setView("tasks");
                 }, 1000);                openNotification(

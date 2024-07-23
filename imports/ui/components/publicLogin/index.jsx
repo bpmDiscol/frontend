@@ -21,7 +21,7 @@ export default function PublicLogin() {
     token,
     username,
     password,
-    JSESSIONID,
+    axiosCookie
   }) {
     Meteor.loginWithPassword(username, password, async (error) => {
       if (error?.reason == "User not found") {
@@ -30,12 +30,13 @@ export default function PublicLogin() {
           password,
           bonitaUser,
           token,
+          axiosCookie
         }).catch((error) => console.error(error));
         Meteor.loginWithPassword(username, password);
       }
       if (error?.error === "no-2fa-code") openOTPModal(true);
     });
-    setBonitaData({bonitaUser, token, JSESSIONID});
+    setBonitaData({bonitaUser, token, axiosCookie});
     sessionStorage.setItem("constId", bonitaUser);
   }
 
@@ -53,7 +54,7 @@ export default function PublicLogin() {
               await meteorLogin({
                 bonitaUser: result.bonitaUser,
                 token: result.token,
-                JSESSIONID: result.JSESSIONID,
+                axiosCookie: result.axiosCookie,
                 username,
                 password,
               });

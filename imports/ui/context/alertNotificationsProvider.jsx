@@ -42,6 +42,7 @@ export default function AlertNotificationsProvider({ children }) {
       user: "me",
       currentUser: sessionStorage.getItem("constId"),
       taskId,
+      userId: Meteor.userId()
     }).catch((e) => console.log(e));
 
     if (resp?.error == "no user") {
@@ -58,19 +59,19 @@ export default function AlertNotificationsProvider({ children }) {
 
   function markAsViewed(id) {
     api.destroy(id);
-    Meteor.callAsync("watch_alert", id).catch((e) => console.log(e));
+    Meteor.callAsync("watch_alert", id, Meteor.userId()).catch((e) => console.log(e));
   }
 
   React.useEffect(() => {
-    Meteor.call("get_my_memberships", (err, resp) => {
+    Meteor.call("get_my_memberships", Meteor.userId(), (err, resp) => {
       if (err) console.log(err);
       else setMyMemberships(resp);
     });
   }, []);
 
   React.useEffect(() => {
-    if (!Meteor.userId()) return;
-    Meteor.call("filter_watched_alerts", alerts, (err, resp) => {
+    if(!Meteor.userId()) return
+    Meteor.call("filter_watched_alerts", alerts, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         resp.forEach((infoView) => {
           const btn = (

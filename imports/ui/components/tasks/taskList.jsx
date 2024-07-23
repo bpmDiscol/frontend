@@ -21,7 +21,7 @@ export default function TaskList({
   const [visibleTasks, setVisibleTasks] = React.useState([]);
 
   React.useEffect(() => {
-    Meteor.call("get_task_list", filter, (error, result) => {
+    Meteor.call("get_task_list", filter, Meteor.userId(), (error, result) => {
       if (error) console.log("tasklist error");
       setTaskList(result);
       setVisibleTasks(result);
@@ -32,7 +32,11 @@ export default function TaskList({
     if (taskList?.length > 0 && taskList != "error" && title !== "Completado") {
       const taskDataPromises = taskList.map(async (task) => {
         try {
-          return await Meteor.callAsync("get_employee_request_data", task.id);
+          return await Meteor.callAsync(
+            "get_employee_request_data",
+            task.id,
+            Meteor.userId()
+          );
         } catch (e) {
           return console.log(e);
         }

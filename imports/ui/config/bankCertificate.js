@@ -1,5 +1,4 @@
-import { safeLogOut } from "../misc/userStatus";
-import PositionCurricullums from "../pages/bpm/employeeRequest/positionCurricullums";
+import {Meteor} from "meteor/meteor"
 import PositionGears from "../pages/bpm/employeeRequest/positionGears";
 import PositionGereralities from "../pages/bpm/employeeRequest/positionGereralities";
 import PositionObservations from "../pages/bpm/employeeRequest/positionObservations";
@@ -29,7 +28,8 @@ async function request({ userName }) {
     getTaskName(),
     userName,
     getCase(),
-    getTask()
+    getTask(),
+    Meteor.userId(),
   ).catch((e) => {
     return e;
   });

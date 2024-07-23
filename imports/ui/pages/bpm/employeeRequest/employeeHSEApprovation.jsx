@@ -164,7 +164,7 @@ export default function EmployeeHSEApprovation() {
           safeLogOut();
         } else {
           if (!res.error) {
-            Meteor.call("delete_task", taskId);
+            Meteor.call("delete_task", taskId, Meteor.userId(),);
             openNotification(
               "success",
               "¡Buen trabajo!",

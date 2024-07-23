@@ -82,7 +82,7 @@ export default function EmployeeRequestResponse({
       return;
     }
     if (!response?.error) {
-      Meteor.call("delete_task", getTaskName() + getTask(), (err) => {
+      Meteor.call("delete_task", getTaskName() + getTask(), Meteor.userId(), (err) => {
         if (!err) sessionStorage.removeItem("albous");
       });
       openNotification(

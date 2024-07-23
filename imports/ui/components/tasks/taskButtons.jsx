@@ -18,7 +18,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
   }
 
   async function deleteCurricullumFromTask(taskId) {
-    const data = await Meteor.callAsync("get_task_data", taskId);
+    const data = await Meteor.callAsync("get_task_data", taskId, Meteor.userId(), );
     if (data?.length) {
       const curricullums = data[0].curricullums || [];
       curricullums.forEach((curr) => {
@@ -37,10 +37,10 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
         user: buttonData[button].user,
         currentUser: sessionStorage.getItem("constId"),
         taskId: task.id,
+        userId: Meteor.userId()
       },
       (error, resp) => {
         if (error) {
-          console.log('task buton');
           return;
         }
         if (resp?.error == "no user") {
@@ -57,7 +57,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
             // TODO: cambiar nombre a deleteTemporaryFiles
             deleteCurricullumFromTask(task.name + task.id);
           }
-          Meteor.call("delete_task", task.name + task.id, (err) => {
+          Meteor.call("delete_task", task.name + task.id, Meteor.userId(), (err) => {
             if (!err) sessionStorage.removeItem("albous");
           });
         }

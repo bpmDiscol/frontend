@@ -91,6 +91,7 @@ export default function EmployeeRequestHR() {
         concept,
         caseId: getCase(),
         taskId: getTask(),
+        user: Meteor.userId()
       },
       (error, response) => {
         setWaitingToSend(false);

@@ -1,4 +1,5 @@
 import React from "react";
+import { Meteor } from "meteor/meteor";
 import { Typography, Flex, Row, Col } from "antd";
 import UploadFile from "./uploadCard";
 import { getTask, getTaskName } from "../../config/taskManagement";
@@ -16,7 +17,7 @@ export default function BackgroundForm({ id }) {
   React.useEffect(() => {
     const taskId = getTaskName() + getTask();
     setTaskId(taskId);
-    Meteor.call("get_task_data", taskId, (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         const bgs = resp[0].backgrounds;
         if (bgs && Object.keys(bgs).includes(id))
@@ -39,6 +40,7 @@ export default function BackgroundForm({ id }) {
       taskId,
       id,
       backgroundFiles: newBg,
+      user: Meteor.userId(),
     }).catch((error) => console.log(error));
   }
 

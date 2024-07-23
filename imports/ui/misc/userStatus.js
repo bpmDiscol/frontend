@@ -7,14 +7,14 @@ const offlineTime = new timeCounter();
 
 export function goUserOnline() {
   offlineTime.reset();
-  Meteor.call("go_online", (error) => {
+  Meteor.call("go_online", Meteor.userId(), (error) => {
     if (error) console.log(error.reason);
   });
 }
 
 export function goUserOffline() {
   offlineTime.start();
-  Meteor.call("go_offline", (error) => {
+  Meteor.call("go_offline", Meteor.userId(), (error) => {
     if (error) console.log(error.reason);
   });
 }
@@ -24,7 +24,7 @@ export function safeLogOut() {
   sessionStorage.removeItem("constId");
   sessionStorage.removeItem("currentTick");
   sessionStorage.removeItem("currentMove");
-  sessionStorage.removeItem('albous')
+  sessionStorage.removeItem("albous");
 
   Meteor.call("go_offline");
   Meteor.logout();

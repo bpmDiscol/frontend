@@ -88,7 +88,8 @@ export default function EmployeeRequestAdm() {
         response,
         concept,
         caseId: getCase(),
-        taskId: getTask()
+        taskId: getTask(),
+        user: Meteor.userId()
       },
       (error, response) => {
         setWaitingToSend(false);

@@ -17,7 +17,7 @@ export default function CVFilesForm({ id }) {
   React.useEffect(() => {
     const taskId = getTaskName() + getTask();
     setTaskId(taskId);
-    Meteor.call("get_task_data", taskId, (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         const bgs = resp[0].cvFiles;
         if (bgs && Object.keys(bgs).includes(id))
@@ -40,6 +40,7 @@ export default function CVFilesForm({ id }) {
       taskId,
       id,
       cvFiles: newBg,
+      user: Meteor.userId(),
     }).catch((error) => console.log(error));
   }
 

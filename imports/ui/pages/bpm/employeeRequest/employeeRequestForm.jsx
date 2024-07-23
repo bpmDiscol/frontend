@@ -32,7 +32,7 @@ export default function EmployeeRequestForm() {
 
   React.useEffect(() => {
     request(setRequestData);
-    Meteor.call("get_processes", (error, response) => {
+    Meteor.call("get_processes", Meteor.userId(), (error, response) => {
       if (!error && response != "error") {
         const myProcess = response?.filter(
           (process) => process.displayName == "employee_request"
@@ -50,7 +50,7 @@ export default function EmployeeRequestForm() {
 
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    await Meteor.callAsync("update_task", { taskId, field, value }).catch(
+    await Meteor.callAsync("update_task", { taskId, field, value, user: Meteor.userId() }).catch(
       (error) => console.error(error)
     );
   }
@@ -112,9 +112,9 @@ export default function EmployeeRequestForm() {
   }
 
   function request(callback) {
-    Meteor.call("get_task_data", "employeeRequestForm", (error, response) => {
+    Meteor.call("get_task_data", "employeeRequestForm", Meteor.userId(),  (error, response) => {
       if (!error) {
-        // console.log(response);
+        console.log(response);
         callback(response ? response[0] : []);
       }
     });
@@ -124,8 +124,9 @@ export default function EmployeeRequestForm() {
     setWaitingToSend(true);
     Meteor.call(
       "start_employee_request",
-      { request, processId },
+      { request, processId, user: Meteor.userId() },
       (error, response) => {
+        console.log(response)
         setWaitingToSend(false);
         if (response?.error) {
           if (response?.status >= 500) {
@@ -138,6 +139,7 @@ export default function EmployeeRequestForm() {
           }
 
           if (response?.status >= 400) {
+            
             safeLogOut();
             openNotification(
               "error",
@@ -153,7 +155,7 @@ export default function EmployeeRequestForm() {
             "Algunos campos necesitan llenarse. Revisa los formularios e intenta nuevamente"
           );
         } else {
-          Meteor.call("delete_task", "employeeRequestForm");
+          Meteor.call("delete_task", "employeeRequestForm", Meteor.userId(),);
           setTimeout(() => {
             setView("process");
           }, 1000);

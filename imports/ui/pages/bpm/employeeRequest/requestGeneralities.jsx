@@ -35,15 +35,23 @@ export default function RequestGeneralities({
   }, [requestData]);
 
   async function getMyAreaOptions() {
-    const memberships = await Meteor.callAsync("get_my_memberships")
+    const memberships = await Meteor.callAsync("get_my_memberships", Meteor.userId())
       .then((resp) => resp)
       .catch(() => []);
     if (memberships?.length) {
-      if (memberships.flat(1).includes("director")) return areaProyectOptions;
+      
+      const isDirector = memberships.filter(
+        (membership) =>
+          JSON.stringify(["director", "discol"]) === JSON.stringify(membership)
+      );
+      if (isDirector.length) return areaProyectOptions;
+
       const flatMemberships = memberships.flat(1);
       return flatMemberships
         .filter((item, index) => flatMemberships.indexOf(item) === index)
-        .filter((item) => !["Lider", "member", "digitador"].includes(item))
+        .filter(
+          (item) => !["Lider", "member", "digitador", "admin", "director"].includes(item)
+        )
         .map((group) => {
           return {
             label: group.replace(/_/g, " "),
@@ -173,7 +181,7 @@ export default function RequestGeneralities({
                   type="number"
                   onChange={(e) => update("duration.cuantity", e.target.value)}
                 />
-                
+
                 <Select
                   options={timeOptions}
                   id="durationTimePart"

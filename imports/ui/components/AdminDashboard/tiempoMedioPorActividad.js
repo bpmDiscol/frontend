@@ -108,29 +108,6 @@ export default function calcularTiempoPromedioPorActividad(
       }
     }
   }
-  //   console.log(tiempos)
-
-  //   console.log("Tiempo promedio por actividad:");
-  //   for (const taskName in promedios) {
-  //     console.log(`${taskName}: ${promedios[taskName].toFixed(2)} minutos`);
-  //   }
-
-  //   console.log("\nTiempo promedio por actividad (mensual):");
-  //   for (const taskName in promediosMes) {
-  //     console.log(`\n${taskName}:`);
-  //     for (const period in promediosMes[taskName]) {
-  //       console.log(
-  //         `  ${period}: ${formatDuration(
-  //           promediosMes[taskName][period].toFixed(2)
-  //         )}`
-  //       );
-  //     }
-  //   }
-  //   console.log(
-  //     "🚀 ~ calcularTiempoPromedioPorActividad ~ contrataciones:",
-  //     contrataciones
-  //   );
-
   return {
     contrataciones,
     tiempos,

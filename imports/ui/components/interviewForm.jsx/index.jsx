@@ -81,7 +81,7 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
   const [form] = Form.useForm();
 
   async function update(field, value) {
-    await Meteor.callAsync("update_task", { taskId, field, value }).catch(
+    await Meteor.callAsync("update_task", { taskId, field, value, user: Meteor.userId() }).catch(
       (error) => console.error(error)
     );
   }
@@ -89,7 +89,7 @@ export default function InterviewForm({ onClose, fileId, requestEmployee }) {
   React.useEffect(() => {
     const taskId = getTaskName() + getTask();
     setTaskId(taskId);
-    Meteor.call("get_task_data", taskId, (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(),  (err, resp) => {
       if (!err && resp?.length) {
         form.setFieldsValue(resp[0][`${fileId}`]);
         setCurrentForm(resp[0][`${fileId}`]?.currentForm || 0);

@@ -6,7 +6,12 @@ import { NotificationsContext } from "../../context/notificationsProvider";
 import { safeLogOut } from "../../misc/userStatus";
 import { SecurityContext } from "../../context/securityProvider";
 
-export default function OTP({ username, password, bonitaData, logged = false }) {
+export default function OTP({
+  username,
+  password,
+  bonitaData,
+  logged = false,
+}) {
   const { Title } = Typography;
   const { openNotification } = React.useContext(NotificationsContext);
   const { setEnable2fa } = React.useContext(SecurityContext);
@@ -28,13 +33,12 @@ export default function OTP({ username, password, bonitaData, logged = false }) 
               return;
             }
             setEnable2fa(true);
-            openNotification(
-              "success",
-              "Bienvenido a DISCOL BPM",
-              ""
-            );
-            Meteor.callAsync("update_credentials", bonitaData).catch((error) => console.error(error));
-            Meteor.logoutOtherClients()
+            openNotification("success", "Bienvenido a DISCOL BPM", "");
+            Meteor.callAsync("update_credentials", {
+              ...bonitaData,
+              user: Meteor.userId(),
+            }).catch((error) => console.error(error));
+            Meteor.logoutOtherClients();
           }
         );
       } else {

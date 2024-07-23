@@ -1,5 +1,6 @@
 import React from "react";
 import { Flex } from "antd";
+import { Meteor } from "meteor/meteor";
 
 import ProcessTimesChart from "./processTimesChart";
 import ProcessCostsChart from "./processCostsTimes";
@@ -17,7 +18,7 @@ export default function AdminDashboard() {
       ["Lider", "Gestion_Humana"],
     ];
     const test = roles.map((role) => {
-      return Meteor.callAsync("is_proccess_auth", role);
+      return Meteor.callAsync("is_proccess_auth", role, Meteor.userId());
     });
     Promise.all(test)
       .then((permissions) => setVisible(permissions.includes(true)))
@@ -28,19 +29,24 @@ export default function AdminDashboard() {
 
   React.useEffect(() => {
     openVisibility();
-    Meteor.call("get_requestProcess", (err, requestProcessData) => {
-      setRequestProcess(requestProcessData);
+    Meteor.call(
+      "get_requestProcess",
+      Meteor.userId(),
+      (err, requestProcessData) => {
+        setRequestProcess(requestProcessData);
 
-      if (!err) {
-        Meteor.call(
-          "get_approvations",
-          requestProcessData,
-          (_, approvationsData) => {
-            setApprovations(approvationsData);
-          }
-        );
+        if (!err) {
+          Meteor.call(
+            "get_approvations",
+            requestProcessData,
+            Meteor.userId(),
+            (_, approvationsData) => {
+              setApprovations(approvationsData);
+            }
+          );
+        }
       }
-    });
+    );
   }, []);
 
   return (

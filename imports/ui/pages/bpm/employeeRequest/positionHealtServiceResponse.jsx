@@ -27,13 +27,17 @@ export default function PositionHealthServiceResponse({
   const [key, setNewkey] = React.useState(Math.random());
 
   React.useEffect(() => {
-    Meteor.call("get_task_data", getTaskName() + getTask(), (err, resp) => {
-      if (!err && resp?.length) {
-        const bgs = resp[0].healthResponse;
-        setCurrentHealthResponses(bgs);
-        
-      } else setCurrentHealthResponses({});
-    });
+    Meteor.call(
+      "get_task_data",
+      getTaskName() + getTask(),
+      Meteor.userId(),
+      (err, resp) => {
+        if (!err && resp?.length) {
+          const bgs = resp[0].healthResponse;
+          setCurrentHealthResponses(bgs);
+        } else setCurrentHealthResponses({});
+      }
+    );
   }, []);
 
   function newTab(url) {
@@ -60,6 +64,7 @@ export default function PositionHealthServiceResponse({
       taskId: getTaskName() + getTask(),
       id,
       HSFiles: value,
+      user: Meteor.userId(),
     }).catch((error) => console.log(error));
   }
 
@@ -139,8 +144,6 @@ export default function PositionHealthServiceResponse({
                       targetField={"healthResponse"}
                       id={interview.fileId}
                     />
-
-
                   </Flex>
                   <Flex style={{ position: "absolute", right: "10%" }}>
                     {warningUsers.includes(interview.fileId) && (

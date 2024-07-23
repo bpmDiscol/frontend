@@ -4,31 +4,11 @@ import {
   Card,
   Flex,
   Pagination,
-  Statistic,
   Steps,
   Typography,
 } from "antd";
 import TimeCounter from "../timeCounter";
-
-const significa = {
-  employee_request_adm: "Aprobación",
-  employee_request_hr: "Aprobación",
-  load_curricullum: "Cargar CV",
-  interview: "Entrevitas",
-  legal_background: "Antecedentes",
-  curricullum_check: "Selección de candidatos",
-  upload_cv_files: "Cargar documentos",
-  healt_service_response: "Respuesta de Salud ocupacional",
-  hse_approvation: "Aprobación",
-  generate_induction: "Inducción",
-  activate_social_security: "Seguridad social",
-  gears_auth: "Autorización de equipos",
-  biometric_registry: "Registro biométrico",
-  RUT: "presentación de RUT",
-  bank_certificate: "Certificado bancario",
-  base: "Presentación base de nomina",
-  sign_contract: "Firma de contrato",
-};
+import translate from "../../misc/translate.json"
 
 export default function StepsLines({ processLines }) {
   //   const [currentData, setCurrentData] = React.useState();
@@ -48,7 +28,7 @@ export default function StepsLines({ processLines }) {
             }]`}
           />
         ),
-        subTitle: significa[item.taskName],
+        subTitle: translate[item.taskName],
         description:
           item.status === "finish" ? (
             "Terminado en: " + item.totalTime

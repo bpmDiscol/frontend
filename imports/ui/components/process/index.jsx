@@ -10,7 +10,11 @@ export default function Process() {
   async function getProcessData() {
     setLoading(true);
     const test = aplications.map((app) => {
-      return Meteor.callAsync("is_proccess_auth", app.restrictions);
+      return Meteor.callAsync(
+        "is_proccess_auth",
+        app.restrictions,
+        Meteor.userId()
+      );
     });
     Promise.all(test)
       .then((apps) => {

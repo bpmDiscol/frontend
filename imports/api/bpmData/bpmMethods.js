@@ -9,66 +9,77 @@ const taskMode = {
 };
 
 Meteor.methods({
-  async get_task_list(filter) {
-    const userId = Meteor.userId({});
-    if (userId) {
-      const bonitaId = Meteor.users.findOne(Meteor.userId({})).profile
-        .bonitaUser;
-      return await Meteor.callAsync("get_data", {
+  async get_task_list(filter, user) {
+    if (user) {
+      const bonitaId = Meteor.users.findOne(user).profile?.bonitaUser;
+      const data = await Meteor.callAsync("manage_data", "get", {
         url: taskMode[filter] + bonitaId,
-        params: {},
+        data: {},
+        user,
       }).catch((error) => console.error("error catching data (get_data)"));
+      return data.response;
     }
     console.log("no user id");
     return [];
   },
-  async get_available_tasks() {
-    const userId = Meteor.users.findOne(Meteor.userId({})).profile.bonitaUser;
-    return await Meteor.callAsync("get_data", {
+  async get_available_tasks(user) {
+    const userId = Meteor.users.findOne(user).profile.bonitaUser;
+    const data = await Meteor.callAsync("manage_data", "get", {
       url: availableTasks + userId,
-      params: {},
+      data: {},
+      user,
     }).catch((error) => console.error(error));
+    return data.response;
   },
-  async get_done_tasks({ bonitaUserId }) {
-    return await Meteor.call("get_data", {
+  async get_done_tasks({ bonitaUserId, user }) {
+    const data = await Meteor.call("manage_data", "get", {
       url: doneTasks + bonitaUserId,
-      params: {},
+      data: {},
+      user,
     });
+    return data.response;
   },
 
-  async get_session() {
-    return await Meteor.callAsync("get_data", {
+  async get_session(user) {
+    const data = await Meteor.callAsync("manage_data", "get", {
       url: `/API/system/session/unusedId`,
-      params: {},
+      data: {},
+      user,
     }).catch((error) => console.error(error));
+    return data.response;
   },
-  async get_context({ taskId }) {
-    return await Meteor.callAsync("get_data", {
+  async get_context({ taskId, user }) {
+    const data = await Meteor.callAsync("manage_data", "get", {
       url: `/API/bpm/userTask/${taskId}/context`,
-      params: {},
+      data: {},
+      user,
     }).catch((error) => console.error(error));
+    return data.response;
   },
-  async get_task({ taskId }) {
-    return await Meteor.call("get_data", {
+  async get_task({ taskId, user }) {
+    return await Meteor.call("manage_data", "get", {
       url: `/API/bpm/userTask/${taskId}`,
-      params: {},
+      data: {},
+      user,
     });
   },
-  async assign_task_to({ user, currentUser, taskId }) {
+  async assign_task_to({ user, currentUser, taskId, userId }) {
     if (currentUser) {
       const assigned_id = user == "me" ? currentUser : user || "";
       if (taskId) {
-        return Meteor.callAsync("put_data", {
+        const data = Meteor.callAsync("manage_data", "put", {
           url: `/API/bpm/userTask/${taskId}`,
           data: {
             assigned_id,
           },
+          user: userId,
         }).catch((error) => console.error(error));
+        return data.response;
       } else return { error: "Tarea no asignada", taskId, assigned_id };
     } else return { error: "no user" };
   },
-  set_task_id({ taskId }) {
-    Meteor.users.update({ _id: Meteor.userId() }, { $set: { taskId } });
+  set_task_id({ taskId, user }) {
+    Meteor.users.update({ _id: user }, { $set: { taskId } });
   },
   assign_me_task() {
     Meteor.call("assing_task_to", { userId: -1 });
@@ -76,52 +87,62 @@ Meteor.methods({
   unasign_task() {
     Meteor.call("assing_task_to", { userId: "" });
   },
-  async request_data_links({ requestLinks }) {
+  async request_data_links({ requestLinks, user }) {
     if (!requestLinks) return;
     const requestData = requestLinks?.map((link) => {
-      return Meteor.callAsync("get_data", {
+      const data = Meteor.callAsync("manage_data", "get", {
         url: link.href,
-        params: {},
+        data: {},
+        user,
       }).catch((error) => console.error(error));
+      return data.response;
     });
     const allRequestData = await Promise.all(requestData);
-
     const response = {};
     allRequestData.forEach((data, index) => {
       response[requestLinks[index].rel] = data;
     });
     return response;
   },
-  async get_my_memberships() {
-    const bonitaUserId = Meteor.users.findOne(Meteor.userId({}))?.profile
-      ?.bonitaUser;
+  async get_my_memberships(user) {
+    const bonitaUserId = Meteor.users.findOne(user)?.profile?.bonitaUser;
 
-    const memberships = await Meteor.callAsync("get_data", {
+    const data = await Meteor.callAsync("manage_data", "get", {
       url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
-      params: {},
+      data: {},
+      user,
     }).catch((error) => console.error(error));
+    if (data.error) return [];
 
+    const memberships = data.response;
     if (memberships != "error" && memberships != "no token") {
       const roles = await memberships?.map(async (membership) => {
-        const roleDescription = await Meteor.callAsync("get_data", {
+        const roleDescription = await Meteor.callAsync("manage_data", "get", {
           url: `/API/identity/role/${membership.role_id}`,
-          params: {},
+          data: {},
+          user,
         });
 
-        const groupDescription = await Meteor.callAsync("get_data", {
+        const groupDescription = await Meteor.callAsync("manage_data", "get", {
           url: `/API/identity/group/${membership.group_id}`,
-          params: {},
+          data: {},
+          user,
         });
-        return [roleDescription?.name, groupDescription.name];
+        return [
+          roleDescription?.response?.name,
+          groupDescription?.response?.name,
+        ];
       });
       return await Promise.all(roles);
     }
   },
-  async is_proccess_auth(role) {
-    const resp = await Meteor.callAsync("get_my_memberships").catch((e) => {
-      console.log(e);
-      return [];
-    });
+  async is_proccess_auth(role, user) {
+    const resp = await Meteor.callAsync("get_my_memberships", user).catch(
+      (e) => {
+        console.log(e);
+        return [];
+      }
+    );
     if (resp?.length) {
       const authMemberships = resp.filter((membership) =>
         role.length == 1
@@ -132,16 +153,20 @@ Meteor.methods({
     }
     return;
   },
-  async get_application(token) {
-    return await Meteor.callAsync("get_data", {
+  async get_application(token, user) {
+    const data = await Meteor.callAsync("manage_data", "get", {
       url: `/API/living/application?p=0&c=100&f=token%3D${token}`,
-      params: {},
+      data: {},
+      user,
     }).catch((error) => console.error(error));
+    return data.response;
   },
-  async get_processes() {
-    return await Meteor.callAsync("get_data", {
+  async get_processes(user) {
+    const data = await Meteor.callAsync("manage_data", "get", {
       url: `/API/bpm/process?p=0&c=100`,
-      params: {},
+      data: {},
+      user,
     }).catch((error) => console.error(error));
+    return data.response;
   },
 });
