@@ -210,6 +210,7 @@ export default function EmployeeRequestBackground() {
           getCase(),
           getTask(),
           userName,
+          Meteor.userId(),
           (err, res) => {
             if (err) console.log(err);
             if (res == "no token") {

@@ -8,29 +8,56 @@ export default function CandidateData({ data }) {
   const bussines = [
     {
       key: "1",
-      label: "¿Ha laborado antes en DISCOL?",
-      children: (
-        <Tag color={data.isPreviusEmployee ? "warning" : "success"}>
-          {data.isPreviusEmployee ? "Si" : "No"}
-        </Tag>
+      label: data.isPreviusEmployee
+        ? "Laboró antes en DISCOL"
+        : "No ha laborado en DISCOL",
+      children: data.isPreviusEmployee && (
+        <Flex vertical gap={5}>
+          <Tag color="warning">
+            Motivo de retiro: {data.retirementMotive || "No descrito"}
+          </Tag>
+          <Tag color="warning">
+            Fecha de retiro: {data.retirementDate || "No descrito"}
+          </Tag>
+        </Flex>
       ),
       span: 3,
     },
     {
       key: "2",
-      label: "¿Motivo de retiro?",
-      children: data.retirementMotive || (
-        <Tag>{data.isPreviusEmployee ? "No introducido" : "No requerido"} </Tag>
+      label: data.isAboutBussiness
+        ? "Laboró en empresas contratistas asociadas"
+        : "No ha aborado en empresas contratistas asociadas",
+      children: data.isAboutBussiness && (
+        <Flex vertical gap={5}>
+          <Tag color="warning">
+            Empresa: {data.aboutBusinessName || "No descrito"}
+          </Tag>
+          <Tag color="warning">
+            Motivo de retiro: {data.aboutBusinessMotive || "No descrito"}
+          </Tag>
+          <Tag color="warning">
+            Jefe inmediato: {data.aboutBusinessBoss || "No descrito"}
+          </Tag>
+        </Flex>
       ),
       span: 3,
     },
     {
       key: "3",
-      label: "¿Fecha de retiro?",
-      children: data.retirementDate || (
-        <Tag>{data.isPreviusEmployee ? "No introducido" : "No requerido"} </Tag>
+      label: data.isAboutFamily
+        ? "Tiene familiares en DISCOL"
+        : "No tiene familiares en DISCOL",
+      children: data.isAboutFamily && (
+        <Flex vertical gap={5}>
+          <Tag color="warning">
+            Familiar: {data.kinName || "No descrito"}
+          </Tag>
+          <Tag color="warning">
+            Parentezco: {data.kinship || "No descrito"}
+          </Tag>
+        </Flex>
       ),
-
       span: 3,
     },
   ];
@@ -39,7 +66,7 @@ export default function CandidateData({ data }) {
       <Title level={3}>
         {data.name} {data.lastNames}
       </Title>
-      <Descriptions bordered size="small" items={bussines} />;
+      <Descriptions bordered layout="vertical" size="small" items={bussines} />
     </Flex>
   );
 }
