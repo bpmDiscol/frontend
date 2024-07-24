@@ -21,6 +21,7 @@ export default function CandidateList({ requestEmployee }) {
             lastNames: `${capitalize(request.applicantMidname)} ${capitalize(
               request.applicantLastname
             )}`,
+            interviewId: request.fileId,
           };
           if (Object.keys(requestEmployee).includes("interviewInput")) {
             response = {
@@ -42,7 +43,6 @@ export default function CandidateList({ requestEmployee }) {
                 translate[requestEmployee.interviewInput[index]?.status],
               salaryGoal: requestEmployee.interviewInput[index]?.salaryGoal,
               // subdata
-              interviewId: requestEmployee.interviewInput[index]?.interviewId,
 
               isAboutBussiness:
                 requestEmployee.interviewInput[index]?.isAboutBussiness,
@@ -200,7 +200,7 @@ export default function CandidateList({ requestEmployee }) {
                   style={{ fontSize: "10px" }}
                   color={value === "Seleccionado" ? "success" : "error"}
                 >
-                  {value}
+                  {value||"Para entrevista"}
                 </Tag>
               )}
             />

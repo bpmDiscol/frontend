@@ -78,13 +78,13 @@ export default function CandidateData({ data }) {
     {
       key: "5",
       label: "Nivel académico",
-      children: capitalize(data.academicLevel),
+      children: capitalize(data?.academicLevel||""),
       span: 3,
     },
     {
       key: "6",
       label: "Titulo obtenido",
-      children: capitalize(data.grade),
+      children: capitalize(data?.grade||""),
       span: 3,
     },
     {
