@@ -1,6 +1,6 @@
 import React from "react";
 import { differenceInMinutes, parseISO } from "date-fns";
-import formatDuration from "../AdminDashboard/formatDuration";
+import formatDuration from "../RequestDashboard/formatDuration";
 
 export default function TimeCounter({ startDate, endDate }) {
   const [clock, setClock] = React.useState();

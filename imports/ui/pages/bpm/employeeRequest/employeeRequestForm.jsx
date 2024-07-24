@@ -43,10 +43,6 @@ export default function EmployeeRequestForm() {
     });
   }, []);
 
-  // React.useEffect(() => {
-  //   if (requestData) setTabView(LoadPage(tabContents[currentTab]));
-  // }, [requestData]);
-  //re render dependiendo de request data
 
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
@@ -114,7 +110,6 @@ export default function EmployeeRequestForm() {
   function request(callback) {
     Meteor.call("get_task_data", "employeeRequestForm", Meteor.userId(),  (error, response) => {
       if (!error) {
-        console.log(response);
         callback(response ? response[0] : []);
       }
     });
@@ -126,7 +121,6 @@ export default function EmployeeRequestForm() {
       "start_employee_request",
       { request, processId, user: Meteor.userId() },
       (error, response) => {
-        console.log(response)
         setWaitingToSend(false);
         if (response?.error) {
           if (response?.status >= 500) {

@@ -19,7 +19,6 @@ export default function PositionCurricullums() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [taskId, setTaskId] = React.useState();
   const [blackListeds, setBlackListeds] = React.useState([]);
-  const [container, setContainer] = React.useState();
 
   const blackList = useTracker(() => {
     Meteor.subscribe("blackList");
@@ -89,7 +88,6 @@ export default function PositionCurricullums() {
       style={{
         width: "100%",
       }}
-      ref={setContainer}
     >
       <Button
         id="add-curricullum"

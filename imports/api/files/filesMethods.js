@@ -20,7 +20,7 @@ Meteor.methods({
   },
   async getFileLink({ id, collectionName }) {
     return collection[`${collectionName}`].collection
-      .find({})
+      .find({}).fetch()
       .map(function (fileRef) {
         return {
           link: replaceBaseUrl(collection[`${collectionName}`].link(fileRef)),

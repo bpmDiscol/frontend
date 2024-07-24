@@ -123,7 +123,7 @@ Meteor.methods({
       const curricullumsCorrecteds = curricullumsInput.map((curricullum) => ({
         applicantName: curricullum.applicantName,
         applicantMidname: curricullum.applicantMidname,
-        applicantLastname: curricullum.applicantName,
+        applicantLastname: curricullum.applicantLastName,
         foundBy: curricullum.foundBy,
         fileId: curricullum.file.uid,
       }));

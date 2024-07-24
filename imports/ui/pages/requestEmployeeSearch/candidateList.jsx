@@ -1,9 +1,11 @@
-import { Empty, Flex, Table, Tag } from "antd";
+import { Empty, Flex, Table, Tabs, Tag } from "antd";
 import React from "react";
 import getAvailablesValues from "./getAvailablesValues";
 import translate from "../../misc/translate.json";
 import capitalize from "../../misc/capitalize";
 import CandidateData from "./candidateData";
+import CandidateDocuments from "./candidateDocuments";
+import Title from "antd/es/typography/Title";
 
 export default function CandidateList({ requestEmployee }) {
   const [candidatesData, setCandidateData] = React.useState();
@@ -72,6 +74,10 @@ export default function CandidateList({ requestEmployee }) {
               study: requestEmployee.interviewInput[index]?.study,
               systemKnown: requestEmployee.interviewInput[index]?.systemKnown,
 
+              sizeShirt: requestEmployee.interviewInput[index]?.sizeShirt,
+              sizeShoes: requestEmployee.interviewInput[index]?.sizeShoes,
+              sizePants: requestEmployee.interviewInput[index]?.sizePants,
+
               laboralExperience:
                 requestEmployee.interviewInput[index]?.laboralExperience,
 
@@ -125,9 +131,29 @@ export default function CandidateList({ requestEmployee }) {
       setCandidateData(candidatesData);
     }
   }, [requestEmployee]);
+
+  const tabs = [
+    {
+      key: 1,
+      label: `Entrevista`,
+      children: <CandidateData data={selectedCandidate} />,
+    },
+    {
+      key: 2,
+      label: `Documentos`,
+      children: (
+        <CandidateDocuments
+          id={selectedCandidate?.interviewId}
+          backgrounds={requestEmployee?.backgoundsInput}
+          cvFiles={requestEmployee?.cvFilesInput}
+        />
+      ),
+    },
+  ];
+
   return (
     <Flex vertical>
-      <Flex justify="center" style={{ height: "30dvh", border:'1px solid' }}>
+      <Flex justify="center" style={{ height: "30dvh", border: "1px solid" }}>
         {!candidatesData && (
           <Empty
             description="Aún sin candidatos"
@@ -152,7 +178,7 @@ export default function CandidateList({ requestEmployee }) {
               y: 440,
               x: 100,
             }}
-            rowKey={(record)=> record.interviewId}
+            rowKey={(record) => record.interviewId}
             onRow={(record) => {
               return {
                 onClick: () => setSelectedCandidate(record),
@@ -274,7 +300,15 @@ export default function CandidateList({ requestEmployee }) {
           </Table>
         )}
       </Flex>
-      {selectedCandidate && <CandidateData data={selectedCandidate} />}
+      {selectedCandidate && (
+        <Flex vertical>
+          <Title level={3}>
+            {selectedCandidate.name} {selectedCandidate.lastNames}
+          </Title>
+
+          <Tabs style={{ width: "100%" }} items={tabs} />
+        </Flex>
+      )}
     </Flex>
   );
 }

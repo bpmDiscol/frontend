@@ -35,11 +35,13 @@ export default function RequestGeneralities({
   }, [requestData]);
 
   async function getMyAreaOptions() {
-    const memberships = await Meteor.callAsync("get_my_memberships", Meteor.userId())
+    const memberships = await Meteor.callAsync(
+      "get_my_memberships",
+      Meteor.userId()
+    )
       .then((resp) => resp)
       .catch(() => []);
     if (memberships?.length) {
-      
       const isDirector = memberships.filter(
         (membership) =>
           JSON.stringify(["director", "discol"]) === JSON.stringify(membership)
@@ -50,7 +52,10 @@ export default function RequestGeneralities({
       return flatMemberships
         .filter((item, index) => flatMemberships.indexOf(item) === index)
         .filter(
-          (item) => !["Lider", "member", "digitador", "admin", "director"].includes(item)
+          (item) =>
+            !["Lider", "member", "digitador", "admin", "director"].includes(
+              item
+            )
         )
         .map((group) => {
           return {
@@ -78,7 +83,7 @@ export default function RequestGeneralities({
               status={fiterErrors("vacancies")}
               defaultValue={parseInt(requestData?.vacancies)}
               onChange={(value) => update("vacancies", value)}
-              min={0}
+              min={1}
               max={100}
             />
           </Form.Item>
@@ -174,12 +179,18 @@ export default function RequestGeneralities({
           {!isUndefinedTermContract && (
             <Form.Item label="Duración" id="duration">
               <Space.Compact style={{ width: "100%" }}>
-                <Input
+                <InputNumber
+                  stringMode
+                  inputMode="numeric"
                   id="durationCuantity"
                   status={fiterErrors("duration")}
-                  defaultValue={requestData?.duration?.cuantity || 0}
+                  defaultValue={parseInt(
+                    requestData?.duration?.cuantity || "0"
+                  )}
                   type="number"
-                  onChange={(e) => update("duration.cuantity", e.target.value)}
+                  onChange={(value) => update("duration.cuantity", value)}
+                  min={1}
+                  max={100}
                 />
 
                 <Select
@@ -214,14 +225,19 @@ export default function RequestGeneralities({
               id={"bonusesFrecuency"}
             >
               <Space.Compact style={{ width: "100%" }}>
-                <Input
-                  id="bonusesFrecuencyCuantity"
-                  status={fiterErrors("bonusesFrecuency")}
-                  defaultValue={requestData?.bonusesFrecuency?.cuantity || 0}
+                <InputNumber
+                  stringMode
+                  inputMode="numeric"
+                  defaultValue={parseInt(
+                    requestData?.bonusesFrecuency?.cuantity || "1"
+                  )}
                   type="number"
-                  onChange={(e) =>
-                    update("bonusesFrecuency.cuantity", e.target.value)
+                  onChange={(value) =>
+                    update("bonusesFrecuency.cuantity", value)
                   }
+                  min={1}
+                  max={100}
+                  id="bonusesFrecuencyCuantity"
                 />
                 <Select
                   options={timeOptions}
