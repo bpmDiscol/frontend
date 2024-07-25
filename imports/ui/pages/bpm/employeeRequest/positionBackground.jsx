@@ -2,7 +2,9 @@ import React from "react";
 import { Button, Drawer, Empty, Flex } from "antd";
 import Icon, {
   CheckCircleOutlined,
+  CheckCircleTwoTone,
   CloseCircleOutlined,
+  CloseCircleTwoTone,
   DownloadOutlined,
   EditFilled,
   FileTextFilled,
@@ -13,6 +15,8 @@ import Icon, {
 import BackgroundForm from "../../../components/backgroundForm/index.jsx";
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 import Transition from "../../../components/transition/index.jsx";
+import UploadFileButton from "../../../components/uploadFileButton/index.jsx";
+import { getTask, getTaskName } from "../../../config/taskManagement.js";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
@@ -23,6 +27,8 @@ export default function PositionBackgroud({
   interviews,
   warningUsers,
 }) {
+  const [background, setBackground] = React.useState();
+  const [taskId, setTaskId] = React.useState();
   const [drawerData, setDrawerData] = React.useState(closed);
 
   function newTab(url, download = false) {
@@ -37,9 +43,47 @@ export default function PositionBackgroud({
     setDrawerData(closed);
   }
 
+  React.useEffect(() => {
+    const taskId = getTaskName() + getTask();
+    setTaskId(taskId);
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
+      if (!err && resp) setBackground(resp[0]);
+    });
+  }, []);
+
+  async function updateData(field, value) {
+    await Meteor.callAsync("update_task", {
+      taskId,
+      field,
+      value,
+      user: Meteor.userId(),
+    }).catch((e) => console.log(e));
+  }
+
+  function checkPreFile(id) {
+    const currentBackgound = Object.keys(background).includes(id);
+    if (currentBackgound)
+      return Object.keys(background[id]).includes("legal_background")
+        ? background[id].legal_background
+        : undefined;
+  }
+
+  function toggleApproved(id) {
+    const currentCandidate = { ...background[id] };
+    const currentState = currentCandidate?.approved;
+    const updatedCandidate = { ...currentCandidate, approved: !currentState };
+    setBackground({ ...background, [id]: updatedCandidate });
+    updateData(`${id}.approved`, !currentState);
+  }
+  function isApproved(id) {
+    const isPresent = Object.keys(background).includes(id);
+    if (!isPresent) return;
+    return background[id].approved;
+  }
+
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
+      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 60dvw)" }}>
         {curricullums &&
           curricullums
             .map((interview, index) => {
@@ -50,17 +94,9 @@ export default function PositionBackgroud({
                   align="center"
                   style={{
                     borderRadius: "5px",
-                    border: `2px solid ${
-                      interviews[index].selected
-                        ? warningUsers.includes(interview.fileId)
-                          ? "orange"
-                          : "green"
-                        : "red"
-                    }`,
-                    padding: "5px 10px",
-                    boxShadow: `2px 2px 15px ${
-                      interviews[index].selected ? "green" : "red"
-                    }`,
+                    border: `2px solid`,
+                    padding: "7px 15px",
+                    boxShadow: `2px 2px 15px black`,
                   }}
                 >
                   <Flex
@@ -119,19 +155,44 @@ export default function PositionBackgroud({
                         />
                       }
                     />
-                    <Button
-                      title="Llenar antecedentes"
-                      onClick={() => {
-                        setDrawerData({
-                          applicant: interview,
-                          open: true,
-                          view: <BackgroundForm id={interview.fileId} />,
-                        });
-                      }}
-                      type="primary"
-                      shape="circle"
-                      icon={<img src="/icons/checkboxList.svg" />}
-                    />
+                    {background && (
+                      <UploadFileButton
+                        targetCollection={"background"}
+                        onUpload={(uploadData) =>
+                          updateData(interview.fileId, {
+                            legal_background: uploadData,
+                          })
+                        }
+                        defaultFileShow={
+                          checkPreFile(interview.fileId)
+                            ? [checkPreFile(interview.fileId)]
+                            : undefined
+                        }
+                      />
+                    )}
+                    {background && (
+                      <Button
+                        iconPosition="end"
+                        icon={
+                          isApproved(interview.fileId) ? (
+                            <CheckCircleTwoTone twoToneColor="#52c41a" />
+                          ) : (
+                            <CloseCircleTwoTone twoToneColor={"red"} />
+                          )
+                        }
+                        onClick={() => toggleApproved(interview.fileId)}
+                        style={{
+                          width: "10rem",
+                          backgroundColor: isApproved(interview.fileId)
+                            ? "lightgreen"
+                            : "lightpink",
+                        }}
+                      >
+                        {isApproved(interview.fileId)
+                          ? "Aprobado"
+                          : "No aprobado"}
+                      </Button>
+                    )}
                   </Flex>
                   <Flex style={{ position: "absolute", right: "10%" }}>
                     {warningUsers.includes(interview.fileId) && (
@@ -147,7 +208,6 @@ export default function PositionBackgroud({
             })
             .filter((_, i) => interviews[i].selected)}
       </Flex>
-
       <Drawer
         title={`${drawerData.applicant?.applicantName} ${drawerData.applicant?.applicantMidname} ${drawerData.applicant?.applicantLastname}`.toUpperCase()}
         width={"100lvw"}

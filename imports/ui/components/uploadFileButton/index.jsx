@@ -1,7 +1,7 @@
-import { Button, message, Upload } from "antd";
+import { Button, message, Spin, Upload } from "antd";
 import React, { useState } from "react";
 import { deleteFile, uploadFile } from "../../misc/filemanagement";
-import { CloudUploadOutlined } from "@ant-design/icons";
+import { CloudUploadOutlined, LoadingOutlined } from "@ant-design/icons";
 
 export default function UploadFileButton({
   targetCollection,
@@ -9,16 +9,18 @@ export default function UploadFileButton({
   defaultFileShow,
 }) {
   const [isLoading, setLoading] = useState(false);
-  const [currentFile, setCurrentFile] = useState();
+  const [currentFile, setCurrentFile] = useState(
+    defaultFileShow ? defaultFileShow[0] : null
+  );
   const isLoaded = currentFile || defaultFileShow;
   function remove() {
     deleteFile(targetCollection, currentFile.uid);
+    onUpload(null);
     setCurrentFile(null);
   }
 
   function upload(file) {
     setLoading(true);
-    if (currentFile) deleteFile(targetCollection, currentFile._id);
 
     uploadFile(
       targetCollection,
@@ -29,14 +31,14 @@ export default function UploadFileButton({
           name,
           status: "done",
         };
+        if (currentFile) deleteFile(targetCollection, currentFile?.uid);
         setCurrentFile(result);
         onUpload(result);
         setLoading(false);
       },
       (error) => {
-        console.log("error en la carga");
-        console.log(error);
-        message.error("Error al cargar archivo");
+        message.warning(error.reason);
+        setLoading(false);
       }
     );
     return false;
@@ -63,6 +65,7 @@ export default function UploadFileButton({
       >
         {isLoaded ? "Archivo cargado" : "Cargar archivo"}
       </Button>
+      <Spin fullscreen spinning={isLoading} indicator={<LoadingOutlined spin />} />
     </Upload>
   );
 }

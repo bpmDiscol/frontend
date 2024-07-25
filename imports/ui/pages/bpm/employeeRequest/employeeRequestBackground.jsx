@@ -132,62 +132,7 @@ export default function EmployeeRequestBackground() {
 
   function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return handleBeforeSend();
-  }
-
-  function handleBeforeSend() {
-    const taskId = getTaskName() + getTask();
-    const fields = [
-      "policia",
-      "contraloria",
-      "procuraduria",
-      "status",
-      "notes",
-    ];
-    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
-      if (!err && resp?.length) {
-        if (!resp[0].backgrounds) {
-          openNotification(
-            "error",
-            "No se ha cargado nada 😒",
-            "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
-          );
-          return;
-        }
-        const bg = Object.keys(resp[0].backgrounds);
-        const interviewIds = requestEmployeeData.interviewInput
-          .filter((data) => data.selected)
-          .map((data) => data.interviewId);
-
-        if (!sonIguales(bg, interviewIds)) {
-          const diference = interviewIds.filter((x) => !bg.includes(x));
-          setWarningUsers(diference);
-          openNotification(
-            "warning",
-            "No has terminado aún!!",
-            "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
-          );
-          return;
-        }
-
-        const warningUsers = bg
-          .map((bgId) => {
-            const bgKeys = Object.keys(resp[0].backgrounds[bgId]);
-            if (!sonIguales([...bgKeys, "notes"], fields)) return bgId;
-            else {
-              const values = bgKeys
-                .map((bgKey) => resp[0].backgrounds[bgId][bgKey] == null)
-                .filter((result) => result);
-              if (values.some((value) => value == true)) return bgId;
-            }
-          })
-          .filter((val) => val);
-        if (warningUsers.length) {
-          setWarningUsers(warningUsers);
-          setWarningMessage(true);
-        } else request();
-      }
-    });
+    if (buttonResponse == "send") return request();
   }
 
   function request() {
@@ -195,10 +140,26 @@ export default function EmployeeRequestBackground() {
     const taskId = getTaskName() + getTask();
     Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
-        const bgs = resp[0].backgrounds;
-        const rejecteds = Object.keys(bgs).filter(
-          (key) => bgs[key].status == "rejected"
+        const { taskId, ...bgs } = resp[0];
+        const handledCandidates = Object.keys(bgs);
+        const uploadeds = handledCandidates.filter((key) =>
+          Object.keys(bgs[key]).includes("legal_background")
         );
+
+        if (
+          handledCandidates.length < curricullums.length ||
+          uploadeds.length < curricullums.length
+        ) {
+          openNotification(
+            "warning",
+            "¡Ups... se te ha olvidado algo!",
+            "Al parecer no has has cargado algunos archivos"
+          );
+          setWaitingToSend(false);
+          return;
+        }
+
+        const rejecteds = Object.keys(bgs).filter((key) => !bgs[key].approved);
 
         Meteor.callAsync("send_backgrounds", getCase(), bgs).catch((err) =>
           console.log(err)
@@ -225,9 +186,6 @@ export default function EmployeeRequestBackground() {
                 Meteor.callAsync("delete_task", taskId, Meteor.userId()).catch(
                   (err) => console.log(err)
                 );
-                // Meteor.callAsync("clean_unselecteds", getCase()).catch((err) =>
-                //   console.log(err)
-                // );
 
                 openNotification(
                   "success",

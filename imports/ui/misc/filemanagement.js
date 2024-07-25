@@ -23,7 +23,7 @@ export async function uploadFile(collectionId, fileData, callback, errCallback) 
   );
 
   upload.on("uploaded", (error, fileObj) => {
-    if (error) console.log(error);
+    if (error) console.warn(error.reason);
     else {
       return callback(fileObj);
     }

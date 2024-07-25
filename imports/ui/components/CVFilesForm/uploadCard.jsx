@@ -14,7 +14,7 @@ export default function UploadFile({
     : null;
 
   function onLoad(file) {
-    setCurrentCVFiles({ _id: file.uid, name: file.name }, targetField);
+    setCurrentCVFiles({ _id: file?.uid, name: file?.name }, targetField);
   }
 
   return (

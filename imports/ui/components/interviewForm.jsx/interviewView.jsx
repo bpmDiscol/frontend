@@ -57,9 +57,9 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
       finalConcept
     ) {
       personalAnnotations.current.innerHTML = interviewForm.personalAnnotation;
-      tecnicalknowledge.current.innerHTML = interviewForm.tecnicalknowledge;
-      learningAdaptation.current.innerHTML = interviewForm.learningAdaptation;
-      tecnicalEvaluation.current.innerHTML = interviewForm.tecnicalEvaluation;
+      // tecnicalknowledge.current.innerHTML = interviewForm.tecnicalknowledge;
+      // learningAdaptation.current.innerHTML = interviewForm.learningAdaptation;
+      // tecnicalEvaluation.current.innerHTML = interviewForm.tecnicalEvaluation;
       finalConcept.current.innerHTML = interviewForm.finalConcept;
     }
 

@@ -1,5 +1,4 @@
 import React from "react";
-import { CookiesProvider } from "react-cookie";
 import SecurityProvider from "./context/securityProvider";
 import Workshop from "./pages/workshop";
 import MainViewProvider from "./context/mainViewProvider";
@@ -12,7 +11,6 @@ import AlertNotificationsProvider from "./context/alertNotificationsProvider";
 
 export function App() {
   return (
-    <CookiesProvider>
       <AntdApp>
         <NotificationsProvider>
           <SecurityProvider publicPage={<PublicLogin />}>
@@ -26,6 +24,5 @@ export function App() {
           </SecurityProvider>
         </NotificationsProvider>
       </AntdApp>
-    </CookiesProvider>
   );
 }
