@@ -20,6 +20,10 @@ export default function UploadFileButton({
   }
 
   function upload(file) {
+    if(file.size > 10485760){
+      message.warning('El archivo no puede tener mas de 10Mb')
+      return
+    }
     setLoading(true);
 
     uploadFile(
