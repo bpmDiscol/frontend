@@ -547,7 +547,7 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
             />
           </Col>
         </Row>
-
+{/* 
         <Flex vertical>
           <Title level={4}>Evaluación lider de area/proyecto</Title>
           <Title level={5}>Conocimientos técnicos</Title>
@@ -596,7 +596,7 @@ export default function InterviewView({ onClose, fileId, interviewForm }) {
               id="personal-annotations"
             ></div>
           </Flex>
-        </Flex>
+        </Flex> */}
 
         <Flex vertical>
           <Title level={4}>Concepto final de entrevista</Title>

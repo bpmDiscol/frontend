@@ -144,7 +144,7 @@ export default function EmployeeRequestBackground() {
       "status",
       "notes",
     ];
-    Meteor.call("get_task_data", taskId, Meteor.userId(),  (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         if (!resp[0].backgrounds) {
           openNotification(
@@ -193,7 +193,7 @@ export default function EmployeeRequestBackground() {
   function request() {
     setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
-    Meteor.call("get_task_data", taskId, Meteor.userId(),  (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         const bgs = resp[0].backgrounds;
         const rejecteds = Object.keys(bgs).filter(
@@ -222,8 +222,8 @@ export default function EmployeeRequestBackground() {
               safeLogOut();
             } else {
               if (!res.error) {
-                Meteor.callAsync("delete_task", taskId, Meteor.userId(),).catch((err) =>
-                  console.log(err)
+                Meteor.callAsync("delete_task", taskId, Meteor.userId()).catch(
+                  (err) => console.log(err)
                 );
                 // Meteor.callAsync("clean_unselecteds", getCase()).catch((err) =>
                 //   console.log(err)
@@ -260,6 +260,7 @@ export default function EmployeeRequestBackground() {
             options={tabTitles}
             defaultValue={tabContents.length - 1}
             onChange={(value) => reloadPage(value)}
+            disabled={!requestEmployeeData}
           />
         </Flex>
         <SpinningLoader condition={requestEmployeeData} content={tabView} />

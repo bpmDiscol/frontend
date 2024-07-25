@@ -43,12 +43,14 @@ export default function EmployeeRequestForm() {
     });
   }, []);
 
-
   async function updateData(field, value) {
     const taskId = "employeeRequestForm";
-    await Meteor.callAsync("update_task", { taskId, field, value, user: Meteor.userId() }).catch(
-      (error) => console.error(error)
-    );
+    await Meteor.callAsync("update_task", {
+      taskId,
+      field,
+      value,
+      user: Meteor.userId(),
+    }).catch((error) => console.error(error));
   }
 
   function fiterErrors(fieldId) {
@@ -108,11 +110,16 @@ export default function EmployeeRequestForm() {
   }
 
   function request(callback) {
-    Meteor.call("get_task_data", "employeeRequestForm", Meteor.userId(),  (error, response) => {
-      if (!error) {
-        callback(response ? response[0] : []);
+    Meteor.call(
+      "get_task_data",
+      "employeeRequestForm",
+      Meteor.userId(),
+      (error, response) => {
+        if (!error) {
+          callback(response ? response[0] : []);
+        }
       }
-    });
+    );
   }
 
   function startRequest(request) {
@@ -133,7 +140,6 @@ export default function EmployeeRequestForm() {
           }
 
           if (response?.status >= 400) {
-            
             safeLogOut();
             openNotification(
               "error",
@@ -149,7 +155,7 @@ export default function EmployeeRequestForm() {
             "Algunos campos necesitan llenarse. Revisa los formularios e intenta nuevamente"
           );
         } else {
-          Meteor.call("delete_task", "employeeRequestForm", Meteor.userId(),);
+          Meteor.call("delete_task", "employeeRequestForm", Meteor.userId());
           setTimeout(() => {
             setView("process");
           }, 1000);
@@ -195,6 +201,7 @@ export default function EmployeeRequestForm() {
           defaultValue={0}
           value={currentTab}
           onChange={(value) => changeTab(value)}
+          disabled={!requestEmployeeData}
         />
 
         <SpinningLoader condition={requestData} content={tabView} />

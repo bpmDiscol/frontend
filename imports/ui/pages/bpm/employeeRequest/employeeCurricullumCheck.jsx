@@ -193,6 +193,7 @@ export default function EmployeeCurricullumCheck() {
             options={tabTitles}
             defaultValue={tabContents.length - 1}
             onChange={(value) => reloadPage(value)}
+            disabled={!requestEmployeeData}
           />
         </Flex>
         <SpinningLoader condition={requestEmployeeData} content={tabView} />

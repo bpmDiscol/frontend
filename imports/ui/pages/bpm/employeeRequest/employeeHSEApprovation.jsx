@@ -165,7 +165,7 @@ export default function EmployeeHSEApprovation() {
           safeLogOut();
         } else {
           if (!res.error) {
-            Meteor.call("delete_task", taskId, Meteor.userId(),);
+            Meteor.call("delete_task", taskId, Meteor.userId());
             openNotification(
               "success",
               "¡Buen trabajo!",
@@ -196,6 +196,7 @@ export default function EmployeeHSEApprovation() {
             options={tabTitles}
             defaultValue={tabContents.length - 1}
             onChange={(value) => reloadPage(value)}
+            disabled={!requestEmployeeData}
           />
         </Flex>
         <SpinningLoader condition={requestEmployeeData} content={tabView} />

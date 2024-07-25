@@ -30,9 +30,7 @@ export default function EmployeeRequestAdm() {
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
-    const req = requestEmployeeCollection
-      .find({ caseId: getCase() })
-      .fetch();
+    const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
 
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
@@ -89,13 +87,12 @@ export default function EmployeeRequestAdm() {
         concept,
         caseId: getCase(),
         taskId: getTask(),
-        user: Meteor.userId()
+        user: Meteor.userId(),
       },
       (error, response) => {
         setWaitingToSend(false);
         if (response == "no token") safeLogOut();
         else {
-          
           if (!response?.error) {
             openNotification(
               response?.error ? "error" : "success",
@@ -126,6 +123,7 @@ export default function EmployeeRequestAdm() {
             setTabView(<LoadPage Component={tabContents[value]} />);
           }}
           defaultValue={tabContents.length - 1}
+          disabled={!requestEmployeeData}
         />
         <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>

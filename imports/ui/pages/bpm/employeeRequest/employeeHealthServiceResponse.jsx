@@ -145,7 +145,7 @@ export default function EmployeeHealthServiceResponse() {
 
   function handleBeforeSend() {
     const taskId = getTaskName() + getTask();
-    Meteor.call("get_task_data", taskId, Meteor.userId(),  (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         if (!resp[0].healthResponse) {
           openNotification(
@@ -184,7 +184,7 @@ export default function EmployeeHealthServiceResponse() {
   function request() {
     setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
-    Meteor.call("get_task_data", taskId, Meteor.userId(),  (err, resp) => {
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
         const hr = resp[0].healthResponse;
         Meteor.call(
@@ -206,7 +206,7 @@ export default function EmployeeHealthServiceResponse() {
               safeLogOut();
             } else {
               if (!res.error) {
-                Meteor.call("delete_task", taskId, Meteor.userId(),);
+                Meteor.call("delete_task", taskId, Meteor.userId());
                 openNotification(
                   "success",
                   "¡Buen trabajo!",
@@ -238,6 +238,7 @@ export default function EmployeeHealthServiceResponse() {
             options={tabTitles}
             defaultValue={tabContents.length - 1}
             onChange={(value) => reloadPage(value)}
+            disabled={!requestEmployeeData}
           />
         </Flex>
         <SpinningLoader condition={requestEmployeeData} content={tabView} />

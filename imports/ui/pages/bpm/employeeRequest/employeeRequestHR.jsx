@@ -31,9 +31,7 @@ export default function EmployeeRequestHR() {
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
-    const req = requestEmployeeCollection
-      .find({ caseId: getCase() })
-      .fetch();
+    const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
       const requestEmployee = {
@@ -91,7 +89,7 @@ export default function EmployeeRequestHR() {
         concept,
         caseId: getCase(),
         taskId: getTask(),
-        user: Meteor.userId()
+        user: Meteor.userId(),
       },
       (error, response) => {
         setWaitingToSend(false);
@@ -105,7 +103,8 @@ export default function EmployeeRequestHR() {
             );
             setTimeout(() => {
               setView("tasks");
-            }, 1000);          }
+            }, 1000);
+          }
         }
       }
     );
@@ -126,6 +125,7 @@ export default function EmployeeRequestHR() {
             setTabView(<LoadPage Component={tabContents[value]} />);
           }}
           defaultValue={tabContents.length - 1}
+          disabled={!requestEmployeeData}
         />
         <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>

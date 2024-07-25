@@ -82,9 +82,14 @@ export default function EmployeeRequestResponse({
       return;
     }
     if (!response?.error) {
-      Meteor.call("delete_task", getTaskName() + getTask(), Meteor.userId(), (err) => {
-        if (!err) sessionStorage.removeItem("albous");
-      });
+      Meteor.call(
+        "delete_task",
+        getTaskName() + getTask(),
+        Meteor.userId(),
+        (err) => {
+          if (!err) sessionStorage.removeItem("albous");
+        }
+      );
       openNotification(
         "success",
         "¡Buen trabajo!",
@@ -109,6 +114,7 @@ export default function EmployeeRequestResponse({
           options={tabTitles}
           defaultValue={tabNumber}
           onChange={(value) => reloadPage(value)}
+          disabled={!requestEmployeeData}
         />
         <SpinningLoader condition={requestEmployeeData} content={tabView} />
       </Flex>

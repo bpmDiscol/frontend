@@ -58,13 +58,13 @@ const menuList = [
     icon: "personalAptitudes",
     form: CompetencesStep,
   },
-  {
-    label: "Lider",
-    id: "leader",
-    title: "Evaluación del lider de area/proyecto",
-    icon: "admin",
-    form: LeaderStep,
-  },
+  // {
+  //   label: "Lider",
+  //   id: "leader",
+  //   title: "Evaluación del lider de area/proyecto",
+  //   icon: "admin",
+  //   form: LeaderStep,
+  // },
   {
     label: "Concepto",
     id: "final-concept",
