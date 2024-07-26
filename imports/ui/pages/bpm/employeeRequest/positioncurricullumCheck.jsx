@@ -145,7 +145,6 @@ export default function PositionCurricullumCheck({
                   />
                   {background && (
                     <Button
-                      iconPosition="end"
                       onClick={() => toggleApproved(interview.fileId)}
                       style={{
                         width: "10rem",

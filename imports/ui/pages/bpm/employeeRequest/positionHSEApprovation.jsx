@@ -86,7 +86,7 @@ export default function PositionHSEApprovation({
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
+      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 600dvw)" }}>
         {curricullums
           ?.map((interview, index) => {
             return (
@@ -158,28 +158,20 @@ export default function PositionHSEApprovation({
                     shape="circle"
                     icon={<WechatFilled style={{ fontSize: "20px" }} />}
                   />
-                  <Tooltip
-                    title={
-                      (checkeds.includes(interview.fileId)
-                        ? "Rechazar"
-                        : "Seleccionar") + " este candidato"
-                    }
+
+                  <Button
+                    style={{
+                      width: "10rem",
+                      backgroundColor: checkeds.includes(interview.fileId)
+                        ? "lightgreen"
+                        : "lightpink",
+                    }}
+                    onClick={() => handleCandidate(interview.fileId)}
                   >
-                    <Button
-                      type="primary"
-                      shape="circle"
-                      icon={
-                        <CheckOutlined
-                          style={{
-                            fontSize: checkeds.includes(interview.fileId)
-                              ? 20
-                              : 14,
-                          }}
-                        />
-                      }
-                      onClick={() => handleCandidate(interview.fileId)}
-                    />
-                  </Tooltip>
+                    {checkeds.includes(interview.fileId)
+                      ? "Aprobado"
+                      : "No aprobado"}
+                  </Button>
                 </Flex>
               </Flex>
             );
