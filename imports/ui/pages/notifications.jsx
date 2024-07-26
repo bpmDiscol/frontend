@@ -24,9 +24,9 @@ export default function Notifications() {
         renderItem={(alert) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<img src={`/alerts/${alert.process}.png`} />}
-              title={alert.message}
-              description={formatDate(alert.date)}
+              avatar={<img src={`/alerts/${alert.process||"comunication"}.png`} />}
+              title={alert.title}
+              description={`${alert.message} [${formatDate(alert.date)}]`}
             />
           </List.Item>
         )}

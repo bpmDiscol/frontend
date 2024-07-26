@@ -201,7 +201,6 @@ export default function EmployeeRequestForm() {
           defaultValue={0}
           value={currentTab}
           onChange={(value) => changeTab(value)}
-          disabled={!requestEmployeeData}
         />
 
         <SpinningLoader condition={requestData} content={tabView} />
