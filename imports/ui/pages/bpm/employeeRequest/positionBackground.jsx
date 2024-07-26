@@ -1,18 +1,13 @@
 import React from "react";
-import { Button, Drawer, Empty, Flex } from "antd";
+import { Button, Drawer, Flex } from "antd";
 import Icon, {
   CheckCircleOutlined,
-  CheckCircleTwoTone,
   CloseCircleOutlined,
-  CloseCircleTwoTone,
   DownloadOutlined,
-  EditFilled,
   FileTextFilled,
   WarningOutlined,
-  WechatFilled,
 } from "@ant-design/icons";
 
-import BackgroundForm from "../../../components/backgroundForm/index.jsx";
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 import Transition from "../../../components/transition/index.jsx";
 import UploadFileButton from "../../../components/uploadFileButton/index.jsx";
@@ -75,6 +70,7 @@ export default function PositionBackgroud({
     setBackground({ ...background, [id]: updatedCandidate });
     updateData(`${id}.approved`, !currentState);
   }
+
   function isApproved(id) {
     const isPresent = Object.keys(background).includes(id);
     if (!isPresent) return;
@@ -96,7 +92,8 @@ export default function PositionBackgroud({
                     borderRadius: "5px",
                     border: `2px solid`,
                     padding: "7px 15px",
-                    boxShadow: `2px 2px 15px black`,
+                    marginRight: "10px",
+                    boxShadow: `2px 2px 10px black`,
                   }}
                 >
                   <Flex
@@ -173,13 +170,6 @@ export default function PositionBackgroud({
                     {background && (
                       <Button
                         iconPosition="end"
-                        icon={
-                          isApproved(interview.fileId) ? (
-                            <CheckCircleTwoTone twoToneColor="#52c41a" />
-                          ) : (
-                            <CloseCircleTwoTone twoToneColor={"red"} />
-                          )
-                        }
                         onClick={() => toggleApproved(interview.fileId)}
                         style={{
                           width: "10rem",

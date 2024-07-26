@@ -175,7 +175,7 @@ Meteor.methods({
         interviewInput,
         responsible: userName,
       },
-      user
+      user,
     }).catch((error) => console.error(error));
   },
   async get_interviews(taskId, user) {
@@ -264,8 +264,33 @@ Meteor.methods({
         checkeds,
         responsible: userName,
       },
-      user
+      user,
     }).catch((error) => console.error(error));
+  },
+  async add_leader_concepts(
+    tecnicalknowledge,
+    learningAdaptation,
+    tecnicalEvaluation,
+    caseId,
+    interviewId,
+  ) {
+    try {
+      requestEmployeeCollection.update(
+        { caseId },
+        {
+          $set: {
+            "interviewInput.$[pos].tecnicalknowledge": tecnicalknowledge,
+            "interviewInput.$[pos].learningAdaptation": learningAdaptation,
+            "interviewInput.$[pos].tecnicalEvaluation": tecnicalEvaluation,
+          },
+        },
+        {
+          arrayFilters: [{ "pos.interviewId": interviewId }],
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
   },
   async clean_unselecteds(caseId) {
     try {
@@ -290,7 +315,14 @@ Meteor.methods({
       console.log(e);
     }
   },
-  async uploadCVfiles(cvFiles, healthRequests, caseId, taskId, responsible, user) {
+  async uploadCVfiles(
+    cvFiles,
+    healthRequests,
+    caseId,
+    taskId,
+    responsible,
+    user
+  ) {
     const field = ["cvFilesInput"];
     Meteor.callAsync("set_data", { field, value: cvFiles }, caseId).catch(
       (error) => console.error(error)

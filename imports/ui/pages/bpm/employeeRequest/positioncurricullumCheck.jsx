@@ -1,29 +1,33 @@
 import React from "react";
 import { Button, Drawer, Flex } from "antd";
 import Icon, {
-  CheckOutlined,
   FileTextFilled,
   UserOutlined,
-  WarningOutlined,
   WechatFilled,
 } from "@ant-design/icons";
 
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
-import Transition from "../../../components/transition/index.jsx";
 import { NotificationsContext } from "../../../context/notificationsProvider.jsx";
+import { getTask, getTaskName } from "../../../config/taskManagement.js";
+import LeaderInterview from "../../../components/interviewForm.jsx/leaderInterview.jsx";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
+const allFields = [
+  "tecnicalknowledge",
+  "learningAdaptation",
+  "tecnicalEvaluation",
+];
 
 export default function PositionCurricullumCheck({
   curricullums,
   interviews,
-  checkeds,
-  setCheckeds,
   requestEmployee,
 }) {
   const [drawerData, setDrawerData] = React.useState(closed);
+  const [background, setBackground] = React.useState();
+  const [taskId, setTaskId] = React.useState();
   const { openNotification } = React.useContext(NotificationsContext);
 
   function newTab(url) {
@@ -37,8 +41,30 @@ export default function PositionCurricullumCheck({
     setDrawerData(closed);
   }
 
-  function addCandidate(curricullumId) {
-    if (requestEmployee.vacancies <= checkeds.length) {
+  React.useEffect(() => {
+    const taskId = getTaskName() + getTask();
+    setTaskId(taskId);
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
+      if (!err && resp) setBackground(resp[0]);
+    });
+  }, [drawerData]);
+
+  async function updateData(field, value) {
+    await Meteor.callAsync("update_task", {
+      taskId,
+      field,
+      value,
+      user: Meteor.userId(),
+    }).catch((e) => console.log(e));
+  }
+
+  function countApproveds() {
+    const [taskId, ...candidates] = Object.keys(background);
+    return candidates.filter((id) => background[id].approved).length;
+  }
+
+  function toggleApproved(id) {
+    if (countApproveds > requestEmployee.vacancies) {
       openNotification(
         "info",
         "Para su información",
@@ -47,23 +73,30 @@ export default function PositionCurricullumCheck({
       );
       return;
     }
-    setCheckeds([...checkeds, curricullumId]);
-  }
-  function deleteCandidate(curricullumId) {
-    setCheckeds(checkeds.filter((id) => id != curricullumId));
-  }
-  function isInList(curricullumId) {
-    return checkeds.includes(curricullumId);
+
+    const currentCandidate = { ...background[id] };
+    const currentState = currentCandidate?.approved;
+    const updatedCandidate = { ...currentCandidate, approved: !currentState };
+    setBackground({ ...background, [id]: updatedCandidate });
+    updateData(`${id}.approved`, !currentState);
   }
 
-  function handleCandidate(curricullumId) {
-    if (isInList(curricullumId)) deleteCandidate(curricullumId);
-    else addCandidate(curricullumId);
+  function isApproved(id) {
+    const isPresent = Object.keys(background).includes(id);
+    if (!isPresent) return;
+    return background[id].approved;
+  }
+
+  function isCompleted(id) {
+    if (Object.keys(background).includes(id))
+      return allFields.every((field) =>
+        Object.keys(background[id]).includes(field)
+      );
   }
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
+      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 60dvw)" }}>
         {curricullums
           ?.map((interview, index) => {
             return (
@@ -73,23 +106,13 @@ export default function PositionCurricullumCheck({
                 align="center"
                 style={{
                   borderRadius: "5px",
-                  border: `1px solid ${
-                    checkeds.includes(interview.fileId) ? "green" : "gray"
-                  }`,
-                  padding: "5px 10px",
-                  boxShadow: `2px 2px 15px ${
-                    checkeds.includes(interview.fileId) ? "green" : "gray"
-                  }`,
+                  border: `1px solid gray`,
+                  padding: "7px 15px",
+                  marginRight: "10px",
+                  boxShadow: `2px 2px 10px black`,
                 }}
               >
-                <Flex
-                  gap={10}
-                  style={{
-                    color: checkeds.includes(interview.fileId)
-                      ? "green"
-                      : "black",
-                  }}
-                >
+                <Flex gap={10}>
                   <Icon component={UserOutlined} style={{ fontSize: 20 }} />
                   {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
                 </Flex>
@@ -120,21 +143,46 @@ export default function PositionCurricullumCheck({
                     shape="circle"
                     icon={<WechatFilled style={{ fontSize: "20px" }} />}
                   />
-                  <Button
-                    title="Seleccionar este candidato"
-                    type="primary"
-                    shape="circle"
-                    icon={
-                      <CheckOutlined
-                        style={{
-                          fontSize: checkeds.includes(interview.fileId)
-                            ? 20
-                            : 14,
-                        }}
-                      />
-                    }
-                    onClick={() => handleCandidate(interview.fileId)}
-                  />
+                  {background && (
+                    <Button
+                      iconPosition="end"
+                      onClick={() => toggleApproved(interview.fileId)}
+                      style={{
+                        width: "10rem",
+                        backgroundColor: isApproved(interview.fileId)
+                          ? "lightgreen"
+                          : "lightpink",
+                      }}
+                    >
+                      {isApproved(interview.fileId)
+                        ? "Aprobado"
+                        : "No aprobado"}
+                    </Button>
+                  )}
+                  {background && (
+                    <Button
+                      style={{
+                        background: isCompleted(interview.fileId)
+                          ? "lightgreen"
+                          : "#fff072",
+                      }}
+                      onClick={() => {
+                        setDrawerData({
+                          applicant: interview,
+                          open: true,
+                          view: (
+                            <LeaderInterview
+                              fileId={interview.fileId}
+                              updateData={updateData}
+                              background={background[interview.fileId]}
+                            />
+                          ),
+                        });
+                      }}
+                    >
+                      Dar concepto
+                    </Button>
+                  )}
                 </Flex>
               </Flex>
             );
@@ -144,7 +192,7 @@ export default function PositionCurricullumCheck({
 
       <Drawer
         title={`${drawerData.applicant?.applicantName} ${drawerData.applicant?.applicantMidname} ${drawerData.applicant?.applicantLastname}`.toUpperCase()}
-        width={"100lvw"}
+        width={"70lvw"}
         open={drawerData.open}
         onClose={() => handleClose()}
         styles={{

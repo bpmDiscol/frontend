@@ -26,6 +26,12 @@ import { requestEmployeeCollection } from "../../../../api/requestEmployeData/re
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 import PositionCurricullumCheck from "./positioncurricullumCheck";
 
+const allFields = [
+  "tecnicalknowledge",
+  "learningAdaptation",
+  "tecnicalEvaluation",
+];
+
 export default function EmployeeCurricullumCheck() {
   const { Text, Title } = Typography;
   const { setView, userName } = React.useContext(MainViewContext);
@@ -136,17 +142,73 @@ export default function EmployeeCurricullumCheck() {
     PositionCurricullumCheck,
   ];
 
-  function handleButtonResponses(buttonResponse) {
+  async function handleButtonResponses(buttonResponse) {
     if (buttonResponse == "return") setView("tasks");
-    if (buttonResponse == "send") return request();
+    if (buttonResponse == "send") request(await getApproveds());
   }
 
-  function request() {
+  function isCompleted(id, backgrounds) {
+    if (Object.keys(backgrounds).includes(id))
+      return allFields.every((field) =>
+        Object.keys(backgrounds[id]).includes(field)
+      );
+  }
+
+  async function getApproveds() {
+    const selectedInterviews = requestEmployeeData?.interviewInput.filter(
+      (interview) => interview.selected
+    ).length;
+
+    const taskId = getTaskName() + getTask();
+    const resp = await Meteor.callAsync(
+      "get_task_data",
+      taskId,
+      Meteor.userId()
+    );
+    if (resp) {
+      backgrounds = resp[0];
+      const completeds = curricullums.filter((curricullum) =>
+        isCompleted(curricullum.fileId, backgrounds)
+      ).length;
+
+      if (completeds < selectedInterviews) {
+        openNotification(
+          "warning",
+          "¡Estamos cerca!!",
+          "Falta poco para terminar, solo faltan algunos conceptos sobre los candidatos."
+        );
+        return;
+      }
+      const [taskId, ...candidates] = Object.keys(backgrounds);
+      const approveds = candidates.filter(
+        (candidate) => backgrounds[candidate].approved
+      );
+      return { approveds, backgrounds };
+    }
+  }
+
+  async function setConcepts(backgrounds) {
+    const [taskId, ...candidates] = Object.keys(backgrounds);
+
+    candidates.forEach(async (candidate) => {
+      await Meteor.callAsync(
+        "add_leader_concepts",
+        backgrounds[candidate].tecnicalknowledge,
+        backgrounds[candidate].learningAdaptation,
+        backgrounds[candidate].tecnicalEvaluation,
+        getCase(),
+        candidate
+      ).catch((e) => console.log(e));
+    });
+  }
+
+  async function request({ approveds, backgrounds }) {
     setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
+    await setConcepts(backgrounds);
     Meteor.call(
       "check_profiles",
-      checkeds,
+      approveds,
       getCase(),
       getTask(),
       userName,
@@ -162,7 +224,7 @@ export default function EmployeeCurricullumCheck() {
           safeLogOut();
         } else {
           if (!res.error) {
-            Meteor.call("delete_task", taskId, Meteor.userId(),);
+            Meteor.call("delete_task", taskId, Meteor.userId());
             openNotification(
               "success",
               "¡Buen trabajo!",
@@ -170,10 +232,10 @@ export default function EmployeeCurricullumCheck() {
             );
             setTimeout(() => {
               setView("tasks");
+              setWaitingToSend(false);
             }, 1000);
           }
         }
-        setWaitingToSend(false);
       }
     );
   }
