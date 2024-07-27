@@ -20,7 +20,12 @@ const tabTitles = [
 const tabNumber = tabTitles.length - 1;
 
 const buttons = {
-  background: [{ title: "Certificado bancario", linkId: "certificado_banco" }],
+  background: [
+    { title: "Cert. EPS", linkId: "certificado_eps" },
+    { title: "Cert. ARL", linkId: "certificado_arl" },
+    { title: "Cert. Pensiones", linkId: "certificado_pensiones" },
+    { title: "Certificado bancario", linkId: "certificado_banco" },
+  ],
 };
 
 export { tabTitles, tabContents, request, tabNumber, buttons };
