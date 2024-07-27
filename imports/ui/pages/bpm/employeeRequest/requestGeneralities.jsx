@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Col,
+  Dropdown,
   Form,
   Input,
   InputNumber,
@@ -17,6 +18,7 @@ import motiveOptions from "../data/motives.json";
 import timeOptions from "../data/time.json";
 import contractTypeOptions from "../data/contractType.json";
 import workingDayOptions from "../data/workingDay.json";
+import salaryScale from "../data/salaryScale.json";
 
 export default function RequestGeneralities({
   requestData,
@@ -26,6 +28,14 @@ export default function RequestGeneralities({
   const [isBonus, setIsBonus] = React.useState();
   const [isUndefinedTermContract, setUndefinedTerm] = React.useState(false);
   const [area, setArea] = React.useState();
+  const [openDropdown, setOpenDropdown] = React.useState(false);
+  const [selectedSalary, setSelectedSalary] = React.useState([]);
+
+  function getKeysForValue(value) {
+    return salaryScale
+      .filter((item) => value >= item.min && value <= item.max)
+      .map((item) => item.key);
+  }
 
   React.useEffect(() => {
     if (requestData) {
@@ -143,18 +153,37 @@ export default function RequestGeneralities({
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Salario" name={"salary"}>
-            <InputNumber
-              stringMode
-              type="number"
-              min={1}
-              id="salary"
-              status={fiterErrors("salary")}
-              defaultValue={parseInt(requestData?.salary) || 0}
-              addonBefore="$"
-              onChange={(value) => update("salary", value)}
-            />
-          </Form.Item>
+          <Dropdown
+            arrow
+            menu={{
+              items: salaryScale,
+              selectedKeys: selectedSalary,
+            }}
+            open={openDropdown}
+          >
+            <Form.Item label="Salario" name={"salary"}>
+              <InputNumber
+                stringMode
+                type="number"
+                min={1}
+                id="salary"
+                status={fiterErrors("salary")}
+                defaultValue={parseInt(requestData?.salary) || 0}
+                addonBefore="$"
+                onChange={(value) => {
+                  update("salary", value);
+                  setSelectedSalary(getKeysForValue(value));
+                }}
+                onFocus={(e) => {
+                  setOpenDropdown(true);
+                  setSelectedSalary(
+                    getKeysForValue(parseInt(e.currentTarget.value))
+                  );
+                }}
+                onBlur={() => setOpenDropdown(false)}
+              />
+            </Form.Item>
+          </Dropdown>
           <Form.Item label="Jornada laboral">
             <Select
               id="workingDayType"
