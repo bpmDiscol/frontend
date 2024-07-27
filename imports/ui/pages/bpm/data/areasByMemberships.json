@@ -1,0 +1,120 @@
+[
+  {
+    "membership": ["Lider", "Calidad"],
+    "menu": [{ "label": "Calidad", "value": "Calidad" }]
+  },
+  {
+    "membership": ["director", "Cartera"],
+    "menu": [
+      { "label": "Cartera", "value": "Cartera" },
+      { "label": "Gc07 Atlantico", "value": "Gc07 Atlantico" },
+      { "label": "Gc07 Cesar", "value": "Gc07 Cesar" },
+      { "label": "Gc07 Magdalena", "value": "Gc07 Magdalena" },
+      {
+        "label": "Gc08 Agencias Menores De Bolivar",
+        "value": "Gc08 Agencias Menores De Bolivar"
+      },
+      { "label": "Gc08 Cartagena", "value": "Gc08 Cartagena" },
+      { "label": "Gc08 Monteria", "value": "Gc08 Monteria" },
+      { "label": "Gc08 Sucre", "value": "Gc08 Sucre" },
+      { "label": "Interventoriasurtigas", "value": "Interventoriasurtigas" }
+    ]
+  },
+  {
+    "membership": ["Lider", "Comercial"],
+    "menu": [{ "label": "Comercial", "value": "Comercial" }]
+  },
+  {
+    "membership": ["Lider", "Contabilidad"],
+    "menu": [{ "label": "Contabilidad", "value": "Contabilidad" }]
+  },
+  {
+    "membership": ["Lider", "Control_Y_Gestion"],
+    "menu": [{ "label": "Control Y Gestion", "value": "Control Y Gestion" }]
+  },
+  {
+    "membership": ["director", "Direccion_Administrativa"],
+    "menu": [
+      {
+        "label": "Direccion Administrativa",
+        "value": "Direccion Administrativa"
+      },
+
+      {
+        "label": "Almacen Y Mantenimientos",
+        "value": "Almacen Y Mantenimientos"
+      },
+      { "label": "Contabilidad", "value": "Contabilidad" },
+      { "label": "Control Interno", "value": "Control Interno" },
+      { "label": "Gerencia", "value": "Gerencia" },
+      { "label": "Gestion Humana", "value": "Gestion Humana" },
+      { "label": "HSEQ", "value": "HSEQ" },
+      { "label": "Logistica", "value": "Logistica" },
+      { "label": "Nomina", "value": "Nomina" },
+      { "label": "PQRFSF", "value": "PQRFSF" },
+      { "label": "Servicios Generales", "value": "Servicios Generales" },
+      { "label": "Sistemas", "value": "Sistemas" },
+      { "label": "Tesoreria", "value": "Tesoreria" },
+      { "label": "Gc07 Atlantico", "value": "Gc07 Atlantico" },
+      { "label": "Gc07 Cesar", "value": "Gc07 Cesar" },
+      { "label": "Gc07 Magdalena", "value": "Gc07 Magdalena" },
+      {
+        "label": "Gc08 Agencias Menores De Bolivar",
+        "value": "Gc08 Agencias Menores De Bolivar"
+      },
+      { "label": "Gc08 Cartagena", "value": "Gc08 Cartagena" },
+      { "label": "Gc08 Monteria", "value": "Gc08 Monteria" },
+      { "label": "Gc08 Sucre", "value": "Gc08 Sucre" },
+      { "label": "Interventoriasurtigas", "value": "Interventoriasurtigas" }
+    ]
+  },
+  {
+    "membership": ["Lider", "Gestion_Humana"],
+    "menu": [{ "label": "Gestion Humana", "value": "Gestion Humana" }]
+  },
+  {
+    "membership": ["Lider", "HSE"],
+    "menu": [{ "label": "HSE", "value": "HSE" }]
+  },
+  {
+    "membership": ["Lider", "Logistica"],
+    "menu": [{ "label": "Logistica", "value": "Logistica" }]
+  },
+  {
+    "membership": ["Lider", "Nomina"],
+    "menu": [{ "label": "Nomina", "value": "Nomina" }]
+  },
+  {
+    "membership": ["Lider", "PQRFSF"],
+    "menu": [{ "label": "PQRFSF", "value": "PQRFSF" }]
+  },
+  {
+    "membership": ["director", "Proyectos_SCR"],
+    "menu": [
+      { "label": "Scr02 Irregularidades", "value": "Scr02 Irregularidades" },
+      { "label": "Scr01 Acuacar Sencillo", "value": "Scr01 Acuacar Sencillo" },
+      {
+        "label": "Scr02 Atlantico Acometida",
+        "value": "Scr02 Atlantico Acometida"
+      },
+      {
+        "label": "Scr02 Atlantico Medicion",
+        "value": "Scr02 Atlantico Medicion"
+      },
+      { "label": "Scr02 Cesar", "value": "Scr02 Cesar" },
+      {
+        "label": "Scr02 Magdalena Acometida",
+        "value": "Scr02 Magdalena Acometida"
+      },
+      { "label": "Scr03 Gdo Palmira", "value": "Scr03 Gdo Palmira" }
+    ]
+  },
+  {
+    "membership": ["Lider", "Sistemas"],
+    "menu": [{ "label": "Sistemas", "value": "Sistemas" }]
+  },
+  {
+    "membership": ["Lider", "Tesoreria"],
+    "menu": [{ "label": "Tesoreria", "value": "Tesoreria" }]
+  }
+]

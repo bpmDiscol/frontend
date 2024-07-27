@@ -12,13 +12,14 @@ import {
 } from "antd";
 
 import siteOptions from "../data/sites.json";
-import areaProyectOptions from "../data/area.json";
 import workPlaceOptions from "../data/municipios.json";
 import motiveOptions from "../data/motives.json";
 import timeOptions from "../data/time.json";
 import contractTypeOptions from "../data/contractType.json";
 import workingDayOptions from "../data/workingDay.json";
 import salaryScale from "../data/salaryScale.json";
+import areasByMemberships from "../data/areasByMemberships.json";
+import containsAny from "../../../misc/containsAny";
 
 export default function RequestGeneralities({
   requestData,
@@ -30,12 +31,14 @@ export default function RequestGeneralities({
   const [area, setArea] = React.useState();
   const [openDropdown, setOpenDropdown] = React.useState(false);
   const [selectedSalary, setSelectedSalary] = React.useState([]);
+  const [salaryOptions, setsalaryOptions] = React.useState([]);
 
   function getKeysForValue(value) {
     return salaryScale
       .filter((item) => value >= item.min && value <= item.max)
       .map((item) => item.key);
   }
+  function getSalaryScale() {}
 
   React.useEffect(() => {
     if (requestData) {
@@ -44,6 +47,14 @@ export default function RequestGeneralities({
     }
   }, [requestData]);
 
+  function getMyMenu(membership) {
+    return areasByMemberships
+      .filter(
+        (area) => JSON.stringify(area.membership) === JSON.stringify(membership)
+      )
+      .map((area) => area.menu);
+  }
+
   async function getMyAreaOptions() {
     const memberships = await Meteor.callAsync(
       "get_my_memberships",
@@ -51,29 +62,18 @@ export default function RequestGeneralities({
     )
       .then((resp) => resp)
       .catch(() => []);
-    if (memberships?.length) {
-      const isDirector = memberships.filter(
-        (membership) =>
-          JSON.stringify(["director", "discol"]) === JSON.stringify(membership)
-      );
-      if (isDirector.length) return areaProyectOptions;
+    if (!memberships?.length) return [];
+    const higherMemberships = [
+      ["director", "discol"],
+      ["director", "Direccion_Administrativa"],
+    ];
 
-      const flatMemberships = memberships.flat(1);
-      return flatMemberships
-        .filter((item, index) => flatMemberships.indexOf(item) === index)
-        .filter(
-          (item) =>
-            !["Lider", "member", "digitador", "admin", "director"].includes(
-              item
-            )
-        )
-        .map((group) => {
-          return {
-            label: group.replace(/_/g, " "),
-            value: group.replace(/_/g, " ").toUpperCase(),
-          };
-        });
-    }
+    if (containsAny(memberships, higherMemberships))
+      setsalaryOptions(salaryScale);
+    else setsalaryOptions(salaryScale.slice(0, -2));
+
+    const myMenu = memberships.map((membership) => getMyMenu(membership));
+    return myMenu.flat(2);
   }
 
   React.useEffect(() => {
@@ -156,7 +156,7 @@ export default function RequestGeneralities({
           <Dropdown
             arrow
             menu={{
-              items: salaryScale,
+              items: salaryOptions,
               selectedKeys: selectedSalary,
             }}
             open={openDropdown}
