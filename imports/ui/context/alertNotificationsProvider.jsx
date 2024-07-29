@@ -15,6 +15,7 @@ export default function AlertNotificationsProvider({ children }) {
   const [myMemberships, setMyMemberships] = React.useState();
 
   const alerts = useTracker(() => {
+    if (!Meteor.userId()) return [];
     if (myMemberships) {
       const query = {
         $or: myMemberships.map((membership) => ({
