@@ -63,7 +63,7 @@ export default function PositionEmployeeData({ requestEmployee, buttons }) {
     .filter((curricullum) => curricullum.selected);
 
   return (
-    <Flex vertical gap={10} style={{ width: "50dvw" }}>
+    <Flex vertical gap={10} style={{ width: "70dvw" }}>
       <Flex gap={16} style={{ padding: 10 }}>
         <Text>Area: {requestEmployee.area_proyect}</Text>
         <Text>{`Cargo: ${requestEmployee.companyPosition}`}</Text>

@@ -1,9 +1,10 @@
 import React from "react";
 import ReactQuill from "react-quill";
-import { Col, Divider, Flex, Form, Radio, Row, Space } from "antd";
+import { Col, Flex, Form, Radio, Row, Space } from "antd";
 
 import { formats, modules } from "../../pages/styles/quillStyle";
 export default function FinalConceptStep({ update }) {
+  const [selected, setSelected] = React.useState(false);
   return (
     <Row>
       <Flex style={{ height: "16rem" }}>
@@ -49,13 +50,24 @@ export default function FinalConceptStep({ update }) {
               <Radio.Group
                 onChange={(e) => {
                   update({ field: "selected", value: e.target.value });
+                  setSelected(e.target.value);
                 }}
                 buttonStyle="solid"
                 defaultValue={false}
                 size="large"
               >
-                <Radio.Button value={true}>Seleccionado</Radio.Button>
-                <Radio.Button value={false}>No Seleccionado</Radio.Button>
+                <Radio.Button
+                  value={true}
+                  style={{ background: selected ? "green" : "" }}
+                >
+                  Seleccionado
+                </Radio.Button>
+                <Radio.Button
+                  value={false}
+                  style={{ background: selected ? "" : "red" }}
+                >
+                  No Seleccionado
+                </Radio.Button>
               </Radio.Group>
             </Form.Item>
           </Flex>

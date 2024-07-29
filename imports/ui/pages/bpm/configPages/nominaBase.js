@@ -24,7 +24,7 @@ const buttons = {
     { title: "Cert. EPS", linkId: "certificado_eps" },
     { title: "Cert. ARL", linkId: "certificado_arl" },
     { title: "Cert. Pensiones", linkId: "certificado_pensiones" },
-    { title: "Certificado bancario", linkId: "certificado_banco" },
+    { title: "Cert. bancario", linkId: "certificado_banco" },
   ],
 };
 
