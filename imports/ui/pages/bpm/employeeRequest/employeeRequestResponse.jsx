@@ -16,6 +16,7 @@ export default function EmployeeRequestResponse({
   subtitle,
   tabNumber,
   buttons,
+  salary,
 }) {
   const { Text, Title } = Typography;
   const { openNotification } = React.useContext(NotificationsContext);
@@ -40,7 +41,12 @@ export default function EmployeeRequestResponse({
   function reloadPage(index) {
     const key = Math.random();
     setTabView(
-      <LoadPage newKey={key} Component={tabContents[index]} buttons={buttons} />
+      <LoadPage
+        newKey={key}
+        Component={tabContents[index]}
+        buttons={buttons}
+        salary={salary}
+      />
     );
   }
 
@@ -51,6 +57,7 @@ export default function EmployeeRequestResponse({
           key={newKey}
           requestEmployee={requestEmployeeData}
           buttons={buttons}
+          salary={salary}
         />
       )
     );

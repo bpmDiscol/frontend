@@ -22,7 +22,7 @@
   },
   {
     "processName": "requestEmployeeSearch",
-    "restrictions": ["director", "Gestion_Humana"],
+    "restrictions": ["Lider", "Gestion_Humana"],
     "page": "employee_request_search",
     "displayName": "Requisición de personal",
     "description": "Seguimiento y auditoría"

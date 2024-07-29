@@ -42,6 +42,9 @@ export default function CandidateList({ requestEmployee }) {
               civilStatus:
                 translate[requestEmployee.interviewInput[index]?.status],
               salaryGoal: requestEmployee.interviewInput[index]?.salaryGoal,
+              finalSalary:
+                requestEmployee.interviewInput[index]?.salary ||
+                requestEmployee.salary,
               // subdata
 
               isAboutBussiness:
@@ -200,7 +203,7 @@ export default function CandidateList({ requestEmployee }) {
                   style={{ fontSize: "10px" }}
                   color={value === "Seleccionado" ? "success" : "error"}
                 >
-                  {value||"Para entrevista"}
+                  {value || "Para entrevista"}
                 </Tag>
               )}
             />
@@ -284,6 +287,15 @@ export default function CandidateList({ requestEmployee }) {
               filters={getAvailablesValues("salaryGoal", candidatesData)}
               filterMode="menu"
               onFilter={(value, record) => record.salaryGoal.startsWith(value)}
+              elipsis
+            />
+            <Column
+              title="Corrección salarial"
+              dataIndex={"finalSalary"}
+              width={120}
+              filters={getAvailablesValues("finalSalary", candidatesData)}
+              filterMode="menu"
+              onFilter={(value, record) => record.finalSalary.startsWith(value)}
               elipsis
             />
             <Column

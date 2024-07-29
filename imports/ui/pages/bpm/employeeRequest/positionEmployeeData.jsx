@@ -4,10 +4,15 @@ import React from "react";
 import { NotificationsContext } from "../../../context/notificationsProvider";
 
 import cvFields from "../data/cvfields.json";
+import SetSalary from "../../../components/setSalary";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
-export default function PositionEmployeeData({ requestEmployee, buttons }) {
+export default function PositionEmployeeData({
+  requestEmployee,
+  buttons,
+  salary,
+}) {
   const { openNotification } = React.useContext(NotificationsContext);
   const { Text } = Typography;
 
@@ -83,6 +88,7 @@ export default function PositionEmployeeData({ requestEmployee, buttons }) {
               description={"Identificación: " + member.id}
             />
             <Flex gap={16}>
+              {salary && <SetSalary member={member} />}
               {buttons?.background &&
                 buttons?.background.map((item) => (
                   <Button

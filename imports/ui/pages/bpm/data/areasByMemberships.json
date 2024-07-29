@@ -21,6 +21,13 @@
     ]
   },
   {
+    "membership": ["Lider", "Gc08 Agencias Menores De Bolivar"],
+    "menu": {
+      "label": "Gc08 Agencias Menores De Bolivar",
+      "value": "Gc08 Agencias Menores De Bolivar"
+    }
+  },
+  {
     "membership": ["Lider", "Comercial"],
     "menu": [{ "label": "Comercial", "value": "Comercial" }]
   },

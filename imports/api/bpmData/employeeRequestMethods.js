@@ -272,7 +272,7 @@ Meteor.methods({
     learningAdaptation,
     tecnicalEvaluation,
     caseId,
-    interviewId,
+    interviewId
   ) {
     try {
       requestEmployeeCollection.update(
@@ -291,6 +291,26 @@ Meteor.methods({
     } catch (e) {
       console.log(e);
     }
+  },
+
+  async add_salary(salary, caseId, interviewId) {
+    try {
+      requestEmployeeCollection.update(
+        { caseId },
+        { $set: { "interviewInput.$[pos].salary": salary } },
+        { arrayFilters: [{ "pos.interviewId": interviewId }] }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  async get_salary(caseId, interviewId) {
+    const data = requestEmployeeCollection.findOne({ caseId });
+    const interview = data.interviewInput.filter(
+      (interview) => interview.interviewId == interviewId
+    );
+    if (interview.salary) return interview.salary;
+    return data.requestEmployeeDataInput.salary;
   },
   async clean_unselecteds(caseId) {
     try {
