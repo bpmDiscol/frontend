@@ -145,10 +145,13 @@ export default function EmployeeRequestBackground() {
         const uploadeds = handledCandidates.filter((key) =>
           Object.keys(bgs[key]).includes("legal_background")
         );
+        const currentCurricullums = requestEmployeeData.interviewInput.filter(
+          (interview) => interview.selected
+        );
 
         if (
-          handledCandidates.length < curricullums.length ||
-          uploadeds.length < curricullums.length
+          handledCandidates.length < currentCurricullums.length ||
+          uploadeds.length < currentCurricullums.length
         ) {
           openNotification(
             "warning",

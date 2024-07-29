@@ -10,6 +10,7 @@ import { fillEmptySpaces } from "./fillEmptySpaces";
 import { getCosts } from "./getCosts";
 
 export default function ProcessCostsChart({ requestProcess }) {
+  console.log("🚀 ~ ProcessCostsChart ~ requestProcess:", requestProcess)
   const [processMedia, setProcessMedia] = React.useState();
   const [procesedTimes, setProcesedTimes] = React.useState();
   const [processedCosts, setProcessedCosts] = React.useState();
