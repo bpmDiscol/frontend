@@ -38,7 +38,6 @@ export default function RequestGeneralities({
       .filter((item) => value >= item.min && value <= item.max)
       .map((item) => item.key);
   }
-  function getSalaryScale() {}
 
   React.useEffect(() => {
     if (requestData) {
@@ -52,10 +51,11 @@ export default function RequestGeneralities({
       .filter(
         (area) => JSON.stringify(area.membership) === JSON.stringify(membership)
       )
-      .map((area) => area.menu);
+      .map((area) => area.menu)
+      .flat(1);
   }
 
-  async function getMyAreaOptions() {
+  async function distributeMembershipMenues() {
     const memberships = await Meteor.callAsync(
       "get_my_memberships",
       Meteor.userId()
@@ -68,16 +68,27 @@ export default function RequestGeneralities({
       ["director", "Direccion_Administrativa"],
     ];
 
+    //set salary menu options
     if (containsAny(memberships, higherMemberships))
       setsalaryOptions(salaryScale);
     else setsalaryOptions(salaryScale.slice(0, -2));
 
+    //return area/proyect menu options
     const myMenu = memberships.map((membership) => getMyMenu(membership));
-    return myMenu.flat(2);
+    const uniqueMap = myMenu.flat().reduce((map, obj) => {
+      // Usa una combinación de las propiedades 'label' y 'value' como clave
+      const key = `${obj.label}-${obj.value}`;
+      if (!map.has(key)) {
+        map.set(key, obj);
+      }
+      return map;
+    }, new Map());
+    console.log("🚀 ~ distributeMembershipMenues ~ myMenu:", Array.from(uniqueMap.values()));
+    return Array.from(uniqueMap.values());
   }
 
   React.useEffect(() => {
-    getMyAreaOptions().then((resp) => setArea(resp));
+    distributeMembershipMenues().then((resp) => setArea(resp));
   }, []);
 
   return (

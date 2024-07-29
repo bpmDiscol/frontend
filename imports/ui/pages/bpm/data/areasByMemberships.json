@@ -123,5 +123,117 @@
   {
     "membership": ["Lider", "Tesoreria"],
     "menu": [{ "label": "Tesoreria", "value": "Tesoreria" }]
+  },
+  {
+    "membership": ["Lider", "Scr02_Irregularidades"],
+    "menu": {
+      "label": "Scr02 Irregularidades",
+      "value": "Scr02 Irregularidades"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr01_Acuacar_Sencillo"],
+    "menu": {
+      "label": "Scr01 Acuacar Sencillo",
+      "value": "Scr01 Acuacar Sencillo"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr02_Atlantico_Acometida"],
+    "menu": {
+      "label": "Scr02 Atlantico Acometida",
+      "value": "Scr02 Atlantico Acometida"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr02_Atlantico_Medicion"],
+    "menu": {
+      "label": "Scr02 Atlantico Medicion",
+      "value": "Scr02 Atlantico Medicion"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr02_Cesar"],
+    "menu": {
+      "label": "Scr02 Cesar",
+      "value": "Scr02 Cesar"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr02_Magdalena_Acometida"],
+    "menu": {
+      "label": "Scr02 Magdalena Acometida",
+      "value": "Scr02 Magdalena Acometida"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr03_Gdo_Palmira"],
+    "menu": {
+      "label": "Scr03 Gdo Palmira",
+      "value": "Scr03 Gdo Palmira"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc07_Atlantico"],
+    "menu": {
+      "label": "Gc07 Atlantico",
+      "value": "Gc07 Atlantico"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc07_Cesar"],
+    "menu": {
+      "label": "Gc07 Cesar",
+      "value": "Gc07 Cesar"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc07_Magdalena"],
+    "menu": {
+      "label": "Gc07 Magdalena",
+      "value": "Gc07 Magdalena"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc08_Agencias_Menores_De_Bolivar"],
+    "menu": {
+      "label": "Gc08 Agencias Menores De Bolivar",
+      "value": "Gc08 Agencias Menores De Bolivar"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc08_Cartagena"],
+    "menu": {
+      "label": "Gc08 Cartagena",
+      "value": "Gc08 Cartagena"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc08_Monteria"],
+    "menu": {
+      "label": "Gc08 Monteria",
+      "value": "Gc08 Monteria"
+    }
+  },
+  {
+    "membership": ["Lider", "Gc08_Sucre"],
+    "menu": {
+      "label": "Gc08 Sucre",
+      "value": "Gc08 Sucre"
+    }
+  },
+  {
+    "membership": ["Lider", "Interventoria"],
+    "menu": {
+      "label": "Interventoria",
+      "value": "Interventoria"
+    }
+  },
+  {
+    "membership": ["Lider", "Surtigas"],
+    "menu": {
+      "label": "Surtigas",
+      "value": "Surtigas"
+    }
   }
 ]
