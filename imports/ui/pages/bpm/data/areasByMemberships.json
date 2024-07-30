@@ -14,10 +14,10 @@
         "label": "Gc08 Agencias Menores De Bolivar",
         "value": "Gc08 Agencias Menores De Bolivar"
       },
-      { "label": "Gc08 Cartagena", "value": "Gc08 Cartagena" },
+      { "label": "Gc08 Cartagena Surtigas", "value": "Gc08 Cartagena Surtigas" },
       { "label": "Gc08 Monteria", "value": "Gc08 Monteria" },
       { "label": "Gc08 Sucre", "value": "Gc08 Sucre" },
-      { "label": "Interventoriasurtigas", "value": "Interventoriasurtigas" }
+      { "label": "Interventoria", "value": "Interventoria" }
     ]
   },
   {
@@ -69,10 +69,10 @@
         "label": "Gc08 Agencias Menores De Bolivar",
         "value": "Gc08 Agencias Menores De Bolivar"
       },
-      { "label": "Gc08 Cartagena", "value": "Gc08 Cartagena" },
+      { "label": "Gc08 Cartagena Surtigas", "value": "Gc08 Cartagena Surtigas" },
       { "label": "Gc08 Monteria", "value": "Gc08 Monteria" },
       { "label": "Gc08 Sucre", "value": "Gc08 Sucre" },
-      { "label": "Interventoriasurtigas", "value": "Interventoriasurtigas" }
+      { "label": "Interventoria", "value": "Interventoria" }
     ]
   },
   {
@@ -202,10 +202,10 @@
     }
   },
   {
-    "membership": ["Lider", "Gc08_Cartagena"],
+    "membership": ["Lider", "Gc08_Cartagena Surtigas"],
     "menu": {
-      "label": "Gc08 Cartagena",
-      "value": "Gc08 Cartagena"
+      "label": "Gc08 Cartagena Surtigas",
+      "value": "Gc08 Cartagena Surtigas"
     }
   },
   {
@@ -227,13 +227,6 @@
     "menu": {
       "label": "Interventoria",
       "value": "Interventoria"
-    }
-  },
-  {
-    "membership": ["Lider", "Surtigas"],
-    "menu": {
-      "label": "Surtigas",
-      "value": "Surtigas"
     }
   }
 ]

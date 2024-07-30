@@ -21,6 +21,11 @@ import salaryScale from "../data/salaryScale.json";
 import areasByMemberships from "../data/areasByMemberships.json";
 import containsAny from "../../../misc/containsAny";
 
+const higherMemberships = [
+  ["director", "discol"],
+  ["director", "Direccion_Administrativa"],
+];
+
 export default function RequestGeneralities({
   requestData,
   update,
@@ -55,7 +60,19 @@ export default function RequestGeneralities({
       .flat(1);
   }
 
-  async function distributeMembershipMenues() {
+  function getUniqueAreas(memberships) {
+    const myMenu = memberships.map((membership) => getMyMenu(membership));
+    const uniqueMap = myMenu.flat().reduce((map, obj) => {
+      const key = `${obj.label}-${obj.value}`;
+      if (!map.has(key)) {
+        map.set(key, obj);
+      }
+      return map;
+    }, new Map());
+    return Array.from(uniqueMap.values());
+  }
+
+  async function getMemberships() {
     const memberships = await Meteor.callAsync(
       "get_my_memberships",
       Meteor.userId()
@@ -63,32 +80,16 @@ export default function RequestGeneralities({
       .then((resp) => resp)
       .catch(() => []);
     if (!memberships?.length) return [];
-    const higherMemberships = [
-      ["director", "discol"],
-      ["director", "Direccion_Administrativa"],
-    ];
-
-    //set salary menu options
-    if (containsAny(memberships, higherMemberships))
-      setsalaryOptions(salaryScale);
-    else setsalaryOptions(salaryScale.slice(0, -2));
-
-    //return area/proyect menu options
-    const myMenu = memberships.map((membership) => getMyMenu(membership));
-    const uniqueMap = myMenu.flat().reduce((map, obj) => {
-      // Usa una combinación de las propiedades 'label' y 'value' como clave
-      const key = `${obj.label}-${obj.value}`;
-      if (!map.has(key)) {
-        map.set(key, obj);
-      }
-      return map;
-    }, new Map());
-    console.log("🚀 ~ distributeMembershipMenues ~ myMenu:", Array.from(uniqueMap.values()));
-    return Array.from(uniqueMap.values());
+    return memberships;
   }
 
   React.useEffect(() => {
-    distributeMembershipMenues().then((resp) => setArea(resp));
+    getMemberships().then((memberships) => {
+      if (containsAny(memberships, higherMemberships))
+        setsalaryOptions(salaryScale);
+      else setsalaryOptions(salaryScale.slice(0, -2));
+      setArea(getUniqueAreas(memberships));
+    });
   }, []);
 
   return (

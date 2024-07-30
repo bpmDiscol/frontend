@@ -36,6 +36,8 @@ export function getView(view) {
     process: <Process />,
     employee_request_form: <EmployeeRequestForm />,
     employee_request_adm: <EmployeeRequestAdm />,
+    employee_request_dir_cartera: <EmployeeRequestAdm />,
+    employee_request_dir_scr: <EmployeeRequestAdm />,
     employee_request_hr: <EmployeeRequestHR />,
     load_curricullum: <EmployeeRequestCurricullums />,
     interview: <EmployeeRequestInterview />,
