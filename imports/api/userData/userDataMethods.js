@@ -11,7 +11,11 @@ Meteor.methods({
     return Meteor.users.update({ _id: user }, { $set: { status: "offline" } });
   },
   new_user({ username, password, bonitaUser, token, axiosCookie }) {
-    Accounts.createUser({ username, password, profile: { bonitaUser, token, axiosCookie } });
+    Accounts.createUser({
+      username,
+      password,
+      profile: { bonitaUser, token, axiosCookie },
+    });
   },
   update_image(image, user) {
     return Meteor.users.update({ _id: user }, { $set: { image } });
@@ -32,13 +36,13 @@ Meteor.methods({
   },
   get_task_data(taskId, user) {
     const userData = Meteor.users.findOne({ _id: user });
-    if (Object.keys(userData).includes("tasks")) {
-      const myTasks = userData.tasks.filter((task) => task.taskId == taskId);
-      if (myTasks.length) return myTasks;
-      else {
-        Meteor.call("add_task", { taskId }, user);
-      }
-    } else return Meteor.call("start_task_repository", user);
+    if (!Object.keys(userData).includes("tasks")) {
+      Meteor.call("start_task_repository", user);
+      userData.tasks = [];
+    }
+    const myTasks = userData.tasks.filter((task) => task.taskId == taskId);
+    if (!myTasks.length) Meteor.call("add_task", { taskId }, user);
+    return myTasks;
   },
   update_task({ taskId, field, value, user }) {
     const datafield = `tasks.$.${field}`;

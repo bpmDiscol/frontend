@@ -24,6 +24,7 @@ export default function EmployeeRequestForm() {
   const { setView } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [requestData, setRequestData] = React.useState();
+  console.log("🚀 ~ EmployeeRequestForm ~ requestData:", requestData)
   const [processId, setProcessId] = React.useState();
   const [currentTab, setCurrentTab] = React.useState(0);
   const [errorFields, setErrorFields] = React.useState([]);
@@ -116,7 +117,7 @@ export default function EmployeeRequestForm() {
       Meteor.userId(),
       (error, response) => {
         if (!error) {
-          callback(response ? response[0] : []);
+          callback(response.length ? response[0] : [{}]);
         }
       }
     );
