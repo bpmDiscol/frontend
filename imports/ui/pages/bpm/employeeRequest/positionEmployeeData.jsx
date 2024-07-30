@@ -16,6 +16,15 @@ export default function PositionEmployeeData({
   const { openNotification } = React.useContext(NotificationsContext);
   const { Text } = Typography;
 
+  function setToCurrency(value = 0) {
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
   function newTab(url, download = false) {
     const newTab = document.createElement("a");
     newTab.href = download ? url : googleDocsViewer + url;
@@ -85,7 +94,12 @@ export default function PositionEmployeeData({
           >
             <List.Item.Meta
               title={`${member.applicantName} ${member.applicantMidname} ${member.applicantLastname}`.toUpperCase()}
-              description={"Identificación: " + member.id}
+              description={
+                <Flex vertical style={{paddingLeft:15}}>
+                  <Text>{"Identificación: " + member.id}</Text>
+                  {member.salary && <Text style={{fontWeight:'bold'}}>{"Salario ajustado: " + setToCurrency(member.salary)}</Text>}
+                </Flex>
+              }
             />
             <Flex gap={16}>
               {salary && <SetSalary member={member} />}
