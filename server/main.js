@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { Accounts } from 'meteor/accounts-base'
-
+import { Accounts } from "meteor/accounts-base";
 
 //auth
 import "../imports/api/http/authentication";
@@ -39,10 +38,14 @@ import "../imports/api/alerts/alertsMethods";
 import "../imports/api/alerts/alertsPublications";
 
 //sql
-import "../imports/api/bdmData/bdmMethods"
+import "../imports/api/bdmData/bdmMethods";
 
 Accounts.config({
-    loginExpirationInDays: 0.5
-})
+    //cierra la sesion inactiva de 8 horas
+  loginExpirationInDays: 8 / 24,
+});
 
-Meteor.startup(async () => {});
+Meteor.startup(async () => {
+  //elimina las alertas viejas(+48 horas) cada hora
+  Meteor.setInterval(()=> Meteor.call("deleteOldAlerts", 48), 1000 * 60 * 60);
+});
