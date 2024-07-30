@@ -111,7 +111,12 @@ export default function EmployeeRequestHR() {
   }
 
   return (
-    <Flex id="employee-request-container" vertical gap={"10px"}>
+    <Flex
+      id="employee-request-container"
+      vertical
+      gap={"10px"}
+      style={{ width: "90%" }}
+    >
       <Flex vertical wrap>
         <Title level={1}>
           Requisición de personal<Text strong>(Concepto Recursos Humanos)</Text>

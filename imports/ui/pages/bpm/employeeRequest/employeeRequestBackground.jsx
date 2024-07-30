@@ -227,7 +227,7 @@ export default function EmployeeRequestBackground() {
       </Flex>
 
       <Flex vertical justify="flex-start" gap={"10px"} id="segmented-tabs">
-        <Flex style={{ overflow: "auto" }} id="segmented">
+        <Flex vertical gap={"10px"} id="segmented">
           <Segmented
             options={tabTitles}
             defaultValue={tabContents.length - 1}
