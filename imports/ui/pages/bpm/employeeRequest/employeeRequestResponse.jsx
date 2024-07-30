@@ -17,6 +17,7 @@ export default function EmployeeRequestResponse({
   tabNumber,
   buttons,
   salary,
+  showSalary,
 }) {
   const { Text, Title } = Typography;
   const { openNotification } = React.useContext(NotificationsContext);
@@ -46,6 +47,7 @@ export default function EmployeeRequestResponse({
         Component={tabContents[index]}
         buttons={buttons}
         salary={salary}
+        showSalary={showSalary}
       />
     );
   }
@@ -58,6 +60,7 @@ export default function EmployeeRequestResponse({
           requestEmployee={requestEmployeeData}
           buttons={buttons}
           salary={salary}
+          showSalary={showSalary}
         />
       )
     );

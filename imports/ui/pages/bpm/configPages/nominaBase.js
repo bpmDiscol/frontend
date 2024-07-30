@@ -27,7 +27,6 @@ const buttons = {
     { title: "Cert. bancario", linkId: "certificado_banco" },
   ],
 };
+const showSalary = true
 
-export { tabTitles, tabContents, request, tabNumber, buttons };
-
-// nombre cedula cuenta y area de trabajo
+export { tabTitles, tabContents, request, tabNumber, buttons, showSalary };

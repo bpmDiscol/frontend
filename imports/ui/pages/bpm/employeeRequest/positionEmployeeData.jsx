@@ -12,6 +12,7 @@ export default function PositionEmployeeData({
   requestEmployee,
   buttons,
   salary,
+  showSalary,
 }) {
   const { openNotification } = React.useContext(NotificationsContext);
   const { Text } = Typography;
@@ -95,9 +96,13 @@ export default function PositionEmployeeData({
             <List.Item.Meta
               title={`${member.applicantName} ${member.applicantMidname} ${member.applicantLastname}`.toUpperCase()}
               description={
-                <Flex vertical style={{paddingLeft:15}}>
+                <Flex vertical style={{ paddingLeft: 15 }}>
                   <Text>{"Identificación: " + member.id}</Text>
-                  {member.salary && <Text style={{fontWeight:'bold'}}>{"Salario ajustado: " + setToCurrency(member.salary)}</Text>}
+                  {showSalary && (
+                    <Text style={{ fontWeight: "bold" }}>
+                      {"Salario ajustado: " + setToCurrency(member.salary)}
+                    </Text>
+                  )}
                 </Flex>
               }
             />
