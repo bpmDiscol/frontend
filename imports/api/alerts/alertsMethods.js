@@ -18,4 +18,9 @@ Meteor.methods({
   create_alert(alert) {
     AlertsCollection.insert({ ...alert, date: new Date() });
   },
+  deleteOldAlerts(hours) {
+    AlertsCollection.remove({
+      date: { $lt: new Date(Date.now() - hours * 60 * 60 * 1000) },
+    });
+  },
 });
