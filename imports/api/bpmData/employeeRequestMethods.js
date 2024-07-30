@@ -215,7 +215,7 @@ Meteor.methods({
       (error) => console.error(error)
     );
   },
-  async reject_profiles(rejectedList, caseId, taskId, userName, user) {
+  async reject_profiles(rejectedList,auxiliarId, caseId, taskId, userName, user) {
     try {
       requestEmployeeCollection.update(
         { caseId },
@@ -237,6 +237,7 @@ Meteor.methods({
       data: {
         rejectedList,
         responsible: userName,
+        auxiliarId
       },
       user,
     }).catch((error) => console.error(error));

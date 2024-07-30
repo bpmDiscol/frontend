@@ -140,7 +140,7 @@ export default function EmployeeRequestBackground() {
     const taskId = getTaskName() + getTask();
     Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp?.length) {
-        const { taskId, ...bgs } = resp[0];
+        const { taskId, auxiliarId, ...bgs } = resp[0];
         const handledCandidates = Object.keys(bgs);
         const uploadeds = handledCandidates.filter((key) =>
           Object.keys(bgs[key]).includes("legal_background")
@@ -148,6 +148,16 @@ export default function EmployeeRequestBackground() {
         const currentCurricullums = requestEmployeeData.interviewInput.filter(
           (interview) => interview.selected
         );
+
+        if(!auxiliarId){
+          openNotification(
+            "warning",
+            "¡Ups... se te ha olvidado algo!",
+            "No has seleccionado un auxiliar"
+          );
+          setWaitingToSend(false);
+          return;
+        }
 
         if (
           handledCandidates.length < currentCurricullums.length ||
@@ -171,6 +181,7 @@ export default function EmployeeRequestBackground() {
         Meteor.call(
           "reject_profiles",
           rejecteds,
+          auxiliarId,
           getCase(),
           getTask(),
           userName,

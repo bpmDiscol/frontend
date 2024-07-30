@@ -169,4 +169,13 @@ Meteor.methods({
     }).catch((error) => console.error(error));
     return data.response;
   },
+  async get_subordinates(user, id) {
+    const data = await Meteor.callAsync("manage_data", "get", {
+      url: `/API/identity/user?p=0&c=9999`,
+      data: {},
+      user,
+    }).catch((error) => console.error(error));
+
+    return data.response.filter((user) => user.manager_id == id);
+  },
 });

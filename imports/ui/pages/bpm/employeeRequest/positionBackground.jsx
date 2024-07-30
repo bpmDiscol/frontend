@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Drawer, Flex } from "antd";
+import { Button, Drawer, Flex, Select, Space } from "antd";
 import Icon, {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -25,6 +25,7 @@ export default function PositionBackgroud({
   const [background, setBackground] = React.useState();
   const [taskId, setTaskId] = React.useState();
   const [drawerData, setDrawerData] = React.useState(closed);
+  const [subordinates, setSubordinates] = React.useState([]);
 
   function newTab(url, download = false) {
     const newTab = document.createElement("a");
@@ -37,14 +38,6 @@ export default function PositionBackgroud({
   function handleClose() {
     setDrawerData(closed);
   }
-
-  React.useEffect(() => {
-    const taskId = getTaskName() + getTask();
-    setTaskId(taskId);
-    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
-      if (!err && resp) setBackground(resp[0]);
-    });
-  }, []);
 
   async function updateData(field, value) {
     await Meteor.callAsync("update_task", {
@@ -76,10 +69,46 @@ export default function PositionBackgroud({
     if (!isPresent) return;
     return background[id].approved;
   }
+  async function getSubordinates() {
+    return await Meteor.callAsync(
+      "get_subordinates",
+      Meteor.userId(),
+      sessionStorage.getItem("constId")
+    ).catch((e) => console.log(e));
+  }
+  async function getSubordinateLabels() {
+    const raw = await getSubordinates();
+    return raw.map((subordinate) => {
+      return {
+        label: subordinate.userName,
+        value: parseInt(subordinate.id),
+      };
+    });
+  }
+
+  React.useEffect(() => {
+    const taskId = getTaskName() + getTask();
+    setTaskId(taskId);
+    Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
+      if (!err && resp) setBackground(resp[0]);
+    });
+    getSubordinateLabels().then((labels) => setSubordinates(labels));
+  }, []);
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
       <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 60dvw)" }}>
+        <Flex justify="end" align="center" gap={10}>
+          Asignado a:
+          <Select
+            placeholder="Selecciona un auxiliar"
+            options={subordinates}
+            filterOption
+            style={{ width: "15rem" }}
+            onChange={(value) => updateData("auxiliarId", value)}
+          />
+        </Flex>
+
         {curricullums &&
           curricullums
             .map((interview, index) => {
@@ -93,7 +122,7 @@ export default function PositionBackgroud({
                     border: `2px solid`,
                     padding: "7px 15px",
                     marginRight: "10px",
-                    boxShadow: `2px 2px 10px black`,
+                    boxShadow: `0 5px 15px gray`,
                   }}
                 >
                   <Flex
