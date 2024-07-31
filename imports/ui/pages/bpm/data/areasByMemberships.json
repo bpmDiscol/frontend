@@ -14,7 +14,10 @@
         "label": "Gc08 Agencias Menores De Bolivar",
         "value": "Gc08 Agencias Menores De Bolivar"
       },
-      { "label": "Gc08 Cartagena Surtigas", "value": "Gc08 Cartagena Surtigas" },
+      {
+        "label": "Gc08 Cartagena Surtigas",
+        "value": "Gc08 Cartagena Surtigas"
+      },
       { "label": "Gc08 Monteria", "value": "Gc08 Monteria" },
       { "label": "Gc08 Sucre", "value": "Gc08 Sucre" },
       { "label": "Interventoria", "value": "Interventoria" }
@@ -46,33 +49,24 @@
         "label": "Direccion Administrativa",
         "value": "Direccion Administrativa"
       },
-
-      {
-        "label": "Almacen Y Mantenimientos",
-        "value": "Almacen Y Mantenimientos"
-      },
+      { "label": "Calidad", "value": "Calidad" },
+      { "label": "Comercial", "value": "Comercial" },
       { "label": "Contabilidad", "value": "Contabilidad" },
       { "label": "Control Interno", "value": "Control Interno" },
       { "label": "Gerencia", "value": "Gerencia" },
       { "label": "Gestion Humana", "value": "Gestion Humana" },
-      { "label": "HSEQ", "value": "HSEQ" },
-      { "label": "Logistica", "value": "Logistica" },
+      { "label": "HSE", "value": "HSE" },
+      { "label": "Logística", "value": "Logistica" },
       { "label": "Nomina", "value": "Nomina" },
-      { "label": "PQRFSF", "value": "PQRFSF" },
-      { "label": "Servicios Generales", "value": "Servicios Generales" },
+      { "label": "PQR", "value": "PQR" },
       { "label": "Sistemas", "value": "Sistemas" },
-      { "label": "Tesoreria", "value": "Tesoreria" },
-      { "label": "Gc07 Atlantico", "value": "Gc07 Atlantico" },
-      { "label": "Gc07 Cesar", "value": "Gc07 Cesar" },
-      { "label": "Gc07 Magdalena", "value": "Gc07 Magdalena" },
+      { "label": "Tesorería", "value": "Tesoreria" },
       {
-        "label": "Gc08 Agencias Menores De Bolivar",
-        "value": "Gc08 Agencias Menores De Bolivar"
+        "label": "0S01 Acuacar ambiental F2 ",
+        "value": "0S01 Acuacar ambiental F2"
       },
-      { "label": "Gc08 Cartagena Surtigas", "value": "Gc08 Cartagena Surtigas" },
-      { "label": "Gc08 Monteria", "value": "Gc08 Monteria" },
-      { "label": "Gc08 Sucre", "value": "Gc08 Sucre" },
-      { "label": "Interventoria", "value": "Interventoria" }
+      { "label": "SPH01 Mexichem HSQ", "value": "SPH01 Mexichem HSQ" },
+      { "label": "SPH01 Mexichem ING", "value": "SPH01 Mexichem ING" }
     ]
   },
   {
