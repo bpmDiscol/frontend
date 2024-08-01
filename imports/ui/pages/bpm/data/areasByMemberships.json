@@ -47,22 +47,21 @@
     "menu": [
       {
         "label": "Direccion Administrativa",
-        "value": "Direccion Administrativa"
+        "value": "Direccion_Administrativa"
       },
       { "label": "Calidad", "value": "Calidad" },
       { "label": "Comercial", "value": "Comercial" },
       { "label": "Contabilidad", "value": "Contabilidad" },
-      { "label": "Control Interno", "value": "Control Interno" },
       { "label": "Gerencia", "value": "Gerencia" },
       { "label": "Gestion Humana", "value": "Gestion Humana" },
       { "label": "HSE", "value": "HSE" },
       { "label": "Logística", "value": "Logistica" },
-      { "label": "Nomina", "value": "Nomina" },
+      { "label": "Nómina", "value": "Nomina" },
       { "label": "PQR", "value": "PQR" },
       { "label": "Sistemas", "value": "Sistemas" },
       { "label": "Tesorería", "value": "Tesoreria" },
       {
-        "label": "0S01 Acuacar ambiental F2 ",
+        "label": "0S01 Acuacar ambiental F2",
         "value": "0S01 Acuacar ambiental F2"
       },
       { "label": "SPH01 Mexichem HSQ", "value": "SPH01 Mexichem HSQ" },
@@ -86,8 +85,8 @@
     "menu": [{ "label": "Nomina", "value": "Nomina" }]
   },
   {
-    "membership": ["Lider", "PQRFSF"],
-    "menu": [{ "label": "PQRFSF", "value": "PQRFSF" }]
+    "membership": ["Lider", "PQR"],
+    "menu": [{ "label": "PQR", "value": "PQR" }]
   },
   {
     "membership": ["director", "Proyectos_SCR"],
