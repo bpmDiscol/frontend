@@ -69,6 +69,18 @@
     ]
   },
   {
+    "membership": ["Lider", "0S01_Acuacar_Ambiental_F2"],
+    "menu": [{ "label": "0S01 Acuacar ambiental F2", "value": "0S01 Acuacar ambiental F2" }]
+  },
+  {
+    "membership": ["Lider", "SPH01_Mexichem_HSQ"],
+    "menu": [{ "label": "SPH01 Mexichem HSQ", "value": "SPH01 Mexichem HSQ" }]
+  },
+  {
+    "membership": ["Lider", "SPH01_Mexichem_ING"],
+    "menu": [{ "label": "GSPH01 Mexichem ING", "value": "SPH01 Mexichem ING" }]
+  },
+  {
     "membership": ["Lider", "Gestion_Humana"],
     "menu": [{ "label": "Gestion Humana", "value": "Gestion Humana" }]
   },
