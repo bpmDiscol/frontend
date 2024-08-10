@@ -158,6 +158,13 @@
     }
   },
   {
+    "membership": ["Lider", "Scr02_Magdalena_Medicion"],
+    "menu": {
+      "label": "Scr02 Magdalena Medicion",
+      "value": "Scr02 MAgdalena Medicion"
+    }
+  },
+  {
     "membership": ["Lider", "Scr02_Cesar"],
     "menu": {
       "label": "Scr02 Cesar",
