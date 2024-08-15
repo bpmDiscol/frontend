@@ -50,7 +50,7 @@ export default function ProcessRequests({ requestProcess, approvations }) {
       categories: Object.keys(contracts || {}),
       labels: {
         style: {
-          fontSize: "16px",
+          fontSize: "12px",
           cssClass: "selectableBar",
         },
       },

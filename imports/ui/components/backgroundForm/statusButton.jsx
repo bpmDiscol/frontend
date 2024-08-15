@@ -23,7 +23,7 @@ export default function StatusButton({
         },
       }}
       wrapperCol={{
-        span: 16,
+        span: 32,
         style: { padding: "15px 10px" },
       }}
       requiredMark={false}
