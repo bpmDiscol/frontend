@@ -18,8 +18,11 @@ export default function ProcessRequests({ requestProcess, approvations }) {
   const [contracts, setContracts] = React.useState();
   const [processLines, setProcessLines] = React.useState();
   const [key, setKey] = React.useState(0);
+
   React.useEffect(() => {
-    setDates(getContratationDates(approvations, requestProcess));
+    const dates = getContratationDates(approvations, requestProcess).reverse()
+    setDates(dates);
+    setCurrentDate(dates[0]?.value)
   }, [approvations, requestProcess]);
 
   React.useEffect(() => {
@@ -30,7 +33,6 @@ export default function ProcessRequests({ requestProcess, approvations }) {
         requestProcess
       );
       setContracts(contracts_);
-      setCurrentDate(dates[0].value);
     }
   }, [currentDate, dates, approvations, requestProcess]);
 
@@ -42,7 +44,7 @@ export default function ProcessRequests({ requestProcess, approvations }) {
       approvations,
       requestProcess
     );
-    setProcessLines(processLines_);
+    setProcessLines(processLines_ || []);
   }
 
   const contractOptions = {
@@ -61,7 +63,7 @@ export default function ProcessRequests({ requestProcess, approvations }) {
       height: 500,
       type: "line",
       stacked: true,
-      stackType: "100%",
+      // stackType: "100%",
       events: {
         xAxisLabelClick: function (_, _, config) {
           if (config.labelIndex < 0) return;
@@ -117,14 +119,17 @@ export default function ProcessRequests({ requestProcess, approvations }) {
   function separateContract(contracts) {
     let candidates = [];
     let finales = [];
+    let places = [];
     const areas = Object.keys(contracts);
     areas.forEach((area) => {
       candidates.push(contracts[area].candidates[0]);
       finales.push(contracts[area].finales[0]);
+      places.push(contracts[area].places[0]);
     });
     return {
       candidates,
       finales,
+      places,
     };
   }
 
@@ -153,12 +158,14 @@ export default function ProcessRequests({ requestProcess, approvations }) {
                     data: fillEmptySpaces(
                       separateContract(contracts).candidates
                     ),
-                    //   data: fillEmptySpaces([20, 55]),
                   },
                   {
                     name: "Contratados",
                     data: fillEmptySpaces(separateContract(contracts).finales),
-                    //   data: fillEmptySpaces([3, 5]),
+                  },
+                  {
+                    name: "Solicitados",
+                    data: fillEmptySpaces(separateContract(contracts).places),
                   },
                 ]}
                 width={400}

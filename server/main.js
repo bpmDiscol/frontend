@@ -41,11 +41,19 @@ import "../imports/api/alerts/alertsPublications";
 import "../imports/api/bdmData/bdmMethods";
 
 Accounts.config({
-    //cierra la sesion inactiva de 8 horas
+  //cierra la sesion inactiva de 8 horas
   loginExpirationInDays: 8 / 24,
+});
+
+Meteor.methods({
+  sendEmail({ to, from, subject, text, html }) {
+    this.unblock();
+    Email.send({ to, from, subject, text, html });
+  },
 });
 
 Meteor.startup(async () => {
   //elimina las alertas viejas(+48 horas) cada hora
-  Meteor.setInterval(()=> Meteor.call("deleteOldAlerts", 48), 1000 * 60 * 60);
+  Meteor.setInterval(() => Meteor.call("deleteOldAlerts", 48), 1000 * 60 * 60);
+  // console.log(JSON.stringify(process.env.MAIL_URL));
 });

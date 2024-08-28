@@ -19,5 +19,7 @@ const tabNumber = tabTitles.length - 1;
 const buttons = {
   curricullum: true,
 };
+const subtitle = "Generar inducción"
 
-export { tabTitles, tabContents, tabNumber, buttons };
+
+export { tabTitles, tabContents, tabNumber, buttons, subtitle };

@@ -170,10 +170,12 @@ export default function RequestGeneralities({
             menu={{
               items: salaryOptions,
               selectedKeys: selectedSalary,
+              onClick: (info) => console.log(info.key)
             }}
             open={openDropdown}
+            
           >
-            <Form.Item label="Salario" name={"salary"}>
+            <Form.Item label="Salario" name={"salary"} help='Debes escribir. Valores solo para referencia' tooltip='Valores solo informativos'>
               <InputNumber
                 stringMode
                 type="number"

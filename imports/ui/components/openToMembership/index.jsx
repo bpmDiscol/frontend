@@ -4,10 +4,7 @@ export default function OpenToMembership({ children, memberships }) {
   const [isVisible, setVisible] = React.useState(false);
 
   async function openVisibility() {
-    // const roles = [
-    //   ["director", "discol"],
-    //   ["Lider", "Gestion_Humana"],
-    // ];
+ 
     const test = memberships.map((role) => {
       return Meteor.callAsync("is_proccess_auth", role, Meteor.userId());
     });

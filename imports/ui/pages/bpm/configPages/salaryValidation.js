@@ -21,4 +21,6 @@ const buttons = {
   curricullum: true,
 };
 
-export { tabTitles, tabContents, tabNumber, buttons, salary };
+const subtitle = "validación de salarios"
+
+export { tabTitles, tabContents, tabNumber, buttons, salary, subtitle };

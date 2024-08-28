@@ -63,14 +63,37 @@ Meteor.methods({
     userName,
     response,
     concept,
+    ANS = {},
     caseId,
     taskId,
     user,
+    humanResources = false,
   }) {
     const field = ["requestEmployeeDataInput", "observations"];
     Meteor.callAsync("update_data", { field, value: concept }, caseId).catch(
       (error) => console.error(error)
     );
+    if (humanResources)
+      Meteor.callAsync(
+        "update_data",
+        {
+          field: ["requestEmployeeDataInput", "approvedHHRR"],
+          value: Date.now(),
+        },
+        caseId
+      ).catch((error) => console.error(error));
+
+    requestEmployeeCollection.update(
+      { caseId: caseId },
+      {
+        $set: {
+          [humanResources ? "responseHHRR" : "responseDirector"]: response,
+          ANS,
+        },
+      },
+      { upsert: true }
+    );
+
     return await Meteor.callAsync("manage_data", "post", {
       url: `/API/bpm/userTask/${taskId}/execution`,
       data: {
@@ -215,7 +238,14 @@ Meteor.methods({
       (error) => console.error(error)
     );
   },
-  async reject_profiles(rejectedList,auxiliarId, caseId, taskId, userName, user) {
+  async reject_profiles(
+    rejectedList,
+    auxiliarId,
+    caseId,
+    taskId,
+    userName,
+    user
+  ) {
     try {
       requestEmployeeCollection.update(
         { caseId },
@@ -237,7 +267,7 @@ Meteor.methods({
       data: {
         rejectedList,
         responsible: userName,
-        auxiliarId
+        auxiliarId,
       },
       user,
     }).catch((error) => console.error(error));
@@ -381,5 +411,41 @@ Meteor.methods({
       data: { response: "done", responsible },
       user,
     }).catch((error) => console.error(error));
+  },
+  async get_ANS(processIds) {
+    return await requestEmployeeCollection
+      .rawCollection()
+      .aggregate([
+        { $match: { caseId: { $in: processIds } } },
+        {
+          $group: {
+            _id: null,
+            minHHrr: { $min: "$ANS.hhrr" },
+            maxHHrr: { $max: "$ANS.hhrr" },
+            list: {
+              $push: {
+                caseId: "$caseId",
+                hhrr: "$ANS.hhrr",
+                isTech: {
+                  $cond: {
+                    if: { $eq: ["$ANS.isTechInterview", true] },
+                    then: 3,
+                    else: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            minHHrr: 1,
+            maxHHrr: 1,
+            list: 1,
+          },
+        },
+      ])
+      .toArray();
   },
 });

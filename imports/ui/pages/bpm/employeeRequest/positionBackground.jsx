@@ -65,6 +65,7 @@ export default function PositionBackgroud({
   }
 
   function isApproved(id) {
+    if (!background) return false;
     const isPresent = Object.keys(background).includes(id);
     if (!isPresent) return;
     return background[id].approved;
@@ -122,18 +123,18 @@ export default function PositionBackgroud({
                     border: `2px solid`,
                     padding: "7px 15px",
                     marginRight: "10px",
-                    boxShadow: `0 5px 15px gray`,
                   }}
                 >
                   <Flex
                     gap={10}
                     style={{
-                      color: interviews[index].selected ? "green" : "red",
+                      color: isApproved(interview.fileId) ? "green" : "red",
+                      fontWeight: "bolder",
                     }}
                   >
                     <Icon
                       component={
-                        interviews[index].selected
+                        isApproved(interview.fileId)
                           ? CheckCircleOutlined
                           : CloseCircleOutlined
                       }
@@ -185,9 +186,10 @@ export default function PositionBackgroud({
                       <UploadFileButton
                         targetCollection={"background"}
                         onUpload={(uploadData) =>
-                          updateData(interview.fileId, {
-                            legal_background: uploadData,
-                          })
+                          updateData(
+                            `${interview.fileId}.legal_background`,
+                            uploadData
+                          )
                         }
                         defaultFileShow={
                           checkPreFile(interview.fileId)

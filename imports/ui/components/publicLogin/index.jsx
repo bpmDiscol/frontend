@@ -21,7 +21,7 @@ export default function PublicLogin() {
     token,
     username,
     password,
-    axiosCookie
+    axiosCookie,
   }) {
     Meteor.loginWithPassword(username, password, async (error) => {
       if (error?.reason == "User not found") {
@@ -30,13 +30,13 @@ export default function PublicLogin() {
           password,
           bonitaUser,
           token,
-          axiosCookie
+          axiosCookie,
         }).catch((error) => console.error(error));
         Meteor.loginWithPassword(username, password);
       }
       if (error?.error === "no-2fa-code") openOTPModal(true);
     });
-    setBonitaData({bonitaUser, token, axiosCookie});
+    setBonitaData({ bonitaUser, token, axiosCookie });
     sessionStorage.setItem("constId", bonitaUser);
   }
 
@@ -50,7 +50,7 @@ export default function PublicLogin() {
         async (error, result) => {
           if (error) console.log(error.reason);
           else {
-            if (result.variant == "success")
+            if (result.variant == "success") {
               await meteorLogin({
                 bonitaUser: result.bonitaUser,
                 token: result.token,
@@ -58,6 +58,7 @@ export default function PublicLogin() {
                 username,
                 password,
               });
+            }
             if (result.variant == "error")
               openNotification(result.variant, result?.message, "");
           }
@@ -121,12 +122,14 @@ export default function PublicLogin() {
           </Flex>
         }
       >
-       {bonitaData && <OTP
-          username={username}
-          password={password}
-          bonitaData={bonitaData}
-          logged
-        />}
+        {bonitaData && (
+          <OTP
+            username={username}
+            password={password}
+            bonitaData={bonitaData}
+            logged
+          />
+        )}
       </Modal>
     </Flex>
   );

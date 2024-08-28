@@ -15,5 +15,6 @@ const tabNumber = tabTitles.length - 1;
 
 const buttons = {
 };
+const subtitle = "Autorización de equipos"
 
-export { tabTitles, tabContents, tabNumber, buttons };
+export { tabTitles, tabContents, tabNumber, buttons, subtitle };

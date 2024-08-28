@@ -10,4 +10,6 @@ const buttons = {
   background: [{ title: "Descargar RUT", linkId: "certificado_rut" }],
 };
 
-export { tabTitles, tabContents, tabNumber, buttons };
+const subtitle = "RUT"
+
+export { tabTitles, tabContents, tabNumber, buttons, subtitle };

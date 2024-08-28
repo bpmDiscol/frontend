@@ -9,14 +9,14 @@ import { saveCase, saveTask, saveTaskName } from "../config/taskManagement";
 export const AlertNotificationsContext = React.createContext();
 
 export default function AlertNotificationsProvider({ children }) {
+  const [myMemberships, setMyMemberships] = React.useState([]);
   const { openNotification, api } = React.useContext(NotificationsContext);
   const { setView } = React.useContext(MainViewContext);
 
-  const [myMemberships, setMyMemberships] = React.useState();
 
   const alerts = useTracker(() => {
     if (!Meteor.userId()) return [];
-    if (myMemberships) {
+    if (myMemberships.length) {
       const query = {
         $or: myMemberships.map((membership) => ({
           memberships: { $all: membership },
@@ -66,10 +66,11 @@ export default function AlertNotificationsProvider({ children }) {
   }
 
   React.useEffect(() => {
-    Meteor.call("get_my_memberships", Meteor.userId(), (err, resp) => {
-      if (err) console.log(err);
-      else setMyMemberships(resp);
-    });
+    // Meteor.call("get_my_memberships", Meteor.userId(), (err, resp) => {
+    //   if (err) console.log(err);
+    //   else setMyMemberships(resp);
+    // });
+    setMyMemberships(Meteor.user().profile.memberships) ;
   }, []);
 
   React.useEffect(() => {

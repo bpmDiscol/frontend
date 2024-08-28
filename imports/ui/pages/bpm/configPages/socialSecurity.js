@@ -13,5 +13,6 @@ const buttons = {
     { title: "Cert. Pensiones", linkId: "certificado_pensiones" },
   ],
 };
+const subtitle = "Seguridad social";
 
-export { tabTitles, tabContents, tabNumber, buttons };
+export { tabTitles, tabContents, tabNumber, buttons, subtitle };

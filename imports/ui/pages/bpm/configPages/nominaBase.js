@@ -29,4 +29,6 @@ const buttons = {
 };
 const showSalary = true
 
-export { tabTitles, tabContents, request, tabNumber, buttons, showSalary };
+const subtitle = "Base de nómina"
+
+export { tabTitles, tabContents, request, tabNumber, buttons, showSalary, subtitle };

@@ -4,7 +4,7 @@ import Transition from "../transition";
 
 export default function SpinningLoader({ condition, content }) {
   return (
-    <Flex vertical style={{ height: "60dvh", overflow: "hidden", width:'100%' }}>
+    <Flex vertical style={{ height: "60dvh", overflowY: "auto",  overflowX:'hidden', width:'100%' }}>
       <Transition effect={"zoom-in"}>
         <Spin spinning={!condition} tip="Por favor espere un momento...">
           {condition && content}

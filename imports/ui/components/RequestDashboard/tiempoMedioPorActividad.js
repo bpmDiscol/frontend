@@ -11,17 +11,15 @@ export default function calcularTiempoPromedioPorActividad(
   const tiemposMes = {};
   const contrataciones = {};
 
-
-
   approvations?.forEach((approvationTaskList, index) => {
     const requestArea = requestProcess[index].requestArea;
-
+    const places = requestProcess[index].places;
     const approvationDate = parseISO(requestProcess[index].modifyedAt);
     const approvationYear = approvationDate.getFullYear();
     const approvationMonth = approvationDate.getMonth();
     const approvationDateKey = `${monthNames[approvationMonth]}, ${approvationYear}`;
 
-    approvationTaskList.forEach((entry, index) => {
+    approvationTaskList.forEach((entry, idx) => {
       if (!tiempos[entry.taskName]) {
         tiempos[entry.taskName] = {
           total: 0,
@@ -35,6 +33,7 @@ export default function calcularTiempoPromedioPorActividad(
         contrataciones[requestArea][approvationDateKey] = {
           candidates: 0,
           final: 0,
+          places: 0,
         };
 
       if (
@@ -48,6 +47,14 @@ export default function calcularTiempoPromedioPorActividad(
         contrataciones[requestArea][approvationDateKey].final += parseInt(
           entry.response
         );
+      if (
+        (entry.taskName === "employee_request_adm" ||
+          entry.taskName === "employee_request_dir_cartera" ||
+          entry.taskName === "employee_request_dir_scr") &&
+        entry.response === "undefined"
+      )
+        contrataciones[requestArea][approvationDateKey].places +=
+          parseInt(places);
 
       if (entry.response === "undefined") {
         const start = new Date(entry.responseDate).getTime();
@@ -57,11 +64,12 @@ export default function calcularTiempoPromedioPorActividad(
         const monthKey = `${monthNames[month]}, ${year}`;
 
         let pending = true;
-        for (let i = index; i < approvationTaskList.length; i++) {
+        for (let i = idx; i < approvationTaskList.length; i++) {
           if (
             approvationTaskList[i].taskName === entry.taskName &&
             approvationTaskList[i].response !== "undefined"
           ) {
+            
             const end = new Date(approvationTaskList[i].responseDate).getTime();
             const diferencia = (end - start) / milisecPorMinuto;
             tiempos[entry.taskName].total += diferencia;

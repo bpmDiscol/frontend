@@ -149,7 +149,7 @@ export default function EmployeeRequestBackground() {
           (interview) => interview.selected
         );
 
-        if(!auxiliarId){
+        if (!auxiliarId) {
           openNotification(
             "warning",
             "¡Ups... se te ha olvidado algo!",
@@ -219,7 +219,12 @@ export default function EmployeeRequestBackground() {
   }
 
   return (
-    <Flex id="employee-request-container" vertical gap={"10px"}>
+    <Flex
+      id="employee-request-container"
+      vertical
+      gap={"10px"}
+      style={{ width: "90%" }}
+    >
       <Flex vertical wrap>
         <Title level={1}>
           Requisición de personal<Text strong>(Antecedentes)</Text>

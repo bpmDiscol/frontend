@@ -1,14 +1,6 @@
-import { Flex } from "antd";
 import React from "react";
+import BPMEditor from "../../../components/editor";
 
 export default function PositionRequirements({ requestEmployee }) {
-  React.useEffect(() => {
-    const requirements = document.getElementById("requirements");
-    requirements.innerHTML = requestEmployee.requirements;
-  }, []);
-  return (
-    <Flex vertical style={{ padding: "0 10px" }}>
-      <p id="requirements"></p>
-    </Flex>
-  );
+  return <BPMEditor requestData={requestEmployee.requirements} />;
 }

@@ -20,12 +20,14 @@ import { NotificationsContext } from "../../../context/notificationsProvider";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
 import { getCase, getTask } from "../../../config/taskManagement";
+import RequestANS from "./requestANS";
 
 export default function EmployeeRequestHR() {
   const { Text, Title } = Typography;
   const { setView, userName } = React.useContext(MainViewContext);
   const [tabView, setTabView] = React.useState();
   const [concept, setConcept] = React.useState("");
+  const [ANS, setANS] = React.useState();
   const [waitToSend, setWaitingToSend] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
 
@@ -53,6 +55,8 @@ export default function EmployeeRequestHR() {
         requestEmployee={requestEmployeeData}
         concept={concept}
         setConcept={setConcept}
+        ANS={ANS}
+        setANS={setANS}
       />
     );
   }
@@ -63,6 +67,7 @@ export default function EmployeeRequestHR() {
     { label: "Equipo necesario", value: 3 },
     { label: "Observaciones", value: 4 },
     { label: "Mi concepto", value: 5 },
+    { label: "ANS", value: 6 },
   ];
   const tabContents = [
     PositionGereralities,
@@ -71,6 +76,7 @@ export default function EmployeeRequestHR() {
     PositionGears,
     PositionObservations,
     PositionConcept,
+    RequestANS,
   ];
 
   function handleButtonResponses(buttonResponse) {
@@ -80,6 +86,14 @@ export default function EmployeeRequestHR() {
   }
 
   function request(response) {
+    if (!ANS) {
+      openNotification(
+        "warning",
+        "Date un respiro...",
+        "Aun no has configurado los ANS para este proceso"
+      );
+      return;
+    }
     setWaitingToSend(true);
     Meteor.call(
       "send_employee_request",
@@ -87,9 +101,11 @@ export default function EmployeeRequestHR() {
         userName,
         response,
         concept,
+        ANS,
         caseId: getCase(),
         taskId: getTask(),
         user: Meteor.userId(),
+        humanResources: true,
       },
       (error, response) => {
         setWaitingToSend(false);
@@ -103,7 +119,7 @@ export default function EmployeeRequestHR() {
             );
             setTimeout(() => {
               setView("tasks");
-            }, 1000);
+            }, 2000);
           }
         }
       }
@@ -132,7 +148,10 @@ export default function EmployeeRequestHR() {
           defaultValue={tabContents.length - 1}
           disabled={!requestEmployeeData}
         />
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader
+          condition={requestEmployeeData}
+          content={tabView}
+        />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

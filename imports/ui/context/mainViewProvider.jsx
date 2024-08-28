@@ -8,7 +8,6 @@ export default function MainViewProvider({ children, defaultView }) {
   const [userName, setUserName] = React.useState("");
   const [newKey, setNewKey] = React.useState(0);
 
-
   function setView(newView) {
     window.sessionStorage.setItem("currentView", newView);
     setNewView(getView(newView));
@@ -26,7 +25,7 @@ export default function MainViewProvider({ children, defaultView }) {
 
   return (
     <MainViewContext.Provider value={{ view, setView, userName }}>
-      <React.Fragment key={newKey}>{children}</React.Fragment>
+      <div key={newKey}>{children}</div>
     </MainViewContext.Provider>
   );
 }

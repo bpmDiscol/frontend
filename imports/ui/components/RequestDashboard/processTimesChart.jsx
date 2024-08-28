@@ -1,91 +1,50 @@
 import React from "react";
 import Chart from "react-apexcharts";
+import moment from "moment";
+import { Card, Col, Empty, Flex, Row, Select, Spin, Statistic } from "antd";
+
+import getApprovationsTimes from "./getTimes";
+import getMonthData from "./getMonthData";
+
 import monthNames from "./monthNames.json";
-import ProcessTimes from "./tiempoDeProcesos";
-import { Card, Flex, Select, Spin } from "antd";
 import "../transition/transition.css";
-import { getAreasTimes } from "./getAreasTimes";
-import { getTotalElapsedTime } from "./getTotalElapsedTimes";
-import { fillEmptySpaces } from "./fillEmptySpaces";
-import { sumaArrayValues } from "./sumaArrayValues";
+import getEffectivity from "./getEffectivity";
 
-export default function ProcessTimesChart({ requestProcess }) {
-  const [processMedia, setProcessMedia] = React.useState();
-  const [procesedTimes, setProcesedTimes] = React.useState();
-  const [areasTimes, setAreasTimes] = React.useState();
-  const [yearToView, setYearToView] = React.useState("2024");
-  const [monthToView, setMonthToview] = React.useState();
-  const [timeOperator, setTimeOperator] = React.useState({
-    value: 60,
-    label: "Horas",
-  });
-  const mediaTimesOptions = {
+export default function ProcessTimesChart({ requestProcess, approvations }) {
+  const [yearToView, setYearToView] = React.useState(moment().year());
+  const [monthToView, setMonthToview] = React.useState(moment().month());
+
+  const [approvationTimes, setApprovationsTimes] = React.useState();
+  const [processTimes, setProcessTimes] = React.useState();
+  const [years, setYears] = React.useState();
+  const [loading, setLoading] = React.useState(true);
+  const [ANS, setANS] = React.useState({ minHHrr: 0, maxHHrr: 0 });
+  const areaColors = processTimes?.areaValues.map((value) =>
+    value >= ANS.minHHrr
+      ? value >= ANS.maxHHrr
+        ? "#ff6868"
+        : "#ffc526"
+      : "#30db63"
+  );
+  const taskColors = processTimes?.taskValues.map((value) =>
+    value >= ANS.minHHrr
+      ? value >= ANS.maxHHrr
+        ? "#ff6868"
+        : "#ffc526"
+      : "#30db63"
+  );
+  const mediaAreasOptions = (type) => ({
     xaxis: {
-      categories: monthNames,
-    },
-    yaxis: {
+      categories: processTimes ? processTimes[type] : [""],
       title: {
-        text: timeOperator.label,
+        text: "Dias",
       },
     },
 
-    chart: {
-      id: "mediaTimes",
-      height: 350,
-      type: "line",
-      events: {
-        click: function (e, chart, config) {
-          setMonthToview(monthNames[Math.max(config.dataPointIndex, 0)]);
-        },
-      },
-      dropShadow: {
-        enabled: true,
-        color: "#000",
-        top: 18,
-        left: 7,
-        blur: 10,
-        opacity: 0.2,
-      },
-      toolbar: { show: false },
-    },
-    dataLabels: {
-      enabled: true,
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    title: {
-      text: "Tiempo medio de todos los procesos",
-      align: "left",
-    },
-    markers: {
-      size: 1,
-    },
-    tooltip: {
-      shared: false,
-      y: {
-        formatter: function (val) {
-          return `${val.toFixed(2)} ${timeOperator.label}`;
-        },
-      },
-    },
-  };
-  const mediaAreasOptions = {
-    xaxis: {
-      categories: areasTimes ? areasTimes.areas : [""],
-      title: {
-        text: timeOperator.label,
-      },
-    },
-    yaxis: {
-      title: {
-        text: "Areas",
-      },
-    },
+    colors: type === "areaTitles" ? areaColors : taskColors,
     chart: {
       id: "areaTimes",
       type: "bar",
-      height: 500,
       stacked: true,
       dropShadow: {
         enabled: true,
@@ -99,135 +58,219 @@ export default function ProcessTimesChart({ requestProcess }) {
     plotOptions: {
       bar: {
         horizontal: true,
-        dataLabels: {
-          total: {
-            enabled: true,
-            offsetX: 5,
-            style: {
-              fontSize: "13px",
-              fontWeight: 900,
-            },
-          },
-        },
+        distributed: true,
       },
     },
     legend: { show: false },
     title: {
-      text: `Tiempo medio por area - ${monthToView}`,
+      text: `Tiempo medio por ${type == "areaTitles" ? "area" : "tarea"}`,
       align: "left",
     },
     tooltip: {
       shared: false,
       y: {
         formatter: function (val) {
-          return `${val.toFixed(2)} ${timeOperator.label}`;
+          return `Tiempo medio >> ${val} días`;
         },
       },
     },
-  };
+    annotations: {
+      xaxis: [
+        {
+          x: 1,
+          x2: 3,
+          fillColor: "#5e5e5e",
+          opacity: 0.2,
+          label: {
+            text: "ANS Lider",
+          },
+        },
+        {
+          x: ANS.minHHrr,
+          x2: ANS.maxHHrr,
+          fillColor: "#66baff",
+          opacity: 0.2,
+          label: {
+            text: ANS.minHHrr ? "ANS Gestion humana" : "Sin ANS Gestion humana",
+          },
+        },
+      ],
+    },
+  });
 
-  const timeOptions = [
-    { value: 1, label: "Ver en minutos" },
-    { value: 60, label: "Ver en Horas" },
-    { value: 60 * 24, label: "Ver en Días" },
-  ];
+  function getApprovations(ANS_, next) {
+    if (!ANS_) ANS_ = ANS;
+    getApprovationsTimes(requestProcess, approvations, ANS_.list).then(
+      (approvationTimes) => {
+        setApprovationsTimes(approvationTimes);
+        setLoading(false);
+        if (next) next(approvationTimes);
+      }
+    );
+  }
+
+  function getANS(approvationTimes) {
+    let processIds = [];
+    try {
+      processIds =
+        approvationTimes[yearToView][monthNames[monthToView]].processIds;
+    } catch {}
+
+    Meteor.call("get_ANS", approvationTimes ? processIds : [], (err, ANS) => {
+      if (!err) {
+        setANS(ANS[0] || { minHHrr: 0, maxHHrr: 0 });
+        getApprovations(ANS[0]);
+      }
+    });
+  }
 
   React.useEffect(() => {
-    const procesed = ProcessTimes(requestProcess);
-    setProcesedTimes(procesed);
-    setProcessMedia(
-      getTotalElapsedTime(yearToView, procesed, timeOperator.value)
-    );
-  }, [timeOperator]);
+    getApprovations(null, getANS);
+  }, []);
 
   React.useEffect(() => {
-    setAreasTimes(
-      getAreasTimes(procesedTimes, yearToView, monthToView, timeOperator.value)
-    );
-  }, [procesedTimes, yearToView, monthToView]);
+    if (approvationTimes) {
+      setYears(Object.keys(approvationTimes));
+      const monthData = getMonthData(approvationTimes, yearToView, monthToView);
+      setProcessTimes(monthData);
+    }
+  }, [approvationTimes, yearToView, monthToView]);
+
+  React.useEffect(() => {
+    getANS(approvationTimes);
+  }, [yearToView, monthToView]);
 
   return (
     <Card bordered style={{ border: "1px solid" }}>
-      {!processMedia && <Spin style={{ width: "500px" }} />}
-      <Flex style={{ height: "55dvh" }}>
-        <Flex vertical>
-          <Flex gap={20}>
-            {procesedTimes && (
-              <Select
-                options={Object.keys(procesedTimes).map((year) => {
-                  return {
-                    label: year,
-                    value: year,
-                  };
-                })}
-                onChange={(value) => setYearToView(value)}
-                defaultActiveFirstOption={true}
-                defaultValue={"2024"}
-              />
-            )}
+      <Flex vertical gap={32}>
+        <Flex gap={20}>
+          {years && (
             <Select
-              options={timeOptions}
-              defaultValue={60}
-              onChange={(_, option) => {
-                setTimeOperator(option);
-              }}
+              options={years.map((year) => {
+                return {
+                  label: year,
+                  value: year,
+                };
+              })}
+              onChange={(value) => setYearToView(value)}
+              defaultValue={moment().year()}
             />
-          </Flex>
-          <Flex style={{ width: "40dvw", height: "40dvh" }}>
-            {processMedia && (
-              <Chart
-                type="line"
-                options={mediaTimesOptions}
-                series={[
-                  {
-                    name: "Terminadas",
-                    data: fillEmptySpaces(processMedia.finisheds),
-                  },
-                  {
-                    name: "En espera",
-                    data: fillEmptySpaces(processMedia.unfinisheds),
-                  },
-                  {
-                    name: "Total transcurrido",
-                    data: sumaArrayValues(
-                      fillEmptySpaces(processMedia.finisheds),
-                      fillEmptySpaces(processMedia.unfinisheds)
-                    ),
-                  },
-                ]}
-                style={{ flex: 1 }}
-                width={"90%"}
-                height={300}
-              />
-            )}
-          </Flex>
+          )}
+          <Select
+            options={monthNames.map((month, index) => {
+              return {
+                label: month,
+                value: index,
+              };
+            })}
+            onChange={(value) => setMonthToview(value)}
+            defaultValue={moment().month()}
+            style={{ width: "10rem" }}
+          />
         </Flex>
-        <Flex style={{ flex: 1 }}>
-          {areasTimes && (
-            <Card className={"showme"} style={{ border: "1px solid", flex: 1 }}>
-              <Chart
-                type="bar"
-                options={mediaAreasOptions}
-                series={[
-                  {
-                    name: "Terminadas",
-                    data: areasTimes
-                      ? fillEmptySpaces(areasTimes.finishedMedias)
-                      : [""],
-                  },
-                  {
-                    name: "En espera",
-                    data: areasTimes
-                      ? fillEmptySpaces(areasTimes.unfinishedMedias)
-                      : [""],
-                  },
-                ]}
-                style={{ flex: 1 }}
-                height={300}
+        {approvationTimes && (
+          <Flex gap={32}>
+            <Card
+              style={{
+                boxShadow: "10px 10px 10px gray",
+                border: "1px solid black",
+              }}
+            >
+              <Statistic
+                title="Efectividad Gestion Humana"
+                value={getEffectivity(
+                  approvationTimes[yearToView][monthNames[monthToView]]
+                    ?.hhrrEfectivity
+                )}
+                precision={2}
+                valueStyle={{ color: "#3f8600" }}
+                // prefix={<ArrowUpOutlined />}
+                suffix="%"
               />
             </Card>
-          )}
-        </Flex>
+            <Card
+              style={{
+                boxShadow: "10px 10px 10px gray",
+                border: "1px solid black",
+              }}
+            >
+              <Statistic
+                title="Efectividad Lideres"
+                value={getEffectivity(
+                  approvationTimes[yearToView][monthNames[monthToView]]
+                    ?.leaderEfectivity
+                )}
+                precision={2}
+                valueStyle={{ color: "#3f8600" }}
+                // prefix={<ArrowUpOutlined />}
+                suffix="%"
+              />
+            </Card>
+          </Flex>
+        )}
+
+        <Row>
+          <Col span={12}>
+            <Spin spinning={loading}>
+              <Flex align="center" justify="center" style={{ height: "75dvh" }}>
+                {processTimes && (
+                  <Chart
+                    key={`${yearToView}-${monthToView}`}
+                    type="bar"
+                    options={mediaAreasOptions("areaTitles")}
+                    series={[
+                      {
+                        name: "Area",
+                        data: processTimes.areaValues,
+                      },
+                    ]}
+                    style={{ flex: 1 }}
+                    height={"100%"}
+                  />
+                )}
+                {!processTimes && (
+                  <Empty
+                    description={
+                      loading
+                        ? "Recolectando información..."
+                        : "Este mes no tiene datos"
+                    }
+                  />
+                )}
+              </Flex>
+            </Spin>
+          </Col>
+          <Col span={12}>
+            <Spin spinning={loading}>
+              <Flex align="center" justify="center" style={{ height: "75dvh" }}>
+                {processTimes && (
+                  <Chart
+                    key={`${yearToView}-${monthToView}`}
+                    type="bar"
+                    options={mediaAreasOptions("taskTitles")}
+                    series={[
+                      {
+                        name: "Tarea",
+                        data: processTimes.taskValues,
+                      },
+                    ]}
+                    style={{ flex: 1 }}
+                    height={"100%"}
+                  />
+                )}
+                {!processTimes && (
+                  <Empty
+                    description={
+                      loading
+                        ? "Recolectando información..."
+                        : "Este mes no tiene datos"
+                    }
+                  />
+                )}
+              </Flex>
+            </Spin>
+          </Col>
+        </Row>
       </Flex>
     </Card>
   );

@@ -10,4 +10,6 @@ const buttons = {
   background: [{ title: "Certificado bancario", linkId: "certificado_banco" }],
 };
 
-export { tabTitles, tabContents, request, tabNumber, buttons };
+const subtitle = "Certificaciones"
+
+export { tabTitles, tabContents, request, tabNumber, buttons, subtitle };

@@ -19,9 +19,10 @@ export function getContractsByDate(date, approvations, requestProcess) {
     const fecha = Object.keys(contrataciones[area]);
     fecha.forEach((fechaStr) => {
       if (fechaStr == date) {
-        if (!res[area]) res[area] = { candidates: [], finales: [] };
+        if (!res[area]) res[area] = { candidates: [], finales: [], places: [] };
         res[area].candidates.push(contrataciones[area][fechaStr].candidates);
         res[area].finales.push(contrataciones[area][fechaStr].final);
+        res[area].places.push(contrataciones[area][fechaStr].places);
       }
     });
   });
@@ -58,7 +59,7 @@ export function deformatDate(date) {
 
 function refactorSteps(steps) {
   const refactor = [];
-  steps.forEach((step) => {
+  steps.forEach((step, idx) => {
     const currentTask = step.taskName;
     const currentStep = {
       responsible: step.responsible,
@@ -69,7 +70,8 @@ function refactorSteps(steps) {
       currentStep.status = "process";
       currentStep.response = "undefined";
       currentStep.startDate = step.responseDate;
-      steps.forEach((step_) => {
+      const subStep = steps.slice(idx);
+      subStep.forEach((step_) => {
         if (step_.taskName == currentTask && step_.response != "undefined") {
           //se encontro una tarea finalizada
           currentStep.response = step_.response;
@@ -82,17 +84,18 @@ function refactorSteps(steps) {
           );
         }
       });
+
       refactor.push(currentStep);
     }
   });
   return refactor;
 }
 
-export function getProcessLine(area, date, approvations, requestProcess) {
+export function getProcessLine(area, date, approvations, requestProcess, initiator) {
   const { month, year } = deformatDate(date);
   return requestProcess
     .map((process, index) => {
-      if (process.requestArea === area) {
+      if (process.requestArea === area || process.initiatorUser === initiator)  {
         return { ...process, approvations: approvations[index] };
       }
     })

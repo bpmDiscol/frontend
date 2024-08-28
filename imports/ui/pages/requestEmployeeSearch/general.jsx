@@ -4,9 +4,10 @@ import translate from "../../misc/translate.json";
 import capitalize from "../../misc/capitalize";
 import { pesos } from "../../misc/pesos";
 import { CheckCircleTwoTone, HourglassTwoTone } from "@ant-design/icons";
+import BPMEditor from "../../components/editor";
 
-export default function General({requestEmployee}) {
-    const duration = `${requestEmployee.duration.cuantity} ${requestEmployee.duration.timePart}`;
+export default function General({ requestEmployee }) {
+  const duration = `${requestEmployee.duration.cuantity} ${requestEmployee.duration.timePart}`;
   const observationTitles = ["Solicitante", "Director", "Gestion Humana"];
   const lastSteps = [
     "generate_induction",
@@ -88,18 +89,24 @@ export default function General({requestEmployee}) {
     {
       key: "11",
       label: "Vehículo requerido",
-      children: capitalize(requestEmployee.vehicleType)|| <Tag color="error">No requerido</Tag>,
+      children: capitalize(requestEmployee.vehicleType) || (
+        <Tag color="error">No requerido</Tag>
+      ),
       span: 2,
     },
     {
       key: "12",
       label: "Tipo de licencia",
-      children: requestEmployee.licenceType|| <Tag color="error">No requerido</Tag>,
+      children: requestEmployee.licenceType || (
+        <Tag color="error">No requerido</Tag>
+      ),
     },
     {
       key: "13",
       label: "Valor de rodamiento",
-      children: pesos.format(requestEmployee.bearingValue)|| <Tag color="error">No requerido</Tag>,
+      children: pesos.format(requestEmployee.bearingValue) || (
+        <Tag color="error">No requerido</Tag>
+      ),
       span: 2,
     },
   ];
@@ -108,22 +115,24 @@ export default function General({requestEmployee}) {
     {
       key: "14",
       label: "Requerimientos",
-      children: (
-        <p dangerouslySetInnerHTML={{ __html: requestEmployee.requirements }} />
-      ),
+      children: <BPMEditor requestData={requestEmployee.requirements} heigth="10dvh" />,
       span: 3,
     },
     {
       key: "15",
       label: "Observaciones",
-      children: requestEmployee.observations.map((observation, index) => {
-        return (
-          <Flex key={index}>
-            {observationTitles[index]}
-            <p dangerouslySetInnerHTML={{ __html: observation }} />
-          </Flex>
-        );
-      }),
+      children: (
+        <Flex vertical gap={10}>
+          {requestEmployee.observations.map((observation, index) => {
+            return (
+              <Flex vertical key={index} style={{ width: "100%" }}>
+                {observationTitles[index]}
+                <BPMEditor requestData={observation} heigth="10dvh" />
+              </Flex>
+            );
+          })}
+        </Flex>
+      ),
       span: 3,
     },
     {
@@ -148,7 +157,7 @@ export default function General({requestEmployee}) {
   return (
     <Flex vertical gap={16}>
       <Descriptions bordered size="small" items={base} />
-      <Descriptions bordered size="small" items={bonus} />
+      <Descriptions bordered size="small" items={bonus}  />
       {requestEmployee.isVehicle && (
         <Descriptions bordered size="small" items={vehicle} />
       )}
@@ -161,7 +170,10 @@ export default function General({requestEmployee}) {
               title={translate[item]}
               avatar={
                 requestEmployee[item] ? (
-                  <CheckCircleTwoTone twoToneColor='#52c41a' style={{fontSize:18}}/>
+                  <CheckCircleTwoTone
+                    twoToneColor="#52c41a"
+                    style={{ fontSize: 18 }}
+                  />
                 ) : (
                   <HourglassTwoTone spin />
                 )
@@ -173,4 +185,3 @@ export default function General({requestEmployee}) {
     </Flex>
   );
 }
-

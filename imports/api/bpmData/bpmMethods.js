@@ -104,15 +104,16 @@ Meteor.methods({
     });
     return response;
   },
-  async get_my_memberships(user) {
-    const bonitaUserId = Meteor.users.findOne(user)?.profile?.bonitaUser;
-
+  async get_my_memberships(user, bonitaUserId) {
+    if (!bonitaUserId)
+      bonitaUserId = Meteor.users.findOne(user)?.profile?.bonitaUser;
+    if (!bonitaUserId) return [];
     const data = await Meteor.callAsync("manage_data", "get", {
       url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
       data: {},
       user,
     }).catch((error) => console.error(error));
-    if (data.error) return [];
+    if (data.error) {console.log("Error colectando membresias"); return []};
 
     const memberships = data.response;
     if (memberships != "error" && memberships != "no token") {
@@ -137,12 +138,8 @@ Meteor.methods({
     }
   },
   async is_proccess_auth(role, user) {
-    const resp = await Meteor.callAsync("get_my_memberships", user).catch(
-      (e) => {
-        console.log(e);
-        return [];
-      }
-    );
+    const resp = Meteor.users.findOne(user).profile.memberships;
+
     if (resp?.length) {
       const authMemberships = resp.filter((membership) =>
         role.length == 1

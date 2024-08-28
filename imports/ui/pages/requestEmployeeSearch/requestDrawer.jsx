@@ -12,6 +12,7 @@ export default function RequestDrawer({ drawerData }) {
     const req = requestEmployeeCollection
       .find({ caseId: drawerData.caseId })
       .fetch();
+
     if (req.length) {
       const { requestEmployeeDataInput, ...outterData } = req[0];
       const requestEmployee = {
@@ -30,15 +31,15 @@ export default function RequestDrawer({ drawerData }) {
     },
     {
       key: 2,
-      label: `Candidatos [${requestEmployee.curricullumsInput?.length || 0}]`,
+      label: `Candidatos [${requestEmployee?.curricullumsInput?.length || 0}]`,
       children: <CandidateList requestEmployee={requestEmployee} />,
-      icon: <TeamOutlined />
+      icon: <TeamOutlined />,
     },
   ];
 
   return (
     <Flex style={{ width: "100%" }}>
-      <Tabs style={{ width: "100%" }} items={tabs} />
+      {requestEmployee && <Tabs style={{ width: "100%" }} items={tabs} />}
     </Flex>
   );
 }

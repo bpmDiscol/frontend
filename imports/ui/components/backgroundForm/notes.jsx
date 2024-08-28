@@ -1,7 +1,6 @@
-import { Divider, Flex } from "antd";
+import { Divider, Flex, Input } from "antd";
 import React from "react";
-import ReactQuill from "react-quill";
-import { formats, modules } from "../../pages/styles/quillStyle";
+const { TextArea } = Input;
 
 export default function Notes({
   targetField,
@@ -12,11 +11,10 @@ export default function Notes({
     <Flex vertical align="center" justify="center">
       <Divider>Notas</Divider>
       {currentBackground && (
-        <ReactQuill
+        <TextArea
           value={currentBackground.notes}
           onChange={(value) => setCurrentBackground(value, targetField)}
-          formats={formats}
-          modules={modules}
+        
           style={{
             height: "14lh",
             width: "100%",

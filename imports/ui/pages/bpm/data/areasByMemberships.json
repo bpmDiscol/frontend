@@ -118,7 +118,8 @@
         "label": "Scr02 Magdalena Acometida",
         "value": "Scr02 Magdalena Acometida"
       },
-      { "label": "Scr03 Gdo Palmira", "value": "Scr03 Gdo Palmira" }
+      { "label": "Scr03 Gdo Palmira", "value": "Scr03 Gdo Palmira" },
+      { "label": "Scr05 Operadores", "value": "Scr05 Operadores" }
     ]
   },
   {
@@ -183,6 +184,13 @@
     "menu": {
       "label": "Scr03 Gdo Palmira",
       "value": "Scr03 Gdo Palmira"
+    }
+  },
+  {
+    "membership": ["Lider", "Scr05_Operadores"],
+    "menu": {
+      "label": "Scr05 Operadores",
+      "value": "Scr05 Operadores"
     }
   },
   {

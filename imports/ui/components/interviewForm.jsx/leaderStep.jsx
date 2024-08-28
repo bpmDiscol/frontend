@@ -1,6 +1,6 @@
 import React from "react";
-import ReactQuill from "react-quill";
-import { Col, Flex, Form, Row } from "antd";
+import { Col, Flex, Form, Input, Row } from "antd";
+const { TextArea } = Input;
 
 import { formats, modules } from "../../pages/styles/quillStyle";
 
@@ -22,9 +22,7 @@ export default function LeaderStep() {
                 },
               ]}
             >
-              <ReactQuill
-                formats={formats}
-                modules={modules}
+              <TextArea
                 style={{
                   height: "10rem",
                   width: "65vw",
@@ -51,9 +49,7 @@ export default function LeaderStep() {
                 },
               ]}
             >
-              <ReactQuill
-                formats={formats}
-                modules={modules}
+              <TextArea
                 style={{
                   height: "10rem",
                   width: "65vw",
@@ -81,9 +77,7 @@ export default function LeaderStep() {
               ]}
               hasFeedback
             >
-              <ReactQuill
-                formats={formats}
-                modules={modules}
+              <TextArea
                 style={{
                   height: "10rem",
                   width: "65vw",

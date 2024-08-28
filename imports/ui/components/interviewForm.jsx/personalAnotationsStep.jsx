@@ -1,8 +1,6 @@
 import { Col, Divider, Flex, Form, Input, InputNumber, Row, Select } from "antd";
 import React from "react";
-import ReactQuill from "react-quill";
-import { formats, modules } from "../../pages/styles/quillStyle";
-
+const { TextArea } = Input;
 export default function PersonalAnotationsStep() {
   const camisas = [
     { label: "Extra Small (XS)", value: "XS" },
@@ -35,9 +33,7 @@ export default function PersonalAnotationsStep() {
         <Flex style={{ height: "16rem" }}>
           <Col xs={16} sm={24}>
             <Form.Item name={"personalAnnotation"}>
-              <ReactQuill
-                formats={formats}
-                modules={modules}
+              <TextArea
                 style={{
                   height: "10rem",
                   width: "75vw",

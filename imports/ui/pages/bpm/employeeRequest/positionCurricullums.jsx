@@ -28,14 +28,20 @@ export default function PositionCurricullums() {
     const taskId = getTaskName() + getTask();
     setTaskId(taskId);
     Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
-      if (!err && resp) setCurricullums(resp[0].curricullums || []);
+      if (!err && resp) {
+        const response = resp[0];
+        setCurricullums(response?.curricullums || []);
+      }
     });
   }, []);
 
   async function updateData(field, value) {
-    await Meteor.callAsync("update_task", { taskId, field, value, user: Meteor.userId() }).catch((e) =>
-      console.log(e)
-    );
+    await Meteor.callAsync("update_task", {
+      taskId,
+      field,
+      value,
+      user: Meteor.userId(),
+    }).catch((e) => console.log(e));
   }
 
   async function saveFile(fileData, index) {
@@ -92,7 +98,7 @@ export default function PositionCurricullums() {
       <Button
         id="add-curricullum"
         onClick={addSpace}
-        style={{ width: "30rem", fontSize: "16px", padding:'0 0 0 20px' }}
+        style={{ width: "30rem", fontSize: "16px", padding: "0 0 0 20px" }}
         icon={<FolderAddOutlined />}
         type="primary"
       >
@@ -196,8 +202,7 @@ export default function PositionCurricullums() {
                   danger
                   type="primary"
                   icon={<DeleteFilled />}
-                >
-                </Button>
+                ></Button>
               </Flex>
             );
           })}

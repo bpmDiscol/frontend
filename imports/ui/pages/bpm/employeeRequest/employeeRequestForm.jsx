@@ -34,11 +34,13 @@ export default function EmployeeRequestForm() {
     request(setRequestData);
     Meteor.call("get_processes", Meteor.userId(), (error, response) => {
       if (!error && response != "error") {
+        
         const myProcess = response?.filter(
           (process) => process.displayName == "employee_request"
         );
 
-        setProcessId(myProcess[0]?.id);
+        const enabledProcess = myProcess.find(process=> process.activationState === "ENABLED")
+        setProcessId(enabledProcess.id);
       }
     });
   }, []);
@@ -122,7 +124,12 @@ export default function EmployeeRequestForm() {
     );
   }
 
-  function startRequest(request) {
+  function startRequest(request_) {
+    const request = {
+      ...request_,
+      observations: JSON.stringify(request_.observations),
+      requirements: JSON.stringify(request_.requirements),
+    };
     setWaitingToSend(true);
     Meteor.call(
       "start_employee_request",

@@ -7,32 +7,44 @@ import {
   RichUtils,
   getDefaultKeyBinding,
 } from "draft-js";
-import {
-  BoldOutlined,
-  ItalicOutlined,
-  UnderlineOutlined,
-  CodeOutlined,
-  LineHeightOutlined,
-  UnorderedListOutlined,
-  OrderedListOutlined,
-  BorderlessTableOutlined,
-} from "@ant-design/icons";
 
 import "./editor.css";
 import "draft-js/dist/Draft.css";
-import { Flex, Tooltip, Typography } from "antd";
-const { Text } = Typography;
+import { Flex, Tooltip } from "antd";
 
-export default function BPMEditor({ requestData, update }) {
+import { stateFromHTML } from "draft-js-import-html";
+export default function BPMEditor({
+  requestData,
+  update,
+  field,
+  heigth = "50dvh",
+}) {
   const [observations, setObservations] = React.useState(() =>
-    requestData?.observations
-      ? EditorState.createWithContent(convertFromRaw(requestData.observations))
-      : EditorState.createEmpty()
+    initializeEditorState(requestData)
   );
+
+  function initializeEditorState(data) {
+    if (!data) {
+      return EditorState.createEmpty();
+    }
+
+    try {
+      if (typeof data === "object")
+        return EditorState.createWithContent(convertFromRaw(data));
+      const parsedData = JSON.parse(data);
+      return EditorState.createWithContent(convertFromRaw(parsedData));
+    } catch (e) {
+      // No es un JSON válido, así que asumimos que es HTML
+      const contentState = stateFromHTML(data);
+      return EditorState.createWithContent(contentState);
+    }
+  }
 
   function updateText(value) {
     setObservations(value);
-    update("observations", convertToRaw(value.getCurrentContent()));
+    if (field !== "local")
+      update(field, convertToRaw(value.getCurrentContent()));
+    else update(JSON.stringify(convertToRaw(value.getCurrentContent())));
   }
 
   function handleKeyCommand(command, observations) {
@@ -74,10 +86,9 @@ export default function BPMEditor({ requestData, update }) {
     return (
       <Flex className="RichEditor-controls">
         {BLOCK_TYPES.map((type) => (
-          <Tooltip title={type.label}>
+          <Tooltip title={type.label} key={type.label}>
             <Flex>
               <StyleButton
-                key={type.label}
                 active={type.style === blockType}
                 label={type.label}
                 onToggle={props.onToggle}
@@ -97,10 +108,9 @@ export default function BPMEditor({ requestData, update }) {
     return (
       <Flex className="RichEditor-controls">
         {INLINE_STYLES.map((type) => (
-          <Tooltip title={type.label}>
+          <Tooltip title={type.label} key={type.label}>
             <Flex>
               <StyleButton
-                key={type.label}
                 active={currentStyle.has(type.style)}
                 label={type.label}
                 onToggle={props.onToggle}
@@ -138,8 +148,16 @@ export default function BPMEditor({ requestData, update }) {
       style: "header-one",
       icon: <img src="/icons/IconParkOutlineH1.svg" />,
     },
-    { label: "H2", style: "header-two", icon: <img src="/icons/IconParkOutlineH2.svg" /> },
-    { label: "H3", style: "header-three", icon: <img src="/icons/IconParkOutlineH3.svg" /> },
+    {
+      label: "H2",
+      style: "header-two",
+      icon: <img src="/icons/IconParkOutlineH2.svg" />,
+    },
+    {
+      label: "H3",
+      style: "header-three",
+      icon: <img src="/icons/IconParkOutlineH3.svg" />,
+    },
     {
       label: "Blockquote",
       style: "blockquote",
@@ -150,37 +168,61 @@ export default function BPMEditor({ requestData, update }) {
       style: "unordered-list-item",
       icon: <img src="/icons/OcticonListUnordered.svg" />,
     },
-    { label: "Numeración", style: "ordered-list-item", icon: <img src="/icons/FlowbiteOrderedListOutline.svg" /> },
-    { label: "Código", style: "code-block", icon: <img src="/icons/MaterialSymbolsCodeBlocks.svg" /> },
+    {
+      label: "Numeración",
+      style: "ordered-list-item",
+      icon: <img src="/icons/FlowbiteOrderedListOutline.svg" />,
+    },
+    {
+      label: "Código",
+      style: "code-block",
+      icon: <img src="/icons/MaterialSymbolsCodeBlocks.svg" />,
+    },
   ];
 
   const INLINE_STYLES = [
     { label: "Negrita", style: "BOLD", icon: <img src="/icons/FeBold.svg" /> },
-    { label: "Cursiva", style: "ITALIC", icon: <img src="/icons/GridiconsItalic.svg" /> },
-    { label: "Subrayado", style: "UNDERLINE", icon: <img src="/icons/GridiconsUnderline.svg" /> },
+    {
+      label: "Cursiva",
+      style: "ITALIC",
+      icon: <img src="/icons/GridiconsItalic.svg" />,
+    },
+    {
+      label: "Subrayado",
+      style: "UNDERLINE",
+      icon: <img src="/icons/GridiconsUnderline.svg" />,
+    },
   ];
 
   return (
     <div>
-      <Flex>
-        <BlockStyleControls
-          editorState={observations}
-          onToggle={toggleBlockType}
-        />
-        <InlineStyleControls
-          editorState={observations}
-          onToggle={toggleInlineStyle}
-        />
-      </Flex>
+      {update && (
+        <Flex>
+          <BlockStyleControls
+            editorState={observations}
+            onToggle={toggleBlockType}
+          />
+          <InlineStyleControls
+            editorState={observations}
+            onToggle={toggleInlineStyle}
+          />
+        </Flex>
+      )}
       <div
         style={{
           border: "1px solid black",
           padding: "10px",
-          height: "50dvh",
+          height: heigth,
           overflowX: "auto",
+          flex: 1,
         }}
       >
-        <Editor editorState={observations} onChange={updateText} />
+        <Editor
+          editorState={observations}
+          onChange={updateText}
+          readOnly={!update}
+          handleKeyCommand={handleKeyCommand}
+        />
       </div>
     </div>
   );

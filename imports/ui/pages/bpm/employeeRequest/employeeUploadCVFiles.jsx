@@ -108,7 +108,6 @@ export default function EmployeeUploadCVFiles() {
     curricullums,
     interviews,
     warningUsers,
-    userId,
   }) {
     return (
       <Component

@@ -1,7 +1,6 @@
-import { Divider, Flex } from "antd";
+import { Divider, Flex, Input } from "antd";
 import React from "react";
-import ReactQuill from "react-quill";
-import { formats, modules } from "../../pages/styles/quillStyle";
+const { TextArea } = Input;
 
 export default function Notes({
   targetField,
@@ -12,11 +11,9 @@ export default function Notes({
     <Flex vertical align="center" justify="center">
       <Divider>Petición de examenes médicos</Divider>
       {currentCVFiles && (
-        <ReactQuill
-          value={currentCVFiles.health_request}
-          onChange={(value) => setCurrentCVFiles(value, targetField)}
-          formats={formats}
-          modules={modules}
+        <TextArea
+          value={currentCVFiles[targetField]}
+          onChange={(value) => setCurrentCVFiles(value.currentTarget.value, targetField)}
           style={{
             height: "50dvh",
             width: "calc(100% - 5dvw)",

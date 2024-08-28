@@ -1,6 +1,6 @@
 import React from "react";
-import ReactQuill from "react-quill";
-import { Col, Flex, Form, Radio, Row, Space } from "antd";
+import { Col, Flex, Form, Input, Radio, Row, Space } from "antd";
+const { TextArea } = Input;
 
 import { formats, modules } from "../../pages/styles/quillStyle";
 export default function FinalConceptStep({ update }) {
@@ -21,9 +21,7 @@ export default function FinalConceptStep({ update }) {
             ]}
             hasFeedback
           >
-            <ReactQuill
-              formats={formats}
-              modules={modules}
+            <TextArea
               style={{
                 height: "10rem",
                 width: "75vw",

@@ -2,6 +2,7 @@ import React from "react";
 import { Col, Descriptions, Flex, Row, Table, Tag } from "antd";
 import Title from "antd/es/typography/Title";
 import capitalize from "../../misc/capitalize";
+import BPMEditor from "../../components/editor";
 
 const { Column } = Table;
 
@@ -78,13 +79,13 @@ export default function CandidateData({ data }) {
     {
       key: "5",
       label: "Nivel académico",
-      children: capitalize(data?.academicLevel||""),
+      children: capitalize(data?.academicLevel || ""),
       span: 3,
     },
     {
       key: "6",
       label: "Titulo obtenido",
-      children: capitalize(data?.grade||""),
+      children: capitalize(data?.grade || ""),
       span: 3,
     },
     {
@@ -270,7 +271,7 @@ export default function CandidateData({ data }) {
       key: "1",
       label: "Conocimientos técnicos",
       children: (
-        <div dangerouslySetInnerHTML={{ __html: data.tecnicalknowledge }} />
+        <BPMEditor requestData={data.tecnicalknowledge} heigth="15dvh" />
       ),
       span: 3,
     },
@@ -278,7 +279,7 @@ export default function CandidateData({ data }) {
       key: "2",
       label: "Adaptación y aprendizaje frente al cargo",
       children: (
-        <div dangerouslySetInnerHTML={{ __html: data.learningAdaptation }} />
+        <BPMEditor requestData={data.learningAdaptation} heigth="15dvh" />
       ),
       span: 3,
     },
@@ -286,7 +287,7 @@ export default function CandidateData({ data }) {
       key: "3",
       label: "Observaciones de evaluación técnica",
       children: (
-        <div dangerouslySetInnerHTML={{ __html: data.tecnicalEvaluation }} />
+        <BPMEditor requestData={data.tecnicalEvaluation} heigth="15dvh" />
       ),
       span: 3,
     },
@@ -348,7 +349,7 @@ export default function CandidateData({ data }) {
       />
       <Flex vertical>
         <Title level={3}>Concepto final</Title>
-        <div dangerouslySetInnerHTML={{ __html: data.finalConcept }} />
+        <BPMEditor requestData={data.finalConcept} heigth="15dvh" />
       </Flex>
     </Flex>
   );

@@ -32,7 +32,6 @@ export default function Founded() {
         blur: 10,
         opacity: 0.2,
       },
-      toolbar: { show: false },
       responsive: [
         {
           breakpoint: 480,

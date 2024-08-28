@@ -11,5 +11,7 @@ const tabTitles = [
 const tabNumber = 0;
 
 const buttons = {};
+const subtitle = "Registro biometrico y equipos"
 
-export { tabTitles, tabContents, request, tabNumber, buttons };
+
+export { tabTitles, tabContents, request, tabNumber, buttons, subtitle };

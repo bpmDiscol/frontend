@@ -1,44 +1,57 @@
 import React from "react";
-import {
-  Badge,
-  Card,
-  Flex,
-  Pagination,
-  Steps,
-  Typography,
-} from "antd";
+import { Badge, Card, Flex, Pagination, Steps, Tag, Typography } from "antd";
 import TimeCounter from "../timeCounter";
-import translate from "../../misc/translate.json"
+import translate from "../../misc/translate.json";
+import { FileDoneOutlined, FileSyncOutlined } from "@ant-design/icons";
 
 export default function StepsLines({ processLines }) {
   //   const [currentData, setCurrentData] = React.useState();
   const [currentPage, setCurrentPage] = React.useState(1);
   const [currentSteps, setCurrentSteps] = React.useState();
-  const currentData = processLines[currentPage - 1];
-  const { Text, Title } = Typography;
-  React.useEffect(() => {
-    const currentSteps = currentData.steps.map((item) => {
+  const [currentData, setCurrentData] = React.useState();
+  const { Text } = Typography;
+
+  function fetchData() {
+    const currentSteps = currentData?.steps.map((item) => {
       return {
         status: item.status,
+        icon:
+          item.status === "finish" ? (
+            <FileDoneOutlined style={{ color: "green" }} />
+          ) : (
+            <FileSyncOutlined />
+          ),
         title: (
           <Badge
             status={item.responsible === "undefined" ? "processing" : "success"}
-            text={`${item.area} [${
-              item.responsible !== "undefined" ? item.responsible : "..."
-            }]`}
+            text={translate[item.taskName]}
           />
         ),
-        subTitle: translate[item.taskName],
+        subTitle: (
+          <Flex gap={10}>
+            <Tag color="#2db7f5">{item.area}</Tag>
+            {item.responsible !== "undefined" && (
+              <Tag color="gold">{item.responsible}</Tag>
+            )}
+          </Flex>
+        ),
         description:
           item.status === "finish" ? (
-            "Terminado en: " + item.totalTime
+            `Terminado en: ${item.totalTime}`
           ) : (
             <TimeCounter startDate={item.startDate} />
           ),
       };
     });
     setCurrentSteps(currentSteps);
+  }
+  React.useEffect(() => {
+    setCurrentData(processLines[currentPage - 1]);
   }, [currentPage]);
+
+  React.useEffect(() => {
+    fetchData();
+  }, [currentData]);
 
   return (
     processLines && (
@@ -55,17 +68,22 @@ export default function StepsLines({ processLines }) {
             }}
           >
             <Text>
-              {currentData.isFinished
+              {currentData?.isFinished
                 ? "Finalizado en"
                 : "En proceso desde hace"}
             </Text>
             <Text strong style={{ fontSize: "16px" }}>
-              <TimeCounter
-                startDate={currentData.createdAt}
-                endDate={
-                  currentData.isFinished ? currentData.modifyedAt : Date.now()
-                }
-              />
+              {currentData?.createdAt && (
+                <TimeCounter
+                  key={currentPage}
+                  startDate={currentData?.createdAt}
+                  endDate={
+                    currentData?.isFinished
+                      ? currentData?.modifyedAt
+                      : Date.now()
+                  }
+                />
+              )}
             </Text>
           </Flex>
           <Flex
@@ -79,19 +97,23 @@ export default function StepsLines({ processLines }) {
               padding: "5px 15px",
             }}
           >
-            <Text>{currentData.initiator.toUpperCase()} solicita</Text>
+            <Text>{currentData?.initiator.toUpperCase()} solicita</Text>
             <Text strong style={{ fontSize: "16px" }}>
-              {`${currentData.placeName} (${currentData.places})`}
+              {`${currentData?.placeName} (${currentData?.places})`}
             </Text>
           </Flex>
         </Flex>
         <Flex align="center">
           <Typography.Text>
-            Procesos en {currentData.requestArea}
+            Procesos en {currentData?.requestArea}
           </Typography.Text>
           <Pagination
-            total={processLines.length * 10}
-            onChange={(page) => setCurrentPage(page)}
+            size="small"
+            pageSize={1}
+            total={processLines.length}
+            onChange={(page) => {
+              setCurrentPage(page);
+            }}
           />
         </Flex>
         <Card
@@ -103,12 +125,14 @@ export default function StepsLines({ processLines }) {
             overflow: "auto",
           }}
         >
-          <Steps
-            size="small"
-            direction="vertical"
-            current={1}
-            items={currentSteps}
-          />
+          {currentSteps && (
+            <Steps
+              size="small"
+              direction="vertical"
+              current={1}
+              items={currentSteps}
+            />
+          )}
         </Card>
       </Flex>
     )

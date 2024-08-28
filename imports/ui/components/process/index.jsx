@@ -35,6 +35,7 @@ export default function Process() {
   return (
     <div style={{ padding: "20px", width: "100%" }}>
       <h2>Procesos disponibles</h2>
+      
       <Flex gap={"10px"}>
         {apps.map((application, index) => {
           return (

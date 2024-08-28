@@ -114,10 +114,30 @@ Meteor.methods({
         };
       });
   },
-  update_credentials({ bonitaUser, token, axiosCookie, user }) {
+  async update_credentials({ bonitaUser, token, axiosCookie, user }) {
+    const memberships = await Meteor.callAsync(
+      "get_my_memberships",
+      user,
+      bonitaUser
+    ).catch(() => []);
+
+    const professionalcontactdata = await Meteor.callAsync(
+      "get_professionalcontactdata",
+      bonitaUser,
+      user,
+    ).then(resp=> resp.response).catch(() => console.warn(`User ${bonitaUser} has no setted mail`));
+    const email = professionalcontactdata
+      ? professionalcontactdata.email
+      : "nomail@discol.co";
+
     Meteor.users.update(
       { _id: user },
-      { $set: { profile: { bonitaUser, token, axiosCookie } } }
+      {
+        $set: {
+          profile: { bonitaUser, token, axiosCookie, memberships, email },
+        },
+      },
+      { upsert: true }
     );
   },
 });

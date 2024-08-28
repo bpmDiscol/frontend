@@ -1,5 +1,6 @@
 import React from "react";
 import { Collapse, Flex, Result } from "antd";
+import BPMEditor from "../../../components/editor";
 
 export default function PositionObservations({ requestEmployee }) {
   const [accordeonData, setAcordeonData] = React.useState([]);
@@ -17,18 +18,24 @@ export default function PositionObservations({ requestEmployee }) {
   ];
 
   function adaptAcordeonData() {
-    const accordeonAdapted = requestEmployee?.observations?.map((data, index) => {
-      return {
-        key: index,
-        label: accordeonTitles[index],
-        children: <div dangerouslySetInnerHTML={{ __html: data }} />,
-        style: {
-          background: "lightgray",
-          borderWidth: "1px",
-          borderRadius: "5px",
-        },
-      };
-    });
+    const accordeonAdapted = requestEmployee?.observations?.map(
+      (data, index) => {
+        return {
+          key: index,
+          label: accordeonTitles[index],
+          children: (
+            <BPMEditor
+              requestData={data}
+            />
+          ),
+          style: {
+            background: "lightgray",
+            borderWidth: "1px",
+            borderRadius: "5px",
+          },
+        };
+      }
+    );
     setAcordeonData(accordeonAdapted);
   }
 
@@ -37,7 +44,7 @@ export default function PositionObservations({ requestEmployee }) {
   }, []);
 
   return (
-    <Flex style={{ width: "100%" }} justify="center">
+    <Flex style={{ width: "100%", overflow: "auto" }} justify="center">
       {accordeonData?.length > 0 ? (
         <Collapse
           accordion

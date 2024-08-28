@@ -48,7 +48,7 @@ Meteor.methods({
     const datafield = `tasks.$.${field}`;
     Meteor.users.update(
       { _id: user, "tasks.taskId": taskId },
-      { $set: { [`${datafield}`]: value } }
+      { $set: { [`${datafield}`]: value } },
     );
   },
   update_backgrounds({ taskId, id, backgroundFiles, user }) {
@@ -89,5 +89,12 @@ Meteor.methods({
       { _id },
       { $unset: { "services.twoFactorAuthentication": 1 } }
     );
+  },
+  async get_professionalcontactdata(bonitaUserId, user) {
+    return await Meteor.callAsync("manage_data", "get", {
+      url: "/API/identity/professionalcontactdata/" + bonitaUserId,
+      data: {},
+      user,
+    }).catch((error) => console.error(error));
   },
 });
