@@ -45,7 +45,7 @@ export default function RequestEmployeeSearch() {
     if (
       Meteor.user().profile.memberships.filter(
         (ms) =>
-          JSON.stringify(ms) === JSON.stringify(["lider", "Gestion_Humana"])
+          JSON.stringify(ms) === JSON.stringify(["Lider", "Gestion_Humana"])
       )
     )
       query["requestEmployeeDataInput.approvedHHRR"] = { $exists: true };
