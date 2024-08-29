@@ -16,7 +16,7 @@ export default function AlertNotificationsProvider({ children }) {
 
   const alerts = useTracker(() => {
     if (!Meteor.userId()) return [];
-    if (myMemberships.length) {
+    if (myMemberships?.length) {
       const query = {
         $or: myMemberships.map((membership) => ({
           memberships: { $all: membership },

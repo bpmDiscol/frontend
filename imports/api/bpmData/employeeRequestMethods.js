@@ -182,6 +182,9 @@ Meteor.methods({
       return data.response;
     }
   },
+  async get_case(caseId) {
+    return requestEmployeeCollection.findOne({ caseId });
+  },
 
   async send_interviews(iData, caseId, taskId, userName, user) {
     const interviewInput = processInterviews(iData);

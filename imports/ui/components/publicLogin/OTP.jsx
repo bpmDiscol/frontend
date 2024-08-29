@@ -23,7 +23,7 @@ export default function OTP({
           username,
           password,
           code,
-          (error) => {
+          async (error) => {
             if (error) {
               openNotification(
                 "error",
@@ -33,12 +33,13 @@ export default function OTP({
               return;
             }
             setEnable2fa(true);
-            openNotification("success", "Bienvenido a DISCOL BPM", "");
-            Meteor.callAsync("update_credentials", {
+
+            await Meteor.callAsync("update_credentials", {
               ...bonitaData,
               user: Meteor.userId(),
             }).catch((error) => console.error(error));
             Meteor.logoutOtherClients();
+            openNotification("success", "Bienvenido a DISCOL BPM", "");
           }
         );
       } else {

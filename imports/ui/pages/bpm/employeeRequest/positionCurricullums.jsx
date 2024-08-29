@@ -4,14 +4,9 @@ import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 import { emptySpace } from "../../../misc/emptySpace";
 import { fontList } from "../../../misc/fontList";
-import {
-  DeleteFilled,
-  FilePdfFilled,
-  FolderAddOutlined,
-  LoadingOutlined,
-} from "@ant-design/icons";
+import { DeleteFilled, FolderAddOutlined } from "@ant-design/icons";
 import { deleteFile, uploadFile } from "../../../misc/filemanagement";
-import { getTask, getTaskName } from "../../../config/taskManagement";
+import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 import { BlackListCollection } from "../../../../api/blackList/blackListCollection";
 import UploadFileButton from "../../../components/uploadFileButton";
 
@@ -30,7 +25,27 @@ export default function PositionCurricullums() {
     Meteor.call("get_task_data", taskId, Meteor.userId(), (err, resp) => {
       if (!err && resp) {
         const response = resp[0];
-        setCurricullums(response?.curricullums || []);
+        if (response?.curricullums)
+          setCurricullums(response?.curricullums || []);
+        else {
+          Meteor.call("get_case", getCase(), Meteor.userId(), (err, resp) => {
+            console.log("🚀 ~ curr ~ curr:", resp);
+            const curr = resp?.curricullumsInput?.map((curr, ind) => ({
+              ...curr,
+              file: { uid: curr.fileId, name: "" },
+              isSelected: resp.interviewInput[ind].selected,
+            }));
+            setCurricullums(curr || []);
+
+            if (curr)
+              Meteor.callAsync("update_task", {
+                taskId,
+                field: "curricullums",
+                value: curr,
+                user: Meteor.userId(),
+              }).catch((e) => console.log(e));
+          });
+        }
       }
     });
   }, []);
@@ -108,104 +123,104 @@ export default function PositionCurricullums() {
         vertical
         style={{ width: "100%", overflow: "auto", height: "60dvh" }}
       >
-        {curricullums &&
-          curricullums.map((curricullum, index) => {
-            return (
-              <Flex
-                key={index}
-                justify="space-between"
-                align="start"
-                gap={16}
-                style={{
-                  backgroundColor: blackListeds.includes(index)
-                    ? "red"
-                    : "transparent",
-                  padding: "5px",
-                  borderRadius: "10px",
-                }}
-              >
-                <Space.Compact style={{ minWidth: "50vw", width: "60dvw" }}>
-                  <Input
-                    id="applicantName"
-                    type="text"
-                    placeholder="Cedula"
-                    onChange={(e) => {
-                      const value = e.currentTarget.value;
-                      if (isBlackListed(value)) addToBlackList(index);
-                      else removeFromBlacklist(index);
-                    }}
-                  />
-                  <Input
-                    id="applicantName"
-                    type="text"
-                    placeholder="Nombre"
-                    value={curricullum?.applicantName}
-                    onChange={(e) =>
-                      setAttribute(
-                        "applicantName",
-                        e.currentTarget.value,
-                        index
-                      )
-                    }
-                  />
-                  <Input
-                    id="applicantMiddleName"
-                    type="text"
-                    placeholder="1er apellido"
-                    value={curricullum?.applicantMidname}
-                    onChange={(e) =>
-                      setAttribute(
-                        "applicantMidname",
-                        e.currentTarget.value,
-                        index
-                      )
-                    }
-                  />
-                  <Input
-                    id="applicantLastName"
-                    type="text"
-                    placeholder="2do apellido"
-                    value={curricullum?.applicantLastname}
-                    onChange={(e) =>
-                      setAttribute(
-                        "applicantLastname",
-                        e.currentTarget.value,
-                        index
-                      )
-                    }
-                  />
-                  <Select
-                    options={fontList}
-                    id="applicantFont"
-                    defaultValue={
-                      curricullum?.foundBy || "Ninguna de las anteriores"
-                    }
-                    onChange={(value) => setAttribute("foundBy", value, index)}
-                  />
-                </Space.Compact>
-                <Space style={{ width: "15rem", overflow: "hidden" }}>
-                  <UploadFileButton
-                    targetCollection={"curricullums"}
-                    onUpload={(uploadData) => saveFile(uploadData, index)}
-                    defaultFileShow={
-                      curricullum.file
-                        ? [{ ...curricullum.file, status: "done" }]
-                        : undefined
-                    }
-                  />
-                </Space>
+        {curricullums?.map((curricullum, index) => {
+          return (
+            <Flex
+              key={index}
+              justify="space-between"
+              align="start"
+              gap={16}
+              style={{
+                backgroundColor: blackListeds.includes(index)
+                  ? "red"
+                  : "transparent",
+                padding: "5px",
+                borderRadius: "10px",
+              }}
+            >
+              <Space.Compact style={{ minWidth: "50vw", width: "60dvw" }}>
+                <Input
+                  id="applicantName"
+                  type="text"
+                  placeholder="Cedula"
+                  onChange={(e) => {
+                    const value = e.currentTarget.value;
+                    if (isBlackListed(value)) addToBlackList(index);
+                    else removeFromBlacklist(index);
+                  }}
+                />
+                <Input
+                  id="applicantName"
+                  type="text"
+                  placeholder="Nombre"
+                  value={curricullum?.applicantName}
+                  onChange={(e) =>
+                    setAttribute("applicantName", e.currentTarget.value, index)
+                  }
+                />
+                <Input
+                  id="applicantMiddleName"
+                  type="text"
+                  placeholder="1er apellido"
+                  value={curricullum?.applicantMidname}
+                  onChange={(e) =>
+                    setAttribute(
+                      "applicantMidname",
+                      e.currentTarget.value,
+                      index
+                    )
+                  }
+                />
+                <Input
+                  id="applicantLastName"
+                  type="text"
+                  placeholder="2do apellido"
+                  value={curricullum?.applicantLastname}
+                  onChange={(e) =>
+                    setAttribute(
+                      "applicantLastname",
+                      e.currentTarget.value,
+                      index
+                    )
+                  }
+                />
+                <Select
+                  options={fontList}
+                  id="applicantFont"
+                  defaultValue={
+                    curricullum?.foundBy || "Ninguna de las anteriores"
+                  }
+                  onChange={(value) => setAttribute("foundBy", value, index)}
+                />
+              </Space.Compact>
+              <Space style={{ width: "15rem", overflow: "hidden" }}>
+                <UploadFileButton
+                  targetCollection={"curricullums"}
+                  onUpload={(uploadData) => saveFile(uploadData, index)}
+                  defaultFileShow={
+                    curricullum.file
+                      ? [{ ...curricullum.file, status: "done" }]
+                      : undefined
+                  }
+                />
+              </Space>
+              {Object.keys(curricullum).includes("isSelected") && (
+                <Flex>
+                  {curricullum.isSelected ? "Seleccionado" : "no seleccionado"}
+                </Flex>
+              )}
 
-                <Button
-                  id="delete-curricullum"
-                  onClick={() => deleteSpace(index)}
-                  iconPosition="end"
-                  danger
-                  type="primary"
-                  icon={<DeleteFilled />}
-                ></Button>
-              </Flex>
-            );
-          })}
+              <Button
+                id="delete-curricullum"
+                onClick={() => deleteSpace(index)}
+                iconPosition="end"
+                danger
+                type="primary"
+                icon={<DeleteFilled />}
+              ></Button>
+            </Flex>
+          );
+        })}
       </Flex>
     </Flex>
   );

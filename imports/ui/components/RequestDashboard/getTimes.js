@@ -1,11 +1,20 @@
 import moment from "moment";
 import monthNames from "./monthNames.json";
 
-function getEffective(ANS, activity, areaName, areaCode) {
+const tasksOutANS = [
+  "employee_request_hr",
+  "salary_validation",
+  "sign_contract",
+  "generate_induction",
+  "activate_social_security",
+  "gears_auth",
+  "healt_service_response",
+];
+
+function getEffective(ANS, areaCode, thisTime) {
   if (!ANS) return;
-  if (!activity) return;
   if (!ANS[areaCode]) return;
-  if (ANS[areaCode] > activity[areaName]) return "effective";
+  if (ANS[areaCode] >= thisTime) return "effective";
   else return "no-effective";
 }
 
@@ -93,7 +102,10 @@ export default async function getApprovationsTimes(
             break;
           }
         }
-        if (thisArea === "Gestion humana")
+        if (
+          thisArea === "Gestion humana" &&
+          !tasksOutANS.includes(task.taskName)
+        )
           hhrrTime += moment(endOfTask.responseDate).diff(
             task.responseDate,
             "days",
@@ -129,21 +141,12 @@ export default async function getApprovationsTimes(
       }
     });
     if (hhrrTime) {
-      const isHHRREffective = getEffective(
-        myANS,
-        activities,
-        "Gestion humana",
-        "hhrr"
-      );
+      const isHHRREffective = getEffective(myANS, "hhrr", hhrrTime);
       if (isHHRREffective)
         totals[year][month].hhrrEfectivity.push(isHHRREffective);
+
       if (leaderTime) {
-        const isLeaderEffective = getEffective(
-          myANS,
-          activities,
-          "Lider",
-          "isTech"
-        );
+        const isLeaderEffective = getEffective(myANS, "isTech", leaderTime);
         if (isLeaderEffective)
           totals[year][month].leaderEfectivity.push(isLeaderEffective);
       }

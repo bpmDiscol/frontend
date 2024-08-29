@@ -109,11 +109,15 @@ Meteor.methods({
       bonitaUserId = Meteor.users.findOne(user)?.profile?.bonitaUser;
     if (!bonitaUserId) return [];
     const data = await Meteor.callAsync("manage_data", "get", {
-      url: "API/identity/membership?p=0&c=10&f=user_id%3D" + bonitaUserId,
+      url: `API/identity/membership?p=0&c=10&f=user_id%3D${bonitaUserId}`,
       data: {},
       user,
     }).catch((error) => console.error(error));
-    if (data.error) {console.log("Error colectando membresias"); return []};
+
+    if (data.error) {
+      console.log("Error colectando membresias");
+      return [];
+    }
 
     const memberships = data.response;
     if (memberships != "error" && memberships != "no token") {

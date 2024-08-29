@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { Flex } from "antd";
+import { Flex, Spin } from "antd";
 import OpenToMembership from "../components/openToMembership";
 import RequestDashboard from "../components/RequestDashboard";
 import ProcessCosts from "../components/RequestDashboard/ProcessCosts";
@@ -35,57 +35,57 @@ export default function Dashboard() {
       }
     );
   }, []);
+  console.log({ requestProcess, approvations });
 
   return (
     <Flex vertical style={{ width: "100%" }}>
-      <Flex
-        vertical
-        gap={16}
-        style={{
-          padding: "0 0 20px 20px",
-          backgroundColor: "#F0F2F5",
-          width: "100%",
-          overflow: "auto",
-        }}
-        ref={targetRef}
-      >
-        <div ref={lineInfoRef}>
-          <OpenToMembership memberships={[["Lider"]]}>
-            {requestProcess && approvations && (
+      {!requestProcess && !approvations && (
+        <Spin fullscreen tip="Recolectando datos..." />
+      )}
+      {requestProcess && approvations && (
+        <Flex
+          vertical
+          gap={16}
+          style={{
+            padding: "0 0 20px 20px",
+            backgroundColor: "#F0F2F5",
+            width: "100%",
+            overflow: "auto",
+          }}
+          ref={targetRef}
+        >
+          <div ref={lineInfoRef}>
+            <OpenToMembership memberships={[["Lider"]]}>
               <LeaderTimeLine
                 requestProcess={requestProcess}
                 approvations={approvations}
               />
-            )}
-          </OpenToMembership>
-        </div>
+            </OpenToMembership>
+          </div>
 
-        <div ref={processCostsRef}>
-          <OpenToMembership memberships={[["director", "discol"]]}>
-            {requestProcess && approvations && (
+          <div ref={processCostsRef}>
+            <OpenToMembership memberships={[["director", "discol"]]}>
               <ProcessCosts
                 requestProcess={requestProcess}
                 approvations={approvations}
               />
-            )}
-          </OpenToMembership>
-        </div>
-        <div ref={requestDashboardRef}>
-          <OpenToMembership
-            memberships={[
-              ["director", "discol"],
-              ["Lider", "Gestion_Humana"],
-            ]}
-          >
-            {requestProcess && approvations && (
+            </OpenToMembership>
+          </div>
+          <div ref={requestDashboardRef}>
+            <OpenToMembership
+              memberships={[
+                ["director", "discol"],
+                ["Lider", "Gestion_Humana"],
+              ]}
+            >
               <RequestDashboard
                 requestProcess={requestProcess}
                 approvations={approvations}
               />
-            )}
-          </OpenToMembership>
-        </div>
-      </Flex>
+            </OpenToMembership>
+          </div>
+        </Flex>
+      )}
     </Flex>
   );
 }

@@ -10,10 +10,10 @@ Meteor.methods({
     return data.response;
   },
   async get_approvations(requestProcess, user) {
-    const approvationsLinks = requestProcess.map(
+    const approvationsLinks = requestProcess?.map(
       (request) => request.links[0].href
     );
-    const approvationsData = approvationsLinks.map((url) => {
+    const approvationsData = approvationsLinks?.map((url) => {
       const data = Meteor.callAsync("manage_data", "get", {
         url,
         data: {},

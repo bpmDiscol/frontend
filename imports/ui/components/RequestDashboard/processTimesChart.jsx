@@ -19,6 +19,7 @@ export default function ProcessTimesChart({ requestProcess, approvations }) {
   const [years, setYears] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [ANS, setANS] = React.useState({ minHHrr: 0, maxHHrr: 0 });
+
   const areaColors = processTimes?.areaValues.map((value) =>
     value >= ANS.minHHrr
       ? value >= ANS.maxHHrr
@@ -41,7 +42,7 @@ export default function ProcessTimesChart({ requestProcess, approvations }) {
       },
     },
 
-    colors: type === "areaTitles" ? areaColors : taskColors,
+    colors: ["#30db63"],
     chart: {
       id: "areaTimes",
       type: "bar",
@@ -58,7 +59,6 @@ export default function ProcessTimesChart({ requestProcess, approvations }) {
     plotOptions: {
       bar: {
         horizontal: true,
-        distributed: true,
       },
     },
     legend: { show: false },
@@ -73,28 +73,6 @@ export default function ProcessTimesChart({ requestProcess, approvations }) {
           return `Tiempo medio >> ${val} días`;
         },
       },
-    },
-    annotations: {
-      xaxis: [
-        {
-          x: 1,
-          x2: 3,
-          fillColor: "#5e5e5e",
-          opacity: 0.2,
-          label: {
-            text: "ANS Lider",
-          },
-        },
-        {
-          x: ANS.minHHrr,
-          x2: ANS.maxHHrr,
-          fillColor: "#66baff",
-          opacity: 0.2,
-          label: {
-            text: ANS.minHHrr ? "ANS Gestion humana" : "Sin ANS Gestion humana",
-          },
-        },
-      ],
     },
   });
 
