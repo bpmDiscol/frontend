@@ -49,6 +49,10 @@
         "label": "Direccion Administrativa",
         "value": "Direccion_Administrativa"
       },
+      {
+        "label": "PG Direccion Administrativa",
+        "value": "PG_Direccion_Administrativa"
+      },
       { "label": "Calidad", "value": "Calidad" },
       { "label": "Comercial", "value": "Comercial" },
       { "label": "Contabilidad", "value": "Contabilidad" },
