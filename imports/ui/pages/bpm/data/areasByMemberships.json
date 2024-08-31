@@ -50,8 +50,8 @@
         "value": "Direccion_Administrativa"
       },
       {
-        "label": "PG Direccion Administrativa",
-        "value": "PG_Direccion_Administrativa"
+        "label": "PG Direccion de Proyectos",
+        "value": "PG_Direccion_De_Proyectos"
       },
       { "label": "Calidad", "value": "Calidad" },
       { "label": "Comercial", "value": "Comercial" },
