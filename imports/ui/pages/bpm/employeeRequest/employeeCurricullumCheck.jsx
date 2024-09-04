@@ -42,6 +42,7 @@ export default function EmployeeCurricullumCheck() {
   const [reload, setReload] = React.useState(false);
   const [curricullums, setCurricullums] = React.useState([]);
   const [checkeds, setCheckeds] = React.useState([]);
+  const [taskChecked, setTaskChecked] = React.useState(false);
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
@@ -56,6 +57,23 @@ export default function EmployeeCurricullumCheck() {
     }
   });
 
+  async function fillTask() {
+    const taskId = getTaskName() + getTask();
+    const existTask = await Meteor.callAsync(
+      "exist_task",
+      taskId,
+      Meteor.userId()
+    );
+    if (!existTask) {
+      const value = { taskId };
+      requestEmployeeData?.interviewInput?.forEach((iv) => {
+        value[iv.interviewId] = iv;
+      });
+      await Meteor.callAsync("add_task", value, Meteor.userId());
+    }
+    setTaskChecked(true);
+  }
+
   function reloadPage(index) {
     setTabView(
       <LoadPage
@@ -69,6 +87,7 @@ export default function EmployeeCurricullumCheck() {
   }
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
+      fillTask();
       setReload(true);
       const curricullums = requestEmployeeData?.curricullumsInput?.map(
         async (curricullum) => {
@@ -149,9 +168,11 @@ export default function EmployeeCurricullumCheck() {
 
   function isCompleted(id, backgrounds) {
     if (Object.keys(backgrounds).includes(id))
-      return allFields.every((field) =>
-        Object.keys(backgrounds[id]).includes(field)
-      );
+      return allFields.every((field) => {
+        if (Object.keys(backgrounds[id]).includes(field))
+          return backgrounds[id][field];
+        return false;
+      });
   }
 
   async function getApproveds() {
@@ -166,43 +187,62 @@ export default function EmployeeCurricullumCheck() {
       Meteor.userId()
     );
     if (resp) {
-      backgrounds = resp[0];
+      const backgrounds = {};
+      Object.keys(resp[0]).map((respKey) => {
+        if (resp[0][respKey].selected) backgrounds[respKey] = resp[0][respKey];
+      });
+
+      const nonTouched = Object.keys(backgrounds).filter((bgKey) => {
+        if (!Object.keys(backgrounds[bgKey]).includes("approved")) {
+          const candidate = requestEmployeeData.curricullumsInput.filter(
+            (data) => data.fileId == bgKey
+          );
+          if (!candidate.length) return false;
+          openNotification(
+            "warning",
+            "¡ups... has olvidado algo!!",
+            `Aun no has evaluado a ${candidate[0].applicantName} ${candidate[0].applicantMidname}`
+          );
+          return true;
+        }
+        return false;
+      });
+      if (nonTouched.length) return;
+
       const completeds = curricullums.filter((curricullum) =>
         isCompleted(curricullum.fileId, backgrounds)
       ).length;
-
       if (completeds < selectedInterviews) {
         openNotification(
           "warning",
           "¡Estamos cerca!!",
-          "Falta poco para terminar, solo faltan algunos conceptos sobre los candidatos."
+          "Recuerda que debes llenar todos los conceptos sobre los candidatos."
         );
         return;
       }
-      const [taskId, ...candidates] = Object.keys(backgrounds);
-      const approveds = candidates.filter(
-        (candidate) => backgrounds[candidate].approved
+      const approveds = Object.keys(backgrounds).filter(
+        (id) => backgrounds[id].approved
       );
       return { approveds, backgrounds };
     }
   }
 
-  async function setConcepts(backgrounds) {
-    const [taskId, ...candidates] = Object.keys(backgrounds);
-
-    candidates.forEach(async (candidate) => {
+  async function setConcepts(candidates) {
+    Object.keys(candidates).forEach(async (candidate) => {
       await Meteor.callAsync(
         "add_leader_concepts",
-        backgrounds[candidate].tecnicalknowledge,
-        backgrounds[candidate].learningAdaptation,
-        backgrounds[candidate].tecnicalEvaluation,
+        candidates[candidate].tecnicalknowledge,
+        candidates[candidate].learningAdaptation,
+        candidates[candidate].tecnicalEvaluation,
         getCase(),
         candidate
       ).catch((e) => console.log(e));
     });
   }
 
-  async function request({ approveds, backgrounds }) {
+  async function request(res) {
+    if (!res) return;
+    const { approveds, backgrounds } = res;
     setWaitingToSend(true);
     const taskId = getTaskName() + getTask();
     await setConcepts(backgrounds);
@@ -245,7 +285,7 @@ export default function EmployeeCurricullumCheck() {
       <Flex vertical wrap>
         <Title level={1}>
           Requisición de personal
-          <Text strong>(Selección final de candidatos)</Text>
+          <Text strong>(Selección de candidatos)</Text>
         </Title>
       </Flex>
 
@@ -258,7 +298,10 @@ export default function EmployeeCurricullumCheck() {
             disabled={!requestEmployeeData}
           />
         </Flex>
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader
+          condition={requestEmployeeData && taskChecked}
+          content={tabView}
+        />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

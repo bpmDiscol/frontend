@@ -48,8 +48,13 @@ Meteor.methods({
     const datafield = `tasks.$.${field}`;
     Meteor.users.update(
       { _id: user, "tasks.taskId": taskId },
-      { $set: { [`${datafield}`]: value } },
+      { $set: { [`${datafield}`]: value } }
     );
+  },
+  exist_task(taskId, userId) {
+    const userData = Meteor.users.findOne(userId);
+    const myTasks = userData?.tasks?.filter((task) => task.taskId == taskId);
+    return myTasks?.length > 0;
   },
   update_backgrounds({ taskId, id, backgroundFiles, user }) {
     const datafield = `tasks.$.backgrounds.${id}`;

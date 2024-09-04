@@ -2,18 +2,23 @@ import { Meteor } from "meteor/meteor";
 
 const taskMode = {
   available:
-    "/API/bpm/humanTask?p=0&c=100&f=state%3Dready&f=assigned_id%3D&f=user_id%3D",
-  assigned: "/API/bpm/humanTask?p=0&c=100&f=state%3Dready&f=assigned_id%3D",
+    "/API/bpm/humanTask?p=[PAGE]&c=[ITEMS]&f=state%3Dready&f=assigned_id%3D&f=user_id%3D[BONITA_ID]",
+  assigned:
+    "/API/bpm/humanTask?p=[PAGE]&c=[ITEMS]&f=state%3Dready&f=assigned_id%3D[BONITA_ID]",
   doneTasks:
-    "/API/bpm/archivedHumanTask?p=0&c=100&&f=state%3Dcompleted&f=assigned_id%3D",
+    "/API/bpm/archivedHumanTask?o=reached_state_date%20DESC&p=[PAGE]&c=[ITEMS]&&f=state%3Dcompleted&f=assigned_id%3D[BONITA_ID]",
 };
 
 Meteor.methods({
-  async get_task_list(filter, user) {
+  async get_task_list(filter, user, page = 0, items = 10) {
     if (user) {
       const bonitaId = Meteor.users.findOne(user).profile?.bonitaUser;
+      const url = taskMode[filter]
+        .replace("[PAGE]", page)
+        .replace("[ITEMS]", items)
+        .replace("[BONITA_ID]", bonitaId);
       const data = await Meteor.callAsync("manage_data", "get", {
-        url: taskMode[filter] + bonitaId,
+        url,
         data: {},
         user,
       }).catch((error) => console.error("error catching data (get_data)"));

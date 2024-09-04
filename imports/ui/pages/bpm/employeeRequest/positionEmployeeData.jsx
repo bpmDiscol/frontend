@@ -5,6 +5,7 @@ import { NotificationsContext } from "../../../context/notificationsProvider";
 
 import cvFields from "../data/cvfields.json";
 import SetSalary from "../../../components/setSalary";
+import PositionLastDocuments from "./positionlastDocuments";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
@@ -13,6 +14,7 @@ export default function PositionEmployeeData({
   buttons,
   salary,
   showSalary,
+  uploadNomina,
 }) {
   const { openNotification } = React.useContext(NotificationsContext);
   const { Text } = Typography;
@@ -78,12 +80,13 @@ export default function PositionEmployeeData({
     .filter((curricullum) => curricullum.selected);
 
   return (
-    <Flex vertical gap={10} style={{ width: "70dvw" }}>
+    <Flex vertical gap={10} style={{ width: "80dvw",paddingRight:'2rem' }}>
       <Flex gap={16} style={{ padding: 10 }}>
         <Text>Area: {requestEmployee.area_proyect}</Text>
         <Text>{`Cargo: ${requestEmployee.companyPosition}`}</Text>
       </Flex>
       <List
+      
         dataSource={selectedCurricullums}
         renderItem={(member) => (
           <List.Item
@@ -91,6 +94,7 @@ export default function PositionEmployeeData({
               border: "1px solid black",
               borderRadius: "10px",
               padding: "10px",
+              marginBottom:'1rem'
             }}
           >
             <List.Item.Meta
@@ -108,6 +112,12 @@ export default function PositionEmployeeData({
             />
             <Flex gap={16}>
               {salary && <SetSalary member={member} />}
+              {uploadNomina && (
+                <PositionLastDocuments
+                  member={member}
+                  requestEmployee={requestEmployee}
+                />
+              )}
               {buttons?.background &&
                 buttons?.background.map((item) => (
                   <Button

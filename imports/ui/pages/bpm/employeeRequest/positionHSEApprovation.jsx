@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Drawer, Flex, Tooltip } from "antd";
+import { Button, Drawer, Flex, Table, Tooltip, Typography } from "antd";
 import Icon, {
-  CheckOutlined,
   DownloadOutlined,
+  EyeOutlined,
   FileTextFilled,
   UserOutlined,
   WechatFilled,
@@ -10,10 +10,12 @@ import Icon, {
 
 import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 import { NotificationsContext } from "../../../context/notificationsProvider.jsx";
+import { getTask, getTaskName } from "../../../config/taskManagement.js";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
+const { Text } = Typography;
 
 export default function PositionHSEApprovation({
   curricullums,
@@ -59,11 +61,6 @@ export default function PositionHSEApprovation({
     return checkeds.includes(curricullumId);
   }
 
-  function handleCandidate(curricullumId) {
-    if (isInList(curricullumId)) deleteCandidate(curricullumId);
-    else addCandidate(curricullumId);
-  }
-
   function gethealthResponseLink(id) {
     const hr = hrLinks.filter((hr) => hr.id == healthResponse[id]._id)[0];
     return hr.link;
@@ -84,99 +81,107 @@ export default function PositionHSEApprovation({
     }
   }, []);
 
+  async function updateData(fileId, value) {
+    const field = "healthResponse." + fileId + ".approved";
+    await Meteor.callAsync("update_task", {
+      taskId: getTaskName() + getTask(),
+      field,
+      value,
+      user: Meteor.userId(),
+    }).catch((e) => console.log(e));
+  }
+
+  function handleCandidate(curricullumId) {
+    if (isInList(curricullumId)) {
+      deleteCandidate(curricullumId);
+      updateData(curricullumId, false);
+    } else {
+      addCandidate(curricullumId);
+      updateData(curricullumId, true);
+    }
+  }
+
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 600dvw)" }}>
-        {curricullums
-          ?.map((interview, index) => {
-            return (
-              <Flex
-                key={index}
-                justify="space-between"
-                align="center"
+      <Flex gap={16} vertical style={{ width: "100%" }}>
+        <Table
+          dataSource={curricullums?.filter((_, i) => interviews[i].selected)}
+          pagination={false}
+          rowKey={(record) => record.fileId}
+        >
+          <Table.Column
+            title="Candidatos"
+            render={(_, record) => (
+              <Text>
+                {`${record.applicantName} ${record.applicantMidname} ${record.applicantLastname}`.toUpperCase()}
+              </Text>
+            )}
+            width={"25rem"}
+          />
+          <Table.Column
+            title="Estado"
+            render={(interview) => (
+              <Button
                 style={{
-                  borderRadius: "5px",
-                  border: `1px solid ${
-                    checkeds.includes(interview.fileId) ? "green" : "gray"
-                  }`,
-                  padding: "5px 10px",
-                  boxShadow: `2px 2px 15px ${
-                    checkeds.includes(interview.fileId) ? "green" : "gray"
-                  }`,
+                  width: "10rem",
+                  backgroundColor: checkeds.includes(interview.fileId)
+                    ? "lightgreen"
+                    : "lightpink",
                 }}
+                onClick={() => handleCandidate(interview.fileId)}
               >
-                <Flex
-                  gap={10}
-                  style={{
-                    color: checkeds.includes(interview.fileId)
-                      ? "green"
-                      : "black",
-                  }}
+                {checkeds.includes(interview.fileId)
+                  ? "Aprobado"
+                  : "No aprobado"}
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Entrevistas"
+            render={(interview, _, index) => (
+              <Button
+                onClick={() => {
+                  setDrawerData({
+                    applicant: interview,
+                    open: true,
+                    view: (
+                      <InterviewView
+                        fileId={interview.fileId}
+                        onClose={handleClose}
+                        interviewForm={interviews[index]}
+                      />
+                    ),
+                  });
+                }}
+                icon={<FileTextFilled />}
+                type="link"
+              >
+                Ver
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Curricullums"
+            render={(interview) => (
+              <Flex>
+                <Button
+                  onClick={() => newTab(googleDocsViewer + interview.link)}
+                  icon={<EyeOutlined />}
+                  type="link"
                 >
-                  <Icon component={UserOutlined} style={{ fontSize: 20 }} />
-                  {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
-                </Flex>
-                <Flex gap={16}>
-                  <Button
-                    onClick={() =>
-                      newTab(gethealthResponseLink(interview.fileId), true)
-                    }
-                    type="primary"
-                    shape="circle"
-                    icon={<DownloadOutlined />}
-                    id="download-cv"
-                    title="Descargar resultados"
-                  />
-                  <Button
-                    title="Ver resultados"
-                    onClick={() =>
-                      newTab(
-                        googleDocsViewer +
-                          gethealthResponseLink(interview.fileId)
-                      )
-                    }
-                    type="primary"
-                    shape="circle"
-                    icon={<FileTextFilled />}
-                  />
-                  <Button
-                    title="Ver entrevista"
-                    onClick={() => {
-                      setDrawerData({
-                        applicant: interview,
-                        open: true,
-                        view: (
-                          <InterviewView
-                            fileId={interview.fileId}
-                            onClose={handleClose}
-                            interviewForm={interviews[index]}
-                          />
-                        ),
-                      });
-                    }}
-                    type="primary"
-                    shape="circle"
-                    icon={<WechatFilled style={{ fontSize: "20px" }} />}
-                  />
-
-                  <Button
-                    style={{
-                      width: "10rem",
-                      backgroundColor: checkeds.includes(interview.fileId)
-                        ? "lightgreen"
-                        : "lightpink",
-                    }}
-                    onClick={() => handleCandidate(interview.fileId)}
-                  >
-                    {checkeds.includes(interview.fileId)
-                      ? "Aprobado"
-                      : "No aprobado"}
-                  </Button>
-                </Flex>
+                  Ver
+                </Button>
+                <Button
+                  onClick={() => newTab(interview.link, true)}
+                  icon={<DownloadOutlined />}
+                  type="link"
+                >
+                  Descargar
+                </Button>
               </Flex>
-            );
-          })
-          .filter((_, i) => interviews[i].selected)}
+            )}
+          />
+        </Table>
       </Flex>
 
       <Drawer

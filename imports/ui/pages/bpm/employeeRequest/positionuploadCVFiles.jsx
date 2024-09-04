@@ -1,9 +1,12 @@
 import React from "react";
-import { Button, Drawer, Empty, Flex } from "antd";
+import { Button, Drawer, Flex, Table, Typography } from "antd";
 import Icon, {
   CheckCircleOutlined,
   CloseCircleOutlined,
+  CloudUploadOutlined,
+  DownloadOutlined,
   EditFilled,
+  EyeOutlined,
   FileTextFilled,
   WarningOutlined,
   WechatFilled,
@@ -16,6 +19,7 @@ import CVFilesForm from "../../../components/CVFilesForm/index.jsx";
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
+const { Text } = Typography;
 
 export default function PositionUploadCVFiles({
   curricullums,
@@ -37,98 +41,96 @@ export default function PositionUploadCVFiles({
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 520px)" }}>
-        {curricullums &&
-          curricullums.map((interview, index) => {
-            return (
-              <Flex
-                key={index}
-                justify="space-between"
-                align="center"
-                style={{
-                  borderRadius: "5px",
-                  border: `2px solid ${
-                    interviews[index].selected
-                      ? warningUsers.includes(interview.fileId)
-                        ? "orange"
-                        : "green"
-                      : "red"
-                  }`,
-                  padding: "5px 10px",
-                  boxShadow: `2px 2px 15px ${
-                    interviews[index].selected ? "green" : "red"
-                  }`,
+      <Flex gap={16} vertical style={{ width: "100%" }}>
+        <Table
+          dataSource={curricullums?.filter((_, i) => interviews[i].selected)}
+          pagination={false}
+          rowKey={(record) => record.fileId}
+        >
+          <Table.Column
+            title="Candidatos"
+            render={(_, record) => (
+              <Text>
+                {`${record.applicantName} ${record.applicantMidname} ${record.applicantLastname}`.toUpperCase()}
+              </Text>
+            )}
+            width={"25rem"}
+          />
+          <Table.Column
+            title="Documentos"
+            render={(interview, _, index) => (
+              <Button
+                onClick={() => {
+                  setDrawerData({
+                    applicant: interview,
+                    open: true,
+                    view: <CVFilesForm id={interview.fileId} />,
+                  });
                 }}
-              >
-                <Flex
-                  gap={10}
-                  style={{
-                    color: interviews[index].selected ? "green" : "red",
-                  }}
-                >
-                  <Icon
-                    component={
-                      interviews[index].selected
-                        ? CheckCircleOutlined
-                        : CloseCircleOutlined
-                    }
-                    style={{ fontSize: 20 }}
-                  />
-                  {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
-                </Flex>
-                <Flex gap={16}>
-                  <Button
-                    title="Ver curricullum"
-                    onClick={() => newTab(googleDocsViewer + interview.link)}
-                    type="primary"
-                    shape="circle"
-                    icon={<FileTextFilled />}
-                  />
-                  <Button
-                    title="Ver entrevista"
-                    onClick={() => {
-                      setDrawerData({
-                        applicant: interview,
-                        open: true,
-                        view: (
-                          <InterviewView
-                            fileId={interview.fileId}
-                            onClose={handleClose}
-                            interviewForm={interviews[index]}
-                          />
-                        ),
-                      });
-                    }}
-                    type="primary"
-                    shape="circle"
-                    icon={<WechatFilled style={{ fontSize: "20px" }} />}
-                  />
-                  <Button
-                    title="Llenar antecedentes"
-                    onClick={() => {
-                      setDrawerData({
-                        applicant: interview,
-                        open: true,
-                        view: <CVFilesForm id={interview.fileId} />,
-                      });
-                    }}
-                    type="primary"
-                    shape="circle"
-                    icon={<EditFilled />}
-                  />
-                </Flex>
-                <Flex style={{ position: "absolute", right: "10%" }}>
-                  {warningUsers.includes(interview.fileId) && (
+                danger={warningUsers.includes(interview.fileId)}
+                icon={
+                  warningUsers.includes(interview.fileId) ? (
                     <Transition effect={"zoom-in"}>
                       <WarningOutlined
-                        style={{ color: "orange", fontSize: "2rem" }}
+                        style={{ color: "red", fontSize: "1.2rem" }}
                       />
                     </Transition>
-                  )}
-                </Flex>
+                  ) : (
+                    <CloudUploadOutlined />
+                  )
+                }
+                type="link"
+              >
+                Cargar
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Entrevistas"
+            render={(interview, _, index) => (
+              <Button
+                onClick={() => {
+                  setDrawerData({
+                    applicant: interview,
+                    open: true,
+                    view: (
+                      <InterviewView
+                        fileId={interview.fileId}
+                        onClose={handleClose}
+                        interviewForm={interviews[index]}
+                      />
+                    ),
+                  });
+                }}
+                icon={<FileTextFilled />}
+                type="link"
+              >
+                Ver
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Curricullums"
+            render={(interview) => (
+              <Flex>
+                <Button
+                  onClick={() => newTab(googleDocsViewer + interview.link)}
+                  icon={<EyeOutlined />}
+                  type="link"
+                >
+                  Ver
+                </Button>
+                <Button
+                  onClick={() => newTab(interview.link, true)}
+                  icon={<DownloadOutlined />}
+                  type="link"
+                >
+                  Descargar
+                </Button>
               </Flex>
-            );
-          }).filter((_, i) => interviews[i].selected)}
+            )}
+          />
+        </Table>
       </Flex>
 
       <Drawer

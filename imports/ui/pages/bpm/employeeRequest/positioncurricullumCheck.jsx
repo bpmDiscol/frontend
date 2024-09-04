@@ -1,16 +1,16 @@
 import React from "react";
-import { Button, Drawer, Flex } from "antd";
-import Icon, {
+import { Button, Drawer, Flex, Table, Typography } from "antd";
+import {
+  DownloadOutlined,
+  EyeOutlined,
   FileTextFilled,
-  UserOutlined,
-  WechatFilled,
 } from "@ant-design/icons";
 
-import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 import { NotificationsContext } from "../../../context/notificationsProvider.jsx";
 import { getTask, getTaskName } from "../../../config/taskManagement.js";
 import LeaderInterview from "../../../components/interviewForm.jsx/leaderInterview.jsx";
 
+const { Text } = Typography;
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
 
 const closed = { applicant: null, open: false, view: null };
@@ -89,104 +89,130 @@ export default function PositionCurricullumCheck({
 
   function isCompleted(id) {
     if (Object.keys(background).includes(id))
-      return allFields.every((field) =>
-        Object.keys(background[id]).includes(field)
-      );
+      return allFields.every((field) => {
+        if (Object.keys(background[id]).includes(field))
+          return background[id][field];
+        return false;
+      });
   }
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 60dvw)" }}>
-        {curricullums
-          ?.map((interview, index) => {
-            return (
-              <Flex
-                key={index}
-                justify="space-between"
-                align="center"
-                style={{
-                  borderRadius: "5px",
-                  border: `1px solid gray`,
-                  padding: "7px 15px",
-                  marginRight: "10px",
-                  boxShadow: `2px 2px 10px black`,
+      <Flex gap={16} vertical style={{ width: "100%" }}>
+        <Table
+          dataSource={curricullums?.filter((_, i) => interviews[i].selected)}
+          pagination={false}
+          rowKey={(record) => record.fileId}
+        >
+          <Table.Column
+            title="Candidatos"
+            render={(_, record) => (
+              <Text>
+                {`${record.applicantName} ${record.applicantMidname} ${record.applicantLastname}`.toUpperCase()}
+              </Text>
+            )}
+            width={"25rem"}
+          />
+          <Table.Column
+            title="Estados"
+            render={(interview) =>
+              background && (
+                <Button
+                  onClick={() => toggleApproved(interview.fileId)}
+                  style={{
+                    width: "10rem",
+                    backgroundColor:
+                      isApproved(interview.fileId) == undefined
+                        ? "lightgray"
+                        : isApproved(interview.fileId)
+                        ? "lightgreen"
+                        : "lightpink",
+                  }}
+                >
+                  {isApproved(interview.fileId) == undefined
+                    ? "No evaluado"
+                    : isApproved(interview.fileId)
+                    ? "Aprobado"
+                    : "No aprobado"}
+                </Button>
+              )
+            }
+          />
+          <Table.Column
+            title="Conceptos"
+            render={(interview) =>
+              background && (
+                <Button
+                  style={{
+                    background: isCompleted(interview.fileId)
+                      ? "lightgreen"
+                      : "#fff072",
+                  }}
+                  onClick={() => {
+                    setDrawerData({
+                      applicant: interview,
+                      open: true,
+                      view: (
+                        <LeaderInterview
+                          fileId={interview.fileId}
+                          updateData={updateData}
+                          background={background[interview.fileId]}
+                        />
+                      ),
+                    });
+                  }}
+                >
+                  Dar concepto
+                </Button>
+              )
+            }
+          />
+          <Table.Column
+            title="Entrevistas"
+            render={(interview, _, index) => (
+              <Button
+                onClick={() => {
+                  setDrawerData({
+                    applicant: interview,
+                    open: true,
+                    view: (
+                      <LeaderInterview
+                        fileId={interview.fileId}
+                        updateData={updateData}
+                        background={background[interview.fileId]}
+                      />
+                    ),
+                  });
                 }}
+                icon={<FileTextFilled />}
+                type="link"
               >
-                <Flex gap={10}>
-                  <Icon component={UserOutlined} style={{ fontSize: 20 }} />
-                  {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
-                </Flex>
-                <Flex gap={16}>
-                  <Button
-                    title="Ver curricullum"
-                    onClick={() => newTab(googleDocsViewer + interview.link)}
-                    type="primary"
-                    shape="circle"
-                    icon={<FileTextFilled />}
-                  />
-                  <Button
-                    title="Ver entrevista"
-                    onClick={() => {
-                      setDrawerData({
-                        applicant: interview,
-                        open: true,
-                        view: (
-                          <InterviewView
-                            fileId={interview.fileId}
-                            onClose={handleClose}
-                            interviewForm={interviews[index]}
-                          />
-                        ),
-                      });
-                    }}
-                    type="primary"
-                    shape="circle"
-                    icon={<WechatFilled style={{ fontSize: "20px" }} />}
-                  />
-                  {background && (
-                    <Button
-                      onClick={() => toggleApproved(interview.fileId)}
-                      style={{
-                        width: "10rem",
-                        backgroundColor: isApproved(interview.fileId)
-                          ? "lightgreen"
-                          : "lightpink",
-                      }}
-                    >
-                      {isApproved(interview.fileId)
-                        ? "Aprobado"
-                        : "No aprobado"}
-                    </Button>
-                  )}
-                  {background && (
-                    <Button
-                      style={{
-                        background: isCompleted(interview.fileId)
-                          ? "lightgreen"
-                          : "#fff072",
-                      }}
-                      onClick={() => {
-                        setDrawerData({
-                          applicant: interview,
-                          open: true,
-                          view: (
-                            <LeaderInterview
-                              fileId={interview.fileId}
-                              updateData={updateData}
-                              background={background[interview.fileId]}
-                            />
-                          ),
-                        });
-                      }}
-                    >
-                      Dar concepto
-                    </Button>
-                  )}
-                </Flex>
+                Ver
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Curricullums"
+            render={(interview) => (
+              <Flex>
+                <Button
+                  onClick={() => newTab(googleDocsViewer + interview.link)}
+                  icon={<EyeOutlined />}
+                  type="link"
+                >
+                  Ver
+                </Button>
+                <Button
+                  onClick={() => newTab(interview.link, true)}
+                  icon={<DownloadOutlined />}
+                  type="link"
+                >
+                  Descargar
+                </Button>
               </Flex>
-            );
-          })
-          .filter((_, i) => interviews[i].selected)}
+            )}
+          />
+        </Table>
       </Flex>
 
       <Drawer

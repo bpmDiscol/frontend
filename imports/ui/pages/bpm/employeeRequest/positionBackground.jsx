@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, Drawer, Flex, Select, Space } from "antd";
-import Icon, {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
+import { Button, Drawer, Flex, Select, Space, Table, Typography } from "antd";
+import {
   DownloadOutlined,
+  EyeOutlined,
   FileTextFilled,
   WarningOutlined,
 } from "@ant-design/icons";
@@ -14,6 +13,7 @@ import UploadFileButton from "../../../components/uploadFileButton/index.jsx";
 import { getTask, getTaskName } from "../../../config/taskManagement.js";
 
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
+const { Text } = Typography;
 
 const closed = { applicant: null, open: false, view: null };
 
@@ -98,8 +98,8 @@ export default function PositionBackgroud({
 
   return (
     <Flex gap={16} style={{ flex: 1 }}>
-      <Flex gap={16} vertical style={{ width: "clamp(290px, 60lvw, 60dvw)" }}>
-        <Flex justify="end" align="center" gap={10}>
+      <Flex gap={16} vertical style={{ width: "100%" }}>
+        <Flex justify="start" align="center" gap={10}>
           Asignado a:
           <Select
             placeholder="Selecciona un auxiliar"
@@ -107,127 +107,122 @@ export default function PositionBackgroud({
             filterOption
             style={{ width: "15rem" }}
             onChange={(value) => updateData("auxiliarId", value)}
+            id="auxiliarId"
           />
         </Flex>
-
-        {curricullums &&
-          curricullums
-            .map((interview, index) => {
-              return (
-                <Flex
-                  key={index}
-                  justify="space-between"
-                  align="center"
-                  style={{
-                    borderRadius: "5px",
-                    border: `2px solid`,
-                    padding: "7px 15px",
-                    marginRight: "10px",
-                  }}
-                >
-                  <Flex
-                    gap={10}
-                    style={{
-                      color: isApproved(interview.fileId) ? "green" : "red",
-                      fontWeight: "bolder",
-                    }}
-                  >
-                    <Icon
-                      component={
-                        isApproved(interview.fileId)
-                          ? CheckCircleOutlined
-                          : CloseCircleOutlined
-                      }
-                      style={{ fontSize: 20 }}
-                    />
-                    {`${interview.applicantName} ${interview.applicantMidname} ${interview.applicantLastname}`.toUpperCase()}
-                  </Flex>
-                  <Flex gap={16}>
-                    <Button
-                      onClick={() => newTab(interview.link, true)}
-                      title="Descargar curricullum"
-                      type="primary"
-                      shape="circle"
-                      icon={<DownloadOutlined />}
-                      id="download-cv"
-                    />
-                    <Button
-                      title="Ver curricullum"
-                      onClick={() => newTab(googleDocsViewer + interview.link)}
-                      type="primary"
-                      shape="circle"
-                      icon={<FileTextFilled />}
-                    />
-                    <Button
-                      title="Ver entrevista"
-                      onClick={() => {
-                        setDrawerData({
-                          applicant: interview,
-                          open: true,
-                          view: (
-                            <InterviewView
-                              fileId={interview.fileId}
-                              onClose={handleClose}
-                              interviewForm={interviews[index]}
-                            />
-                          ),
-                        });
-                      }}
-                      type="primary"
-                      shape="circle"
-                      icon={
-                        <img
-                          src="/icons/speaking.svg"
-                          style={{ width: "1.5rem" }}
-                        />
-                      }
-                    />
-                    {background && (
-                      <UploadFileButton
-                        targetCollection={"background"}
-                        onUpload={(uploadData) =>
-                          updateData(
-                            `${interview.fileId}.legal_background`,
-                            uploadData
-                          )
-                        }
-                        defaultFileShow={
-                          checkPreFile(interview.fileId)
-                            ? [checkPreFile(interview.fileId)]
-                            : undefined
-                        }
+        <Table
+          dataSource={curricullums?.filter((_, i) => interviews[i].selected)}
+          pagination={false}
+          rowKey={(record) => record.fileId}
+        >
+          <Table.Column
+            title="Candidatos"
+            render={(_, record) => (
+              <Text>
+                {`${record.applicantName} ${record.applicantMidname} ${record.applicantLastname}`.toUpperCase()}
+              </Text>
+            )}
+            width={"25rem"}
+          />
+          <Table.Column
+            title="Estado"
+            width={"7rem"}
+            render={(interview) => (
+              <Button
+                iconPosition="end"
+                onClick={() => toggleApproved(interview.fileId)}
+                style={{
+                  width: "7rem",
+                  backgroundColor: isApproved(interview.fileId)
+                    ? "lightgreen"
+                    : "lightpink",
+                }}
+              >
+                {isApproved(interview.fileId) ? "Aprobado" : "No aprobado"}
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Archivos"
+            width={"8rem"}
+            render={(interview) =>
+              background && (
+                <UploadFileButton
+                  targetCollection={"background"}
+                  onUpload={(uploadData) =>
+                    updateData(
+                      `${interview.fileId}.legal_background`,
+                      uploadData
+                    )
+                  }
+                  defaultFileShow={
+                    checkPreFile(interview.fileId)
+                      ? [checkPreFile(interview.fileId)]
+                      : undefined
+                  }
+                />
+              )
+            }
+          />
+          <Table.Column
+            title="Entrevistas"
+            render={(interview, _, index) => (
+              <Button
+                onClick={() => {
+                  setDrawerData({
+                    applicant: interview,
+                    open: true,
+                    view: (
+                      <InterviewView
+                        fileId={interview.fileId}
+                        onClose={handleClose}
+                        interviewForm={interviews[index]}
                       />
-                    )}
-                    {background && (
-                      <Button
-                        iconPosition="end"
-                        onClick={() => toggleApproved(interview.fileId)}
-                        style={{
-                          width: "10rem",
-                          backgroundColor: isApproved(interview.fileId)
-                            ? "lightgreen"
-                            : "lightpink",
-                        }}
-                      >
-                        {isApproved(interview.fileId)
-                          ? "Aprobado"
-                          : "No aprobado"}
-                      </Button>
-                    )}
-                  </Flex>
-                  <Flex style={{ position: "absolute", right: "10%" }}>
-                    {warningUsers.includes(interview.fileId) && (
-                      <Transition effect={"zoom-in"}>
-                        <WarningOutlined
-                          style={{ color: "orange", fontSize: "2rem" }}
-                        />
-                      </Transition>
-                    )}
-                  </Flex>
-                </Flex>
-              );
-            })
-            .filter((_, i) => interviews[i].selected)}
+                    ),
+                  });
+                }}
+                icon={<FileTextFilled />}
+                type="link"
+              >
+                Ver
+              </Button>
+            )}
+          />
+          <Table.Column
+            title="Curricullums"
+            render={(interview) => (
+              <Flex>
+                <Button
+                  onClick={() => newTab(googleDocsViewer + interview.link)}
+                  icon={<EyeOutlined />}
+                  type="link"
+                >
+                  Ver
+                </Button>
+                <Button
+                  onClick={() => newTab(interview.link, true)}
+                  icon={<DownloadOutlined />}
+                  type="link"
+                >
+                  Descargar
+                </Button>
+              </Flex>
+            )}
+          />
+          <Table.Column
+            render={(interview) => (
+              <Flex>
+                {warningUsers.includes(interview.fileId) && (
+                  <Transition effect={"zoom-in"}>
+                    <WarningOutlined
+                      style={{ color: "orange", fontSize: "2rem" }}
+                    />
+                  </Transition>
+                )}
+              </Flex>
+            )}
+          />
+        </Table>
       </Flex>
       <Drawer
         title={`${drawerData.applicant?.applicantName} ${drawerData.applicant?.applicantMidname} ${drawerData.applicant?.applicantLastname}`.toUpperCase()}

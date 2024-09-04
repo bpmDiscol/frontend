@@ -23,6 +23,7 @@ export default function Founded() {
     chart: {
       id: "foundeds",
       type: "donut",
+      toolbar: { show: true },
 
       dropShadow: {
         enabled: true,

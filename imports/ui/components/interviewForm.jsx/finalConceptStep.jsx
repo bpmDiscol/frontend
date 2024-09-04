@@ -1,10 +1,8 @@
 import React from "react";
-import { Col, Flex, Form, Input, Radio, Row, Space } from "antd";
+import { Col, Flex, Form, Input, Radio, Row } from "antd";
 const { TextArea } = Input;
 
-import { formats, modules } from "../../pages/styles/quillStyle";
-export default function FinalConceptStep({ update }) {
-  const [selected, setSelected] = React.useState(false);
+export default function FinalConceptStep({ update, form }) {
   return (
     <Row>
       <Flex style={{ height: "16rem" }}>
@@ -30,6 +28,7 @@ export default function FinalConceptStep({ update }) {
               placeholder="concepto final"
             />
           </Form.Item>
+
           <Flex justify="center" align="center" gap={32}>
             <h3>¿Candidato Seleccionado?</h3>
             <Form.Item
@@ -48,24 +47,15 @@ export default function FinalConceptStep({ update }) {
               <Radio.Group
                 onChange={(e) => {
                   update({ field: "selected", value: e.target.value });
-                  setSelected(e.target.value);
                 }}
                 buttonStyle="solid"
-                defaultValue={false}
+                value={form.getFieldValue("selected")}
                 size="large"
               >
-                <Radio.Button
-                  value={true}
-                  style={{ background: selected ? "green" : "" }}
-                >
+                <Radio.Button type="solid" value={true}>
                   Seleccionado
                 </Radio.Button>
-                <Radio.Button
-                  value={false}
-                  style={{ background: selected ? "" : "red" }}
-                >
-                  No Seleccionado
-                </Radio.Button>
+                <Radio.Button value={false}>No Seleccionado</Radio.Button>
               </Radio.Group>
             </Form.Item>
           </Flex>

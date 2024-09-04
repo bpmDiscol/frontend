@@ -18,6 +18,7 @@ export default function EmployeeRequestResponse({
   buttons,
   salary,
   showSalary,
+  uploadNomina
 }) {
   const { Text, Title } = Typography;
   const { openNotification } = React.useContext(NotificationsContext);
@@ -48,6 +49,7 @@ export default function EmployeeRequestResponse({
         buttons={buttons}
         salary={salary}
         showSalary={showSalary}
+        uploadNomina={uploadNomina}
       />
     );
   }
@@ -61,6 +63,7 @@ export default function EmployeeRequestResponse({
           buttons={buttons}
           salary={salary}
           showSalary={showSalary}
+          uploadNomina={uploadNomina}
         />
       )
     );

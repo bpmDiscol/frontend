@@ -11,6 +11,7 @@ import salary_validation from "../pages/bpm/configPages/salaryValidation";
 import simpleRequest from "../pages/bpm/configPages/simpleRequest";
 import activate_social_security from "../pages/bpm/configPages/socialSecurity";
 import RUT from "../pages/bpm/configPages/watchRUT";
+import sign_contract from "../pages/bpm/configPages/signContract"
 
 const viewMappings = {
   dashboard: "Dashboard",
@@ -52,7 +53,7 @@ const properties = {
   base,
   activate_social_security,
   employee_request_search: simpleRequest,
-  sign_contract: simpleRequest,
+  sign_contract,
   bank_certificate,
   biometric_registry,
   gears_auth,

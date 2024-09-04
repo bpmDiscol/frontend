@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getContratationDates, getProcessLine } from "./contratations";
-import { Badge, Card, Flex, Select, Steps, Tag } from "antd";
+import { Badge, Card, Flex, Select, Steps, Tag, Typography } from "antd";
 import { MainViewContext } from "../../context/mainViewProvider";
 import moment from "moment";
 import { FileDoneOutlined, LoadingOutlined } from "@ant-design/icons";
 import translate from "../../misc/translate.json";
+
+const { Title } = Typography;
 
 export default function LeaderTimeLine({ approvations, requestProcess }) {
   const { userName } = useContext(MainViewContext);
   const [myProcesses, setMyProcesses] = useState([]);
   const [dates, setDates] = React.useState();
   const [currentDate, setCurrentDate] = useState();
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const dates = getContratationDates(approvations, requestProcess).reverse();
@@ -57,12 +60,16 @@ export default function LeaderTimeLine({ approvations, requestProcess }) {
   }
 
   useEffect(() => {
-    if (currentDate) setMyProcesses(getMyProcesses());
+    if (currentDate) {
+      setMyProcesses(getMyProcesses());
+      setLoading(false);
+    }
   }, [currentDate]);
 
   return (
     <Flex vertical gap={20} style={{ width: "98%", marginTop: "20px" }}>
       <Card bordered style={{ border: "1px solid" }}>
+        <Title>Requisiciones de este mes</Title>
         {dates?.length && (
           <Select
             options={dates}
@@ -73,7 +80,7 @@ export default function LeaderTimeLine({ approvations, requestProcess }) {
         {myProcesses.map((process, inx) => {
           return (
             <Card
-              style={{ marginTop: "16px", border:'1px solid gray' }}
+              style={{ marginTop: "16px", border: "1px solid gray" }}
               bordered
               key={inx}
               title={
@@ -86,7 +93,9 @@ export default function LeaderTimeLine({ approvations, requestProcess }) {
                 </Flex>
               }
             >
-              <Flex style={{ overflowY: "auto", width: "70dvw", padding:'20px' }}>
+              <Flex
+                style={{ overflowY: "auto", width: "70dvw", padding: "20px" }}
+              >
                 <Flex>
                   <Steps
                     size="small"
@@ -99,8 +108,15 @@ export default function LeaderTimeLine({ approvations, requestProcess }) {
             </Card>
           );
         })}
+        {loading && (
+          <Flex style={{ paddingTop: "16px" }}>Cargando recursos...</Flex>
+        )}
+        {!myProcesses?.length && !loading && (
+          <Flex style={{ paddingTop: "16px" }}>
+            No has iniciado procesos este mes
+          </Flex>
+        )}
       </Card>
-      {!myProcesses?.length && "Sin elementos que mostrar"}
     </Flex>
   );
 }

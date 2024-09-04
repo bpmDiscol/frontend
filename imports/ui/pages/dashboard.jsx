@@ -35,7 +35,6 @@ export default function Dashboard() {
       }
     );
   }, []);
-  console.log({ requestProcess, approvations });
 
   return (
     <Flex vertical style={{ width: "100%" }}>

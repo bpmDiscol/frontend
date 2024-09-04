@@ -25,10 +25,6 @@ import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
 import { sonIguales } from "../../../misc/sonIguales";
-import PositionUploadCVFiles from "./positionuploadCVFiles";
-import cvFields from "../data/cvfields.json";
-import optionalCVFields from "../data/optionalCVFields.json";
-import { arrayDifference } from "../../../misc/arrayDifference";
 import PositionHealthServiceResponse from "./positionHealtServiceResponse";
 
 export default function EmployeeHealthServiceResponse() {
@@ -42,6 +38,7 @@ export default function EmployeeHealthServiceResponse() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [warningUsers, setWarningUsers] = React.useState([]);
   const [warningMessage, setWarningMessage] = React.useState(false);
+  const [taskChecked, setTaskChecked] = React.useState(false);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
@@ -56,6 +53,25 @@ export default function EmployeeHealthServiceResponse() {
       return requestEmployee;
     }
   });
+
+  async function fillTask() {
+    const taskId = getTaskName() + getTask();
+    const existTask = await Meteor.callAsync(
+      "exist_task",
+      taskId,
+      Meteor.userId()
+    );
+    if (!existTask) {
+      const value = { ...requestEmployeeData?.healthResponseInput };
+      await Meteor.callAsync(
+        "add_task",
+        { taskId, healthResponse: value },
+        Meteor.userId()
+      );
+    }
+    setTaskChecked(true);
+  }
+
   function reloadPage(index) {
     setTabView(
       <LoadPage
@@ -68,6 +84,7 @@ export default function EmployeeHealthServiceResponse() {
   }
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
+      fillTask();
       setReload(true);
       const curricullums = requestEmployeeData?.curricullumsInput?.map(
         async (curricullum) => {
@@ -104,13 +121,7 @@ export default function EmployeeHealthServiceResponse() {
     }
   }, [curricullums, warningUsers]);
 
-  function LoadPage({
-    Component,
-    curricullums,
-    interviews,
-    warningUsers,
-    userId,
-  }) {
+  function LoadPage({ Component, curricullums, interviews, warningUsers }) {
     return (
       <Component
         requestEmployee={requestEmployeeData}
@@ -155,28 +166,29 @@ export default function EmployeeHealthServiceResponse() {
           );
           return;
         }
-        const cv = Object.keys(resp[0].healthResponse);
-        const interviewIds = requestEmployeeData.interviewInput
-          .filter((data) => data.selected)
-          .map((data) => data.interviewId);
+        request();
+        // const cv = Object.keys(resp[0].healthResponse);
+        // const interviewIds = requestEmployeeData.interviewInput
+        //   .filter((data) => data.selected)
+        //   .map((data) => data.interviewId);
 
-        if (!sonIguales(cv, interviewIds)) {
-          const diference = interviewIds.filter((x) => !cv.includes(x));
+        // if (!sonIguales(cv, interviewIds)) {
+        //   const diference = interviewIds.filter((x) => !cv.includes(x));
 
-          setWarningUsers(diference);
-          openNotification(
-            "warning",
-            "No has terminado aún!!",
-            "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
-          );
-          return;
-        }
+        //   setWarningUsers(diference);
+        //   openNotification(
+        //     "warning",
+        //     "No has terminado aún!!",
+        //     "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
+        //   );
+        //   return;
+        // }
 
-        const warningUsers = cv.filter((cvId) => !resp[0].healthResponse[cvId]);
-        if (warningUsers.length) {
-          setWarningUsers(warningUsers);
-          setWarningMessage(true);
-        } else request();
+        // const warningUsers = cv.filter((cvId) => !resp[0].healthResponse[cvId]);
+        // if (warningUsers.length) {
+        //   setWarningUsers(warningUsers);
+        //   setWarningMessage(true);
+        // } else request();
       }
     });
   }
@@ -241,7 +253,10 @@ export default function EmployeeHealthServiceResponse() {
             disabled={!requestEmployeeData}
           />
         </Flex>
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader
+          condition={requestEmployeeData && taskChecked}
+          content={tabView}
+        />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

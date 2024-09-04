@@ -88,7 +88,7 @@ export default function ProcessRequests({ requestProcess, approvations }) {
         blur: 10,
         opacity: 0.2,
       },
-      toolbar: { show: false },
+      toolbar: { show: true },
     },
     stroke: {
       curve: "stepline",

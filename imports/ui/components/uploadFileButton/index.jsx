@@ -20,9 +20,9 @@ export default function UploadFileButton({
   }
 
   function upload(file) {
-    if(file.size > 10485760){
-      message.warning('El archivo no puede tener mas de 10Mb')
-      return
+    if (file.size > 10485760) {
+      message.warning("El archivo no puede tener mas de 10Mb");
+      return;
     }
     setLoading(true);
 
@@ -61,6 +61,7 @@ export default function UploadFileButton({
         style={{
           backgroundColor: isLoaded ? "lightgreen" : "",
           fontWeight: isLoaded ? "bolder" : "normal",
+          width: "10rem",
         }}
         loading={isLoading}
         iconPosition="end"
@@ -69,7 +70,11 @@ export default function UploadFileButton({
       >
         {isLoaded ? "Archivo cargado" : "Cargar archivo"}
       </Button>
-      <Spin fullscreen spinning={isLoading} indicator={<LoadingOutlined spin />} />
+      <Spin
+        fullscreen
+        spinning={isLoading}
+        indicator={<LoadingOutlined spin />}
+      />
     </Upload>
   );
 }

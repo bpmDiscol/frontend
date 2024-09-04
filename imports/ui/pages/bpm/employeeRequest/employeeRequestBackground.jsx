@@ -40,6 +40,7 @@ export default function EmployeeRequestBackground() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [warningUsers, setWarningUsers] = React.useState([]);
   const [warningMessage, setWarningMessage] = React.useState(false);
+  const [taskChecked, setTaskChecked] = React.useState(false);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
@@ -54,6 +55,20 @@ export default function EmployeeRequestBackground() {
       return requestEmployee;
     }
   });
+
+  async function fillTask() {
+    const taskId = getTaskName() + getTask();
+    const existTask = await Meteor.callAsync(
+      "exist_task",
+      taskId,
+      Meteor.userId()
+    );
+    if (!existTask) {
+      const value = { ...requestEmployeeData?.backgoundsInput, taskId };
+      await Meteor.callAsync("add_task", value, Meteor.userId());
+    }
+    setTaskChecked(true);
+  }
   function reloadPage(index) {
     setTabView(
       <LoadPage
@@ -66,6 +81,7 @@ export default function EmployeeRequestBackground() {
   }
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
+      fillTask();
       setReload(true);
       const curricullums = requestEmployeeData?.curricullumsInput?.map(
         async (curricullum) => {
@@ -240,7 +256,10 @@ export default function EmployeeRequestBackground() {
             disabled={!requestEmployeeData}
           />
         </Flex>
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader
+          condition={requestEmployeeData && taskChecked}
+          content={tabView}
+        />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

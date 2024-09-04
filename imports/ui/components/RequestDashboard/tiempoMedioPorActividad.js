@@ -39,10 +39,13 @@ export default function calcularTiempoPromedioPorActividad(
       if (
         entry.taskName === "load_curricullum" &&
         entry.response !== "undefined"
-      )
-        contrataciones[requestArea][approvationDateKey].candidates += parseInt(
-          entry.response
+      ) {
+        contrataciones[requestArea][approvationDateKey].candidates = Math.max(
+          contrataciones[requestArea][approvationDateKey].candidates,
+          parseInt(entry.response)
         );
+      }
+
       if (entry.taskName === "sign_contract" && entry.response !== "undefined")
         contrataciones[requestArea][approvationDateKey].final += parseInt(
           entry.response
@@ -69,7 +72,6 @@ export default function calcularTiempoPromedioPorActividad(
             approvationTaskList[i].taskName === entry.taskName &&
             approvationTaskList[i].response !== "undefined"
           ) {
-            
             const end = new Date(approvationTaskList[i].responseDate).getTime();
             const diferencia = (end - start) / milisecPorMinuto;
             tiempos[entry.taskName].total += diferencia;

@@ -37,6 +37,8 @@ export default function EmployeeHSEApprovation() {
   const [reload, setReload] = React.useState(false);
   const [curricullums, setCurricullums] = React.useState([]);
   const [checkeds, setCheckeds] = React.useState([]);
+  const [taskChecked, setTaskChecked] = React.useState(false);
+
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
     const req = requestEmployeeCollection.find({ caseId: getCase() }).fetch();
@@ -50,6 +52,24 @@ export default function EmployeeHSEApprovation() {
       return requestEmployee;
     }
   });
+
+  async function fillTask() {
+    const taskId = getTaskName() + getTask();
+    const existTask = await Meteor.callAsync(
+      "exist_task",
+      taskId,
+      Meteor.userId()
+    );
+    if (!existTask) {
+      const value = { ...requestEmployeeData?.healthResponseInput };
+      await Meteor.callAsync(
+        "add_task",
+        { taskId, healthResponse: value },
+        Meteor.userId()
+      );
+    }
+    setTaskChecked(true);
+  }
 
   function reloadPage(index) {
     setTabView(
@@ -65,6 +85,7 @@ export default function EmployeeHSEApprovation() {
   }
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
+      fillTask();
       setReload(true);
       const curricullums = requestEmployeeData?.curricullumsInput?.map(
         async (curricullum) => {
@@ -78,7 +99,6 @@ export default function EmployeeHSEApprovation() {
           }
         }
       );
-
       Promise.all(curricullums)
         .then((values) =>
           values.map((value, index) => {
@@ -94,6 +114,23 @@ export default function EmployeeHSEApprovation() {
         });
     }
   }, [requestEmployeeData]);
+
+  React.useEffect(() => {
+    Meteor.call(
+      "get_task_data",
+      getTaskName() + getTask(),
+      Meteor.userId(),
+      (err, resp) => {
+        if (!err && resp?.length) {
+          const hr = resp[0].healthResponse;
+          const oldCheckeds = Object.keys(hr)
+            .map((hrKey) => (hr[hrKey].approved ? hrKey : null))
+            .filter((key) => key);
+          setCheckeds(oldCheckeds);
+        }
+      }
+    );
+  }, []);
 
   React.useEffect(() => {
     if (curricullums) {
@@ -199,7 +236,10 @@ export default function EmployeeHSEApprovation() {
             disabled={!requestEmployeeData}
           />
         </Flex>
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader
+          condition={requestEmployeeData && taskChecked}
+          content={tabView}
+        />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

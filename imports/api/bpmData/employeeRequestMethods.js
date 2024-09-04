@@ -148,7 +148,13 @@ Meteor.methods({
         applicantMidname: curricullum.applicantMidname,
         applicantLastname: curricullum.applicantLastname,
         foundBy: curricullum.foundBy,
-        fileId: curricullum.file.uid,
+        fileId: curricullum?.file?.uid,
+        isSelected:
+          !Object.keys(curricullum).includes("isSelected") ||
+          curricullum.isSelected
+            ? true
+            : false,
+        nit: curricullum.nit,
       }));
 
       Meteor.callAsync(
@@ -185,7 +191,17 @@ Meteor.methods({
   async get_case(caseId) {
     return requestEmployeeCollection.findOne({ caseId });
   },
-
+  update_selected({ isSelected, fileId, taskId }) {
+    Meteor.users.update(
+      this.userId,
+      {
+        $set: { [`tasks.$[task].${fileId}.selected`]: isSelected },
+      },
+      {
+        arrayFilters: [{ "task.taskId": taskId }],
+      }
+    );
+  },
   async send_interviews(iData, caseId, taskId, userName, user) {
     const interviewInput = processInterviews(iData);
     const field = ["interviewInput"];
@@ -390,6 +406,11 @@ Meteor.methods({
       },
       user,
     }).catch((error) => console.error(error));
+  },
+  async uploadNominaFiles(caseId, value, memberId) {
+    Meteor.callAsync("set_data", { field: ['cvFilesInput',memberId], value }, caseId).catch(
+      (error) => console.error(error)
+    );
   },
   async uploadHRFiles(hrFiles, userName, caseId, taskId, user) {
     const field = ["healthResponseInput"];

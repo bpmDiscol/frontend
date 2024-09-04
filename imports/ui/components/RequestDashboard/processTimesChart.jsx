@@ -20,20 +20,6 @@ export default function ProcessTimesChart({ requestProcess, approvations }) {
   const [loading, setLoading] = React.useState(true);
   const [ANS, setANS] = React.useState({ minHHrr: 0, maxHHrr: 0 });
 
-  const areaColors = processTimes?.areaValues.map((value) =>
-    value >= ANS.minHHrr
-      ? value >= ANS.maxHHrr
-        ? "#ff6868"
-        : "#ffc526"
-      : "#30db63"
-  );
-  const taskColors = processTimes?.taskValues.map((value) =>
-    value >= ANS.minHHrr
-      ? value >= ANS.maxHHrr
-        ? "#ff6868"
-        : "#ffc526"
-      : "#30db63"
-  );
   const mediaAreasOptions = (type) => ({
     xaxis: {
       categories: processTimes ? processTimes[type] : [""],
@@ -55,6 +41,7 @@ export default function ProcessTimesChart({ requestProcess, approvations }) {
         blur: 10,
         opacity: 0.2,
       },
+      toolbar: { show: true },
     },
     plotOptions: {
       bar: {

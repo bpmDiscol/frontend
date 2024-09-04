@@ -18,6 +18,7 @@ import { useTracker } from "meteor/react-meteor-data";
 import { requestEmployeeCollection } from "../../../../api/requestEmployeData/requestEmployeeDataPublication";
 import SpinningLoader from "../../../components/spinningLoader";
 import { getCase, getTask, getTaskName } from "../../../config/taskManagement";
+
 import { sonIguales } from "../../../misc/sonIguales";
 
 export default function EmployeeRequestInterview() {
@@ -25,6 +26,7 @@ export default function EmployeeRequestInterview() {
   const { setView, userName } = React.useContext(MainViewContext);
   const { openNotification } = React.useContext(NotificationsContext);
 
+  const [taskChecked, setTaskChecked] = React.useState(false);
   const [tabView, setTabView] = React.useState();
   const [interviews, setInterviews] = React.useState([]);
   const [reload, setReload] = React.useState(false);
@@ -45,6 +47,23 @@ export default function EmployeeRequestInterview() {
     }
   });
 
+  async function fillTask() {
+    const taskId = getTaskName() + getTask();
+    const existTask = await Meteor.callAsync(
+      "exist_task",
+      taskId,
+      Meteor.userId()
+    );
+    if (!existTask) {
+      const value = { taskId };
+      requestEmployeeData?.interviewInput?.forEach((iv) => {
+        value[iv.interviewId] = iv;
+      });
+      await Meteor.callAsync("add_task", value, Meteor.userId());
+    }
+    setTaskChecked(true);
+  }
+
   function reloadPage(index) {
     setTabView(
       <LoadPage
@@ -57,6 +76,7 @@ export default function EmployeeRequestInterview() {
 
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
+      fillTask();
       setReload(true);
       const interviewsPromises = requestEmployeeData?.curricullumsInput?.map(
         (curricullum) => {
@@ -128,31 +148,24 @@ export default function EmployeeRequestInterview() {
       getTaskName() + getTask(),
       Meteor.userId(),
       (err, resp) => {
-        const iv = Object.keys(resp[0]).filter((x) => x != "taskId");
-        if (!err) {
-          if (!iv?.length) {
-            openNotification(
-              "error",
-              "No se ha cargado nada 😒",
-              "Al parecer no has hecho ningun cambio en la petición. Debes tener alguna interacción con los campos antes de enviar"
-            );
-            setWaitingToSend(false);
-            return;
-          }
-          const interviewIds = requestEmployeeData.curricullumsInput.map(
-            (data) => data.fileId
-          );
-          if (!sonIguales(iv, interviewIds)) {
-            const diference = interviewIds.filter((x) => !iv.includes(x));
-            setWarningUsers(diference);
-            openNotification(
-              "warning",
-              "No has terminado aún!!",
-              "No has visto algunos candidatos. Recuerda que debes llenar todos los campos"
-            );
-            setWaitingToSend(false);
-            return;
-          }
+        if (!err && resp) {
+          // const iv = Object.keys(resp[0]).filter((x) => x != "taskId");
+
+          // const interviewIds = requestEmployeeData.curricullumsInput
+          //   .filter((data) => data.isSelected)
+          //   .map((data) => data.fileId);
+
+          // if (!sonIguales(iv, interviewIds)) {
+          //   const diference = interviewIds.filter((x) => !iv.includes(x));
+          //   setWarningUsers(diference);
+          //   openNotification(
+          //     "warning",
+          //     "No has terminado aún!!",
+          //     "No has visto algunos candidatos. Recuerda que debes llenar todos los campos"
+          //   );
+          //   setWaitingToSend(false);
+          //   return;
+          // }
 
           const savedData = resp[0];
           const req = interviews.map((interview) => {
@@ -161,6 +174,7 @@ export default function EmployeeRequestInterview() {
               interviewId: interview.fileId,
             };
           });
+
           setWaitingToSend(false);
           Meteor.call(
             "send_interviews",
@@ -228,7 +242,7 @@ export default function EmployeeRequestInterview() {
             disabled={!requestEmployeeData}
           />
         </Flex>
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader condition={requestEmployeeData && taskChecked} content={tabView} />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

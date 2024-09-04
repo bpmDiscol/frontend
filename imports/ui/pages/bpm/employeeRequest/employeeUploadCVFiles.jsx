@@ -41,6 +41,7 @@ export default function EmployeeUploadCVFiles() {
   const [curricullums, setCurricullums] = React.useState([]);
   const [warningUsers, setWarningUsers] = React.useState([]);
   const [warningMessage, setWarningMessage] = React.useState(false);
+  const [taskChecked, setTaskChecked] = React.useState(false);
 
   const requestEmployeeData = useTracker(() => {
     Meteor.subscribe("requestEmployee");
@@ -55,6 +56,24 @@ export default function EmployeeUploadCVFiles() {
       return requestEmployee;
     }
   });
+  async function fillTask() {
+    const taskId = getTaskName() + getTask();
+    const existTask = await Meteor.callAsync(
+      "exist_task",
+      taskId,
+      Meteor.userId()
+    );
+    if (!existTask) {
+      const value = { ...requestEmployeeData?.cvFilesInput };
+      await Meteor.callAsync(
+        "add_task",
+        { taskId, cvFiles: value },
+        Meteor.userId()
+      );
+    }
+    setTaskChecked(true);
+  }
+
   function reloadPage(index) {
     setTabView(
       <LoadPage
@@ -67,6 +86,7 @@ export default function EmployeeUploadCVFiles() {
   }
   React.useEffect(() => {
     if (!reload && requestEmployeeData) {
+      fillTask();
       setReload(true);
       const curricullums = requestEmployeeData?.curricullumsInput?.map(
         async (curricullum) => {
@@ -103,12 +123,7 @@ export default function EmployeeUploadCVFiles() {
     }
   }, [curricullums, warningUsers]);
 
-  function LoadPage({
-    Component,
-    curricullums,
-    interviews,
-    warningUsers,
-  }) {
+  function LoadPage({ Component, curricullums, interviews, warningUsers }) {
     return (
       <Component
         requestEmployee={requestEmployeeData}
@@ -153,45 +168,45 @@ export default function EmployeeUploadCVFiles() {
           );
           return;
         }
-        const cv = Object.keys(resp[0].cvFiles);
-        const interviewIds = requestEmployeeData.interviewInput
-          .filter((data) => data.selected)
-          .map((data) => data.interviewId);
+        request();
+        // const cv = Object.keys(resp[0].cvFiles);
+        // const interviewIds = requestEmployeeData.interviewInput
+        //   .filter((data) => data.selected)
+        //   .map((data) => data.interviewId);
+        // if (!sonIguales(cv, interviewIds)) {
+        //   const diference = interviewIds.filter((x) => !cv.includes(x));
 
-        if (!sonIguales(cv, interviewIds)) {
-          const diference = interviewIds.filter((x) => !cv.includes(x));
+        //   setWarningUsers(diference);
+        //   openNotification(
+        //     "warning",
+        //     "No has terminado aún!!",
+        //     "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
+        //   );
+        //   return;
+        // }
 
-          setWarningUsers(diference);
-          openNotification(
-            "warning",
-            "No has terminado aún!!",
-            "No has visto algunos candidatos. Recuerda que debes cargar los documentos que tengas disponibles"
-          );
-          return;
-        }
-
-        const warningUsers = cv
-          .map((cvId) => {
-            const cvKeys = Object.keys(resp[0].cvFiles[cvId]);
-            if (
-              !sonIguales(
-                arrayDifference(cvKeys, optionalCVFields),
-                arrayDifference(cvFields, optionalCVFields)
-              )
-            )
-              return cvId;
-            else {
-              const values = cvKeys
-                .map((cvKey) => resp[0].cvFiles[cvId][cvKey] == null)
-                .filter((result) => result);
-              if (values.some((value) => value == true)) return cvId;
-            }
-          })
-          .filter((val) => val);
-        if (warningUsers.length) {
-          setWarningUsers(warningUsers);
-          setWarningMessage(true);
-        } else request();
+        // const warningUsers = cv
+        //   .map((cvId) => {
+        //     const cvKeys = Object.keys(resp[0].cvFiles[cvId]);
+        //     if (
+        //       !sonIguales(
+        //         arrayDifference(cvKeys, optionalCVFields),
+        //         arrayDifference(cvFields, optionalCVFields)
+        //       )
+        //     )
+        //       return cvId;
+        //     else {
+        //       const values = cvKeys
+        //         .map((cvKey) => resp[0].cvFiles[cvId][cvKey] == null)
+        //         .filter((result) => result);
+        //       if (values.some((value) => value == true)) return cvId;
+        //     }
+        //   })
+        //   .filter((val) => val);
+        // if (warningUsers.length) {
+        //   setWarningUsers(warningUsers);
+        //   setWarningMessage(true);
+        // } else request();
       }
     });
   }
@@ -210,7 +225,7 @@ export default function EmployeeUploadCVFiles() {
             (data) => data.interviewId == key
           )[0];
           return {
-            health_requirements: cvs[key].health_request,
+            health_requirements: cvs[key].health_request || "No requerido",
             candidate_name:
               `${candiateCurricullum.applicantName} ${candiateCurricullum.applicantMidname} ${candiateCurricullum.applicantLastname}`.toUpperCase(),
             candidate_id: candidateProfile.id,
@@ -272,7 +287,10 @@ export default function EmployeeUploadCVFiles() {
             disabled={!requestEmployeeData}
           />
         </Flex>
-        <SpinningLoader condition={requestEmployeeData} content={tabView} />
+        <SpinningLoader
+          condition={requestEmployeeData && taskChecked}
+          content={tabView}
+        />
       </Flex>
       <Flex id="horizontal-buttons" gap={"10px"}>
         <Button

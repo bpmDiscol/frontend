@@ -1,10 +1,22 @@
 import React from "react";
-import { Button, Empty, Flex, Input, Space, Spin, Typography } from "antd";
+import {
+  Button,
+  Divider,
+  Empty,
+  Flex,
+  Input,
+  List,
+  Skeleton,
+  Space,
+  Spin,
+  Typography,
+} from "antd";
 import TaskCard from "./taskCard";
 import { SearchOutlined } from "@ant-design/icons";
 import { checkPartialWordsInObjects } from "../../misc/checkWordsInObject";
 
 import { Meteor } from "meteor/meteor";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function TaskList({
   filter,
@@ -14,22 +26,40 @@ export default function TaskList({
   updateList,
 }) {
   const { Title } = Typography;
-  const [taskList, setTaskList] = React.useState();
-  const [activeResume, setActiveResume] = React.useState(null);
+  const [taskList, setTaskList] = React.useState([]);
+  console.log("🚀 ~ taskList:", taskList);
   const [taskData, setTaskData] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [visibleTasks, setVisibleTasks] = React.useState([]);
+  const [config, setConfig] = React.useState({
+    items: 10,
+    page: 0,
+    hasMore: true,
+  });
+
+  function addData() {
+    Meteor.call(
+      "get_task_list",
+      filter,
+      Meteor.userId(),
+      config.page,
+      config.items,
+      (error, result) => {
+        if (error) return console.log("tasklist error");
+        if (result.length) {
+          setTaskList(taskList.concat(result));
+          setConfig({ ...config, page: config.page + 1 });
+        } else setConfig({ ...config, hasMore: false });
+      }
+    );
+  }
 
   React.useEffect(() => {
-    Meteor.call("get_task_list", filter, Meteor.userId(), (error, result) => {
-      if (error) console.log("tasklist error");
-      setTaskList(result);
-      setVisibleTasks(result);
-    });
+    addData();
   }, []);
 
   React.useEffect(() => {
-    if (taskList?.length > 0 && taskList != "error" && title !== "Completado") {
+    if (taskList?.length > 0 && title !== "Completado") {
       const taskDataPromises = taskList.map(async (task) => {
         try {
           return await Meteor.callAsync(
@@ -80,7 +110,6 @@ export default function TaskList({
       setVisibleTasks(filteredTasks);
     }
   }, [searchTerm]);
-  //TODO: filtar por tiempo(meses, semanas...) dependiendo del tipo de actividad
 
   return (
     <Flex
@@ -101,7 +130,7 @@ export default function TaskList({
         align="center"
       >
         <Title level={4} style={{ margin: 0 }}>
-          {title} | {taskList ? taskList.length : <Spin size="small" />}
+          {title} {!taskList && <Spin size="small" />}
         </Title>
         <Space.Compact style={{ maxWidth: "50%" }}>
           <Input
@@ -116,25 +145,44 @@ export default function TaskList({
         vertical
         style={{ overflowY: "auto", height: "100%", padding: "0 5px 0 0" }}
         gap={"15px"}
+        id={"scrollable_" + title.toLowerCase().replace(" ", "_")}
       >
-        {visibleTasks &&
-          visibleTasks != "error" &&
-          visibleTasks?.map((task, index) => {
-            return (
-              <TaskCard
-                key={index}
-                task={task}
-                buttons={buttons}
-                index={index}
-                activeResume={index == activeResume}
-                setActiveResume={setActiveResume}
-                resume={resume}
-                updateList={updateList}
-                filter={filter}
-              />
-            );
-          })}
-        {taskList?.length == 0 && <Empty description="Sin tareas" />}
+        <InfiniteScroll
+          dataLength={taskList.length}
+          next={addData}
+          hasMore={config.hasMore}
+          loader={
+            <Skeleton
+              avatar
+              paragraph={{
+                rows: 1,
+              }}
+              active
+            />
+          }
+          endMessage={<Divider plain>Fin de la lista 🤐</Divider>}
+          scrollableTarget={
+            "scrollable_" + title.toLowerCase().replace(" ", "_")
+          }
+        >
+          {taskList.length ? (
+            <List
+              dataSource={taskList}
+              renderItem={(task, index) => (
+                <Flex style={{paddingBottom:'1rem'}}>
+                  <TaskCard
+                    key={index}
+                    task={task}
+                    buttons={buttons}
+                    updateList={updateList}
+                    resume={resume}
+                  />
+                </Flex>
+              )}
+            />
+          ) : null}
+        </InfiniteScroll>
+
         {!taskList && <Spin fullscreen />}
       </Flex>
     </Flex>
