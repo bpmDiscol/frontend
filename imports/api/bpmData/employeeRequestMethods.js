@@ -188,7 +188,8 @@ Meteor.methods({
       return data.response;
     }
   },
-  async get_case(caseId) {
+  async get_case(case_) {
+    const caseId = typeof case_ == "string" ? parseInt(case_) : case_;
     return requestEmployeeCollection.findOne({ caseId });
   },
   update_selected({ isSelected, fileId, taskId }) {
@@ -342,7 +343,15 @@ Meteor.methods({
       console.log(e);
     }
   },
-
+  async update_salary(caseId, salary) {
+    requestEmployeeCollection.update(
+      {caseId},
+      {
+        $set: { "requestEmployeeDataInput.salary": salary },
+      },
+      { upsert: true }
+    );
+  },
   async add_salary(salary, caseId, interviewId) {
     try {
       requestEmployeeCollection.update(
@@ -408,9 +417,11 @@ Meteor.methods({
     }).catch((error) => console.error(error));
   },
   async uploadNominaFiles(caseId, value, memberId) {
-    Meteor.callAsync("set_data", { field: ['cvFilesInput',memberId], value }, caseId).catch(
-      (error) => console.error(error)
-    );
+    Meteor.callAsync(
+      "set_data",
+      { field: ["cvFilesInput", memberId], value },
+      caseId
+    ).catch((error) => console.error(error));
   },
   async uploadHRFiles(hrFiles, userName, caseId, taskId, user) {
     const field = ["healthResponseInput"];

@@ -46,7 +46,7 @@ export default function Tasks() {
       <TaskList
         title={"Completado"}
         filter={"doneTasks"}
-        buttons={[]}
+        buttons={['watch']}
         key={doneKey}
         updateList={updateList}
       />

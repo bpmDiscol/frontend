@@ -179,7 +179,7 @@ export default function RequestGeneralities({
               <InputNumber
                 stringMode
                 type="number"
-                min={1}
+                min={975000}
                 id="salary"
                 status={fiterErrors("salary")}
                 defaultValue={parseInt(requestData?.salary) || 0}

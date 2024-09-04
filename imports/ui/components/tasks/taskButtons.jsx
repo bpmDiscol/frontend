@@ -1,14 +1,19 @@
-import { Button, Flex, Tooltip } from "antd";
+import { Button, Descriptions, Flex, Modal, Table, Tooltip } from "antd";
 import React from "react";
 import { MainViewContext } from "../../context/mainViewProvider";
 import { NotificationsContext } from "../../context/notificationsProvider";
 import { safeLogOut } from "../../misc/userStatus";
 import { saveCase, saveTask, saveTaskName } from "../../config/taskManagement";
 import { deleteFile } from "../../misc/filemanagement";
+import moment from "moment";
+
 export default function TaskButtons({ buttons = [], updateList, task }) {
+  console.log("🚀 ~ TaskButtons ~ task:", task);
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
+  const [resume, openResume] = React.useState(false);
+  const [resumeData, setResumeData] = React.useState();
 
   function doTask() {
     setView(task.name);
@@ -18,15 +23,16 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
   }
 
   async function deleteCurricullumFromTask(taskId) {
-    const data = await Meteor.callAsync("get_task_data", taskId, Meteor.userId(), );
+    const data = await Meteor.callAsync(
+      "get_task_data",
+      taskId,
+      Meteor.userId()
+    );
     if (data?.length) {
       const curricullums = data[0].curricullums || [];
       curricullums.forEach((curr) => {
         deleteFile("curricullums", curr.fileId);
       });
-      //TODO: borrar backgrounds
-      //const backgrounds = data[0].backgrounds ||[]
-      //backgrounds.forEach(bg => deleteFile('backgrounds', bg._id))
     }
   }
 
@@ -37,7 +43,7 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
         user: buttonData[button].user,
         currentUser: sessionStorage.getItem("constId"),
         taskId: task.id,
-        userId: Meteor.userId()
+        userId: Meteor.userId(),
       },
       (error, resp) => {
         if (error) {
@@ -54,16 +60,64 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
         }
         if (resp) {
           if (buttonData[button].user == "") {
-            // TODO: cambiar nombre a deleteTemporaryFiles
             deleteCurricullumFromTask(task.name + task.id);
           }
-          Meteor.call("delete_task", task.name + task.id, Meteor.userId(), (err) => {
-            if (!err) sessionStorage.removeItem("albous");
-          });
+          Meteor.call(
+            "delete_task",
+            task.name + task.id,
+            Meteor.userId(),
+            (err) => {
+              if (!err) sessionStorage.removeItem("albous");
+            }
+          );
         }
         updateList(buttonData[button].filters);
       }
     );
+  }
+  async function watchTask() {
+    const caseData = await Meteor.callAsync("get_case", task.caseId).catch(
+      () => "case error"
+    );
+    console.log("🚀 ~ watchTask ~ caseData:", caseData);
+    if (caseData !== "case error") {
+      Modal.info({
+        width: 500,
+        title: (
+          <Flex justify="space-between">
+            <Flex>{task.displayName} </Flex>
+            <Flex>{moment(task.archivedDate).format("DD/MM/YYYY")}</Flex>
+          </Flex>
+        ),
+        content: (
+          <div>
+            {
+              <Table
+                title={() =>
+                  `${caseData.requestEmployeeDataInput.area_proyect} en ${caseData.requestEmployeeDataInput.site}`
+                }
+                pagination={false}
+                bordered
+                dataSource={caseData.curricullumsInput?.filter(data=> data.isSelected)}
+                rowKey={(data) => data.fileId}
+                size="small"
+              >
+                <Table.Column
+                  title={
+                    "Candidatos para " +
+                    caseData.requestEmployeeDataInput.companyPosition
+                  }
+                  render={(record) =>
+                    `${record.applicantName} ${record.applicantMidname} ${record.applicantLastname}`
+                  }
+                />
+              </Table>
+            }
+          </div>
+        ),
+      });
+    }
+    setLoading(false);
   }
 
   const buttonData = {
@@ -88,6 +142,12 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
       execute: doTask,
       icon: "playActivity",
       id: "do-task",
+    },
+    watch: {
+      label: "Ver tarea",
+      execute: watchTask,
+      icon: "FaSolidEye",
+      id: "watch-task",
     },
   };
 

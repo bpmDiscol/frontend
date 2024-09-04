@@ -12,7 +12,7 @@ import {
   Typography,
 } from "antd";
 import TaskCard from "./taskCard";
-import { SearchOutlined } from "@ant-design/icons";
+import { ArrowDownOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { checkPartialWordsInObjects } from "../../misc/checkWordsInObject";
 
 import { Meteor } from "meteor/meteor";
@@ -27,7 +27,6 @@ export default function TaskList({
 }) {
   const { Title } = Typography;
   const [taskList, setTaskList] = React.useState([]);
-  console.log("🚀 ~ taskList:", taskList);
   const [taskData, setTaskData] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [visibleTasks, setVisibleTasks] = React.useState([]);
@@ -38,6 +37,7 @@ export default function TaskList({
   });
 
   function addData() {
+    setConfig({ ...config, hasMore: true });
     Meteor.call(
       "get_task_list",
       filter,
@@ -48,7 +48,11 @@ export default function TaskList({
         if (error) return console.log("tasklist error");
         if (result.length) {
           setTaskList(taskList.concat(result));
-          setConfig({ ...config, page: config.page + 1 });
+          setConfig({
+            ...config,
+            page: config.page + 1,
+            hasMore: result.length >= config.items,
+          });
         } else setConfig({ ...config, hasMore: false });
       }
     );
@@ -58,58 +62,58 @@ export default function TaskList({
     addData();
   }, []);
 
-  React.useEffect(() => {
-    if (taskList?.length > 0 && title !== "Completado") {
-      const taskDataPromises = taskList.map(async (task) => {
-        try {
-          return await Meteor.callAsync(
-            "get_employee_request_data",
-            task.id,
-            Meteor.userId()
-          );
-        } catch (e) {
-          return console.log(e);
-        }
-      });
+  // React.useEffect(() => {
+  //   if (taskList?.length > 0 && title !== "Completado") {
+  //     const taskDataPromises = taskList.map(async (task) => {
+  //       try {
+  //         return await Meteor.callAsync(
+  //           "get_employee_request_data",
+  //           task.id,
+  //           Meteor.userId()
+  //         );
+  //       } catch (e) {
+  //         return console.log(e);
+  //       }
+  //     });
 
-      Promise.all(taskDataPromises)
-        .then((data) => data)
-        .then((data) => {
-          const newData = data.map((innerInfo, index) => {
-            return {
-              area_proyect: innerInfo.area_proyect,
-              observations: innerInfo.observations,
-              requirements: innerInfo.requirements,
-              salary_string: innerInfo.salary_string,
-              site: innerInfo.site,
-              vehicleType: innerInfo.vehicleType,
-              workPlace: innerInfo.workPlace,
-              taskId: taskList[index].id,
-              displayName: taskList[index].displayName,
-              description: taskList[index].displayDescription,
-              subtitle: taskList[index].displayDescription,
-            };
-          });
-          setTaskData(newData);
-        })
-        .catch((err) => err /*console.log(err)*/);
-    }
-  }, [taskList]);
+  //     Promise.all(taskDataPromises)
+  //       .then((data) => data)
+  //       .then((data) => {
+  //         const newData = data.map((innerInfo, index) => {
+  //           return {
+  //             area_proyect: innerInfo.area_proyect,
+  //             observations: innerInfo.observations,
+  //             requirements: innerInfo.requirements,
+  //             salary_string: innerInfo.salary_string,
+  //             site: innerInfo.site,
+  //             vehicleType: innerInfo.vehicleType,
+  //             workPlace: innerInfo.workPlace,
+  //             taskId: taskList[index].id,
+  //             displayName: taskList[index].displayName,
+  //             description: taskList[index].displayDescription,
+  //             subtitle: taskList[index].displayDescription,
+  //           };
+  //         });
+  //         setTaskData(newData);
+  //       })
+  //       .catch((err) => err /*console.log(err)*/);
+  //   }
+  // }, [taskList]);
 
-  React.useEffect(() => {
-    if (!searchTerm) setVisibleTasks(taskList);
-    if (searchTerm) {
-      const filteredIds = checkPartialWordsInObjects(
-        taskData,
-        searchTerm,
-        "taskId"
-      );
-      const filteredTasks = taskList.filter((task) =>
-        filteredIds.includes(task.id)
-      );
-      setVisibleTasks(filteredTasks);
-    }
-  }, [searchTerm]);
+  // React.useEffect(() => {
+  //   if (!searchTerm) setVisibleTasks(taskList);
+  //   if (searchTerm) {
+  //     const filteredIds = checkPartialWordsInObjects(
+  //       taskData,
+  //       searchTerm,
+  //       "taskId"
+  //     );
+  //     const filteredTasks = taskList.filter((task) =>
+  //       filteredIds.includes(task.id)
+  //     );
+  //     setVisibleTasks(filteredTasks);
+  //   }
+  // }, [searchTerm]);
 
   return (
     <Flex
@@ -130,15 +134,8 @@ export default function TaskList({
         align="center"
       >
         <Title level={4} style={{ margin: 0 }}>
-          {title} {!taskList && <Spin size="small" />}
+          {title} | {taskList.length} {config.hasMore && <PlusOutlined />}
         </Title>
-        <Space.Compact style={{ maxWidth: "50%" }}>
-          <Input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.currentTarget.value)}
-          />
-          <Button icon={<SearchOutlined />}></Button>
-        </Space.Compact>
       </Flex>
 
       <Flex
@@ -169,7 +166,7 @@ export default function TaskList({
             <List
               dataSource={taskList}
               renderItem={(task, index) => (
-                <Flex style={{paddingBottom:'1rem'}}>
+                <Flex style={{ paddingBottom: "1rem" }}>
                   <TaskCard
                     key={index}
                     task={task}

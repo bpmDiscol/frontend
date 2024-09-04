@@ -2,7 +2,7 @@
   {
     "key": "0",
     "label": "Asistencial operativo ------ [          -   1'300.000]",
-    "min": 1,
+    "min": 1300000,
     "max": 1300000
   },
   {
