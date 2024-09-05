@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Flex, Select, Spin } from "antd";
+import { Card, Flex, Result, Select, Spin } from "antd";
 import Chart from "react-apexcharts";
 import { fillEmptySpaces } from "./fillEmptySpaces";
 
@@ -16,13 +16,11 @@ export default function ProcessRequests({ requestProcess, approvations }) {
   const [dates, setDates] = React.useState();
   const [currentDate, setCurrentDate] = React.useState();
   const [contracts, setContracts] = React.useState();
-  const [processLines, setProcessLines] = React.useState();
-  const [key, setKey] = React.useState(0);
-
+  const [processLines, setProcessLines] = React.useState([]);
   React.useEffect(() => {
-    const dates = getContratationDates(approvations, requestProcess).reverse()
+    const dates = getContratationDates(approvations, requestProcess).reverse();
     setDates(dates);
-    setCurrentDate(dates[0]?.value)
+    setCurrentDate(dates[0]?.value);
   }, [approvations, requestProcess]);
 
   React.useEffect(() => {
@@ -70,14 +68,12 @@ export default function ProcessRequests({ requestProcess, approvations }) {
           const area = config.globals.labels[config.labelIndex];
 
           setArea(area);
-          setKey(Math.random());
         },
 
         click: function (_, _, config) {
           if (config.dataPointIndex < 0) return;
           const area = config.globals.labels[config.dataPointIndex];
           setArea(area);
-          setKey(Math.random());
         },
       },
       dropShadow: {
@@ -174,8 +170,14 @@ export default function ProcessRequests({ requestProcess, approvations }) {
             </Flex>
           </Flex>
           <Flex style={{ flex: 1 }} justify="center">
-            {processLines && (
-              <StepsLines key={key} processLines={processLines} />
+            {processLines.length ? (
+              <StepsLines processLines={processLines} />
+            ) : (
+              <Result
+                status="500"
+                title="Por favor selecciona un área"
+                subTitle=""
+              />
             )}
           </Flex>
         </Flex>

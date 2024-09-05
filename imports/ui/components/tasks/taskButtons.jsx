@@ -8,7 +8,6 @@ import { deleteFile } from "../../misc/filemanagement";
 import moment from "moment";
 
 export default function TaskButtons({ buttons = [], updateList, task }) {
-  console.log("🚀 ~ TaskButtons ~ task:", task);
   const { setView } = React.useContext(MainViewContext);
   const [loading, setLoading] = React.useState(false);
   const { openNotification } = React.useContext(NotificationsContext);
@@ -79,7 +78,6 @@ export default function TaskButtons({ buttons = [], updateList, task }) {
     const caseData = await Meteor.callAsync("get_case", task.caseId).catch(
       () => "case error"
     );
-    console.log("🚀 ~ watchTask ~ caseData:", caseData);
     if (caseData !== "case error") {
       Modal.info({
         width: 500,

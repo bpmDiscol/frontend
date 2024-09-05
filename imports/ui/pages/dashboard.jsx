@@ -54,7 +54,7 @@ export default function Dashboard() {
           ref={targetRef}
         >
           <div ref={lineInfoRef}>
-            <OpenToMembership memberships={[["Lider"]]}>
+            <OpenToMembership memberships={[["Lider"],["director"]]}>
               <LeaderTimeLine
                 requestProcess={requestProcess}
                 approvations={approvations}

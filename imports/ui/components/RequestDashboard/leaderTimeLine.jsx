@@ -5,6 +5,7 @@ import { MainViewContext } from "../../context/mainViewProvider";
 import moment from "moment";
 import { FileDoneOutlined, LoadingOutlined } from "@ant-design/icons";
 import translate from "../../misc/translate.json";
+import getDirectorAreas from "../../misc/getDirectorAreas";
 
 const { Title } = Typography;
 
@@ -27,7 +28,8 @@ export default function LeaderTimeLine({ approvations, requestProcess }) {
       currentDate,
       approvations,
       requestProcess,
-      userName
+      userName,
+      getDirectorAreas(Meteor.userId())
     );
   }
 
@@ -113,7 +115,7 @@ export default function LeaderTimeLine({ approvations, requestProcess }) {
         )}
         {!myProcesses?.length && !loading && (
           <Flex style={{ paddingTop: "16px" }}>
-            No has iniciado procesos este mes
+            Sin procesos para mostrar en este mes 
           </Flex>
         )}
       </Card>

@@ -79,6 +79,7 @@ function refactorSteps(steps) {
           currentStep.responsible = step_.responsible;
           const startDate = parseISO(step.responseDate);
           const endDate = parseISO(step_.responseDate);
+          currentStep.endDate = endDate;
           currentStep.totalTime = formatDuration(
             differenceInMinutes(endDate, startDate)
           );
@@ -91,11 +92,22 @@ function refactorSteps(steps) {
   return refactor;
 }
 
-export function getProcessLine(area, date, approvations, requestProcess, initiator) {
+export function getProcessLine(
+  area,
+  date,
+  approvations,
+  requestProcess,
+  initiator,
+  directorAreas = []
+) {
   const { month, year } = deformatDate(date);
   return requestProcess
     .map((process, index) => {
-      if (process.requestArea === area || process.initiatorUser === initiator)  {
+      if (
+        process.requestArea === area ||
+        process.initiatorUser === initiator ||
+        directorAreas.includes(process.requestArea)
+      ) {
         return { ...process, approvations: approvations[index] };
       }
     })

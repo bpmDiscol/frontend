@@ -344,7 +344,7 @@ Meteor.methods({
     }
   },
   async update_salary(caseId, salary) {
-    requestEmployeeCollection.update(
+    return requestEmployeeCollection.update(
       {caseId},
       {
         $set: { "requestEmployeeDataInput.salary": salary },

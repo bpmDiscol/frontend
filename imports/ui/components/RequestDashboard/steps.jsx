@@ -3,9 +3,9 @@ import { Badge, Card, Flex, Pagination, Steps, Tag, Typography } from "antd";
 import TimeCounter from "../timeCounter";
 import translate from "../../misc/translate.json";
 import { FileDoneOutlined, FileSyncOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 export default function StepsLines({ processLines }) {
-  //   const [currentData, setCurrentData] = React.useState();
   const [currentPage, setCurrentPage] = React.useState(1);
   const [currentSteps, setCurrentSteps] = React.useState();
   const [currentData, setCurrentData] = React.useState();
@@ -37,7 +37,7 @@ export default function StepsLines({ processLines }) {
         ),
         description:
           item.status === "finish" ? (
-            `Terminado en: ${item.totalTime}`
+            `Terminado el ${moment(item.endDate).format('DD/MM/YYYY')} en: ${item.totalTime}`
           ) : (
             <TimeCounter startDate={item.startDate} />
           ),
@@ -45,6 +45,11 @@ export default function StepsLines({ processLines }) {
     });
     setCurrentSteps(currentSteps);
   }
+
+  React.useEffect(() => {
+    setCurrentData(processLines[0]);
+  }, [processLines]);
+
   React.useEffect(() => {
     setCurrentData(processLines[currentPage - 1]);
   }, [currentPage]);
@@ -73,17 +78,12 @@ export default function StepsLines({ processLines }) {
                 : "En proceso desde hace"}
             </Text>
             <Text strong style={{ fontSize: "16px" }}>
-              {currentData?.createdAt && (
-                <TimeCounter
-                  key={currentPage}
-                  startDate={currentData?.createdAt}
-                  endDate={
-                    currentData?.isFinished
-                      ? currentData?.modifyedAt
-                      : Date.now()
-                  }
-                />
-              )}
+              <TimeCounter
+                startDate={currentData?.createdAt}
+                endDate={
+                  currentData?.isFinished ? currentData?.modifyedAt : null
+                }
+              />
             </Text>
           </Flex>
           <Flex
