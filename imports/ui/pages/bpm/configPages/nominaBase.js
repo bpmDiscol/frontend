@@ -21,14 +21,24 @@ const tabNumber = tabTitles.length - 1;
 
 const buttons = {
   background: [
-    { title: "Cert. EPS", linkId: "certificado_eps" },
-    { title: "Cert. ARL", linkId: "certificado_arl" },
-    { title: "Cert. Pensiones", linkId: "certificado_pensiones" },
-    { title: "Cert. bancario", linkId: "certificado_banco" },
+    { title: "EPS", linkId: "certificado_eps" },
+    { title: "ARL", linkId: "certificado_arl" },
+    { title: "Pensiones", linkId: "certificado_pensiones" },
+    { title: "Bancario", linkId: "certificado_banco" },
+    { title: "Cedula", linkId: "cedula" },
   ],
+  curricullum: true,
 };
-const showSalary = true
+const showSalary = true;
 
-const subtitle = "Base de nómina"
+const subtitle = "Base de nómina";
 
-export { tabTitles, tabContents, request, tabNumber, buttons, showSalary, subtitle };
+export {
+  tabTitles,
+  tabContents,
+  request,
+  tabNumber,
+  buttons,
+  showSalary,
+  subtitle,
+};
