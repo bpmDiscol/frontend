@@ -34,13 +34,20 @@ export default function EmployeeRequestForm() {
     request(setRequestData);
     Meteor.call("get_processes", Meteor.userId(), (error, response) => {
       if (!error && response != "error") {
-        
         const myProcess = response?.filter(
           (process) => process.displayName == "employee_request"
         );
 
-        const enabledProcess = myProcess.find(process=> process.activationState === "ENABLED")
-        setProcessId(enabledProcess[0].id);
+        const enabledProcess = myProcess.find(
+          (process) => process.activationState === "ENABLED"
+        );
+        if (!enabledProcess.length)
+          openNotification(
+            "error",
+            "Contacta al administrador",
+            "No se puede cargar el proceso"
+          );
+        setProcessId(enabledProcess?.id);
       }
     });
   }, []);
