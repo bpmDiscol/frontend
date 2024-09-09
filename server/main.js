@@ -39,6 +39,16 @@ import "../imports/api/alerts/alertsPublications";
 
 //sql
 import "../imports/api/bdmData/bdmMethods";
+import later from "later";
+
+//Restore alerts to zero every weekend
+const clearWatchedAlerts = () => {
+  Meteor.users.update({}, { $set: { watchedAlerts: [] } }, { multi: true });
+};
+const schedule = later.parse.text("at 00:00 on Sunday");
+const scheduler = later.setInterval(() => {
+  clearWatchedAlerts();
+}, schedule);
 
 Accounts.config({
   //cierra la sesion inactiva de 8 horas
@@ -53,6 +63,10 @@ Meteor.methods({
 });
 
 Meteor.startup(async () => {
+  console.log(
+    "Scheduler started to clear watchedAlerts every Sunday at midnight."
+  );
+
   //elimina las alertas viejas(+48 horas) cada hora
   Meteor.setInterval(() => Meteor.call("deleteOldAlerts", 48), 1000 * 60 * 60);
   // console.log(JSON.stringify(process.env.MAIL_URL));

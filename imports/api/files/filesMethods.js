@@ -10,7 +10,7 @@ const collection = {
 };
 
 function replaceBaseUrl(link) {
-  return link.replace("http://localhost/", process.env.ROOT_URL);
+  return link.replace("http://localhost/", Meteor.absoluteUrl());
 }
 
 Meteor.methods({

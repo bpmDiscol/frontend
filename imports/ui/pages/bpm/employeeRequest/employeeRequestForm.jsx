@@ -40,7 +40,7 @@ export default function EmployeeRequestForm() {
         );
 
         const enabledProcess = myProcess.find(process=> process.activationState === "ENABLED")
-        setProcessId(enabledProcess.id);
+        setProcessId(enabledProcess[0].id);
       }
     });
   }, []);

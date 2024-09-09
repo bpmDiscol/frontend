@@ -4,16 +4,14 @@ import Axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { Cookie, CookieJar } from "tough-cookie";
 
-import configData from "../../../data.json";
-
 wrapper(Axios);
 const cookieJar = new CookieJar();
 Axios.defaults.jar = cookieJar;
 Axios.defaults.withCredentials = true;
 
 if (Meteor.isDevelopment)
-  Axios.defaults.baseURL = configData.server.development;
-else Axios.defaults.baseURL = configData.server.production;
+  Axios.defaults.baseURL = "http://localhost:8080/bonita";
+else Axios.defaults.baseURL = process.env.BONITA_URL;
 
 const serviceUrl = "/loginservice";
 const session = "/API/system/session/unusedid";
