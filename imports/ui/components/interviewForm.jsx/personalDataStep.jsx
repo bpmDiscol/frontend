@@ -162,7 +162,7 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
             hasFeedback
           >
             <Input
-              placeholder={"Sugerido: " + requestEmployee.companyPosition}
+              placeholder={"Sugerido: " + requestEmployee?.companyPosition}
             />
           </Form.Item>
 
@@ -175,7 +175,7 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
                 message: "Por favor, introduce una aspiración salarial",
               },
             ]}
-            help={"Propuesto: " + requestEmployee.salary} 
+            help={"Propuesto: " + requestEmployee?.salary} 
             hasFeedback
             normalize={(value) => {
               return new Intl.NumberFormat("es-CO", {
@@ -186,7 +186,7 @@ export default function PersonalDataStep({ form, update, requestEmployee }) {
               }).format(parseInt(value.replace(/\$\s?|(,*)\./g, "")) || 0);
             }}
           >
-            <Input placeholder={"Propuesto: " + requestEmployee.salary} />
+            <Input placeholder={"Propuesto: " + requestEmployee?.salary} />
           </Form.Item>
         </Col>
       </Row>

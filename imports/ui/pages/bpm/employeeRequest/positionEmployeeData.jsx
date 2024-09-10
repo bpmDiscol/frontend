@@ -151,7 +151,7 @@ export default function PositionEmployeeData({
                     Ver Curricullum
                   </Button>
                   <Button
-                    title="Descargar"
+                    title="Descargar curricullum"
                     type="primary"
                     shape="circle"
                     icon={<DownloadOutlined />}

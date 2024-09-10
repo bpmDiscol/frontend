@@ -9,6 +9,7 @@ import {
 import { NotificationsContext } from "../../../context/notificationsProvider.jsx";
 import { getTask, getTaskName } from "../../../config/taskManagement.js";
 import LeaderInterview from "../../../components/interviewForm.jsx/leaderInterview.jsx";
+import InterviewView from "../../../components/interviewForm.jsx/interviewView.jsx";
 
 const { Text } = Typography;
 const googleDocsViewer = "http://docs.google.com/viewer?url=";
@@ -176,10 +177,10 @@ export default function PositionCurricullumCheck({
                     applicant: interview,
                     open: true,
                     view: (
-                      <LeaderInterview
+                      <InterviewView
                         fileId={interview.fileId}
-                        updateData={updateData}
-                        background={background[interview.fileId]}
+                        onClose={handleClose}
+                        interviewForm={interviews[index]}
                       />
                     ),
                   });
