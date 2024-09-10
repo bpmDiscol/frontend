@@ -41,12 +41,7 @@ export default function EmployeeRequestForm() {
         const enabledProcess = myProcess.find(
           (process) => process.activationState === "ENABLED"
         );
-        if (!enabledProcess.length)
-          openNotification(
-            "error",
-            "Contacta al administrador",
-            "No se puede cargar el proceso"
-          );
+
         setProcessId(enabledProcess?.id);
       }
     });

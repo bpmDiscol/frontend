@@ -65,5 +65,6 @@
   "certificado_banco": "Cuenta bancaria",
   "policia":"Certificado de Policía",
   "procuraduria":"Certificado de Procuraduría",
-  "contraloria":"Certificado de Contraloría"
+  "contraloria":"Certificado de Contraloría",
+  "terminated": "Abandonado"
 }

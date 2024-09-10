@@ -161,20 +161,17 @@ export default function PositionHSEApprovation({
             )}
           />
           <Table.Column
-            title="Curricullums"
+            title="Resultados médicos"
             render={(interview) => (
               <Flex>
                 <Button
-                  onClick={() => newTab(googleDocsViewer + interview.link)}
-                  icon={<EyeOutlined />}
+                  onClick={() =>
+                    newTab(gethealthResponseLink(interview.fileId), true)
+                  }
                   type="link"
-                >
-                  Ver
-                </Button>
-                <Button
-                  onClick={() => newTab(interview.link, true)}
                   icon={<DownloadOutlined />}
-                  type="link"
+                  id="download-cv"
+                  title="Descargar resultados"
                 >
                   Descargar
                 </Button>
