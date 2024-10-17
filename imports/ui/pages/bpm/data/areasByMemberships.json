@@ -64,6 +64,7 @@
       { "label": "PQR", "value": "PQR" },
       { "label": "Sistemas", "value": "Sistemas" },
       { "label": "Tesorería", "value": "Tesoreria" },
+      { "label": "OS_valvulas_fracort", "value": "OS_valvulas_fracort" },
       {
         "label": "0S01 Acuacar ambiental F2",
         "value": "0S01 Acuacar ambiental F2"
@@ -251,6 +252,13 @@
     "menu": {
       "label": "Interventoria",
       "value": "Interventoria"
+    }
+  },
+  {
+    "membership": ["Lider", "OS_valvulas_fracort"],
+    "menu": {
+      "label": "OS Válvulas Fracort",
+      "value": "OS_valvulas_fracort"
     }
   }
 ]
