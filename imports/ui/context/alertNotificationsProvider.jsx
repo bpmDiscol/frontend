@@ -5,6 +5,7 @@ import { NotificationsContext } from "./notificationsProvider";
 import { Button, Space } from "antd";
 import { MainViewContext } from "./mainViewProvider";
 import { saveCase, saveTask, saveTaskName } from "../config/taskManagement";
+import { formatDate } from "../misc/formatDate";
 
 export const AlertNotificationsContext = React.createContext();
 
@@ -122,7 +123,7 @@ export default function AlertNotificationsProvider({ children }) {
             openNotification(
               "info",
               infoView.title,
-              infoView.message,
+              formatDate(infoView.date),
               infoView.nobtn ? null : btn,
               infoView._id,
               3,
